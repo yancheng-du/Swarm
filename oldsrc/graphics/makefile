@@ -1,7 +1,7 @@
 all: main
 
 CFLAGS=-fPIC -g -Wall
-FREE_LIBS = -lglfw3 -lGLEW -lGL -lm -lXrandr -lXi -lX11 -ldl -lXxf86vm -lpthread
+FREE_LIBS = -lglfw -lGLEW -framework OpenGL -lm -ldl -lpthread
 # CXX=g++-5
 
 main: ./main.cpp ./graphics_module.o ./common/shader.o ./common/objloader.o ./common/texture.o ./common/controls.o ./common/text2D.o
