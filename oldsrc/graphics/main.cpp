@@ -36,7 +36,7 @@ bees and qr code. Therefore it's coordinates are 'normal'
 int main( void ){
   int maxX = 500;
   int maxY = 1000;
-  GraphicsModule gm (6, maxX, maxY, 1, 2.0f,
+  GraphicsModule gm (6, maxX, maxY, 1, 2.0f, false, 
                      "abee.png", "./");
 
   //particle initialization
@@ -56,7 +56,7 @@ int main( void ){
 
   do{
     gm.update_qr(true, "./qr.png", 500, 1000, 4.0f); //update the status of the qr -> done every iteration
-    gm.update_display(); //writes added particles and texts to the frame
+    gm.update_display(false); //writes added particles and texts to the frame
   }while(!gm.should_close());
 
   //deallocate resources
