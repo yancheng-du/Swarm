@@ -8,9 +8,9 @@
 #include <stdbool.h>
 #include <vector>
 #include <math.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#include <OpenAL/alut.h>
 
 static void list_audio_devices(const ALCchar *devices)
 {
@@ -64,7 +64,6 @@ private:
 	ALenum format;
 	ALuint* buffer;
 	ALuint* source;
-	ALboolean loop = AL_FALSE;
 	ALCenum error;
 	ALint source_state;
 
@@ -148,7 +147,7 @@ public:
 			string flnm = ".wav";
 			string flhdr = "./sounds/";
 			string file_name = flhdr+str+flnm;
-			alutLoadWAVFile((ALbyte*)file_name.c_str(), &format, &data, &size, &freq, (ALboolean*)&loop);
+			alutLoadWAVFile((ALbyte*)file_name.c_str(), &format, &data, &size, &freq);
 			TEST_ERROR("loading wav file");
 
 			alBufferData(buffer[i-1], format, data, size, freq);
