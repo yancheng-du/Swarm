@@ -1,4 +1,4 @@
-#include "libfreenect.hpp"
+#include <libfreenect.hpp>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -12,29 +12,31 @@
 #include "MyFreenectDevice.hpp"
 #include "AudioHandler.hpp"
 #include "./graphics/graphics_module.hpp"
-#include "utils.h"
-
-#include "tensorflow/cc/ops/const_op.h"
-#include "tensorflow/cc/ops/image_ops.h"
-#include "tensorflow/cc/ops/standard_ops.h"
-#include "tensorflow/core/framework/graph.pb.h"
-#include "tensorflow/core/graph/default_device.h"
-#include "tensorflow/core/graph/graph_def_builder.h"
-#include "tensorflow/core/lib/core/threadpool.h"
-#include "tensorflow/core/lib/io/path.h"
-#include "tensorflow/core/lib/strings/stringprintf.h"
-#include "tensorflow/core/platform/init_main.h"
-#include "tensorflow/core/public/session.h"
-#include "tensorflow/core/util/command_line_flags.h"
+// LONG LIVE TENSORFLOW
+// #include "utils.h"
+// 
+// #include "tensorflow/cc/ops/const_op.h"
+// #include "tensorflow/cc/ops/image_ops.h"
+// #include "tensorflow/cc/ops/standard_ops.h"
+// #include "tensorflow/core/framework/graph.pb.h"
+// #include "tensorflow/core/graph/default_device.h"
+// #include "tensorflow/core/graph/graph_def_builder.h"
+// #include "tensorflow/core/lib/core/threadpool.h"
+// #include "tensorflow/core/lib/io/path.h"
+// #include "tensorflow/core/lib/strings/stringprintf.h"
+// #include "tensorflow/core/platform/init_main.h"
+// #include "tensorflow/core/public/session.h"
+// #include "tensorflow/core/util/command_line_flags.h"
 
 using namespace cv;
 using namespace std;
 
-using tensorflow::Flag;
-using tensorflow::Tensor;
-using tensorflow::Status;
-using tensorflow::string;
-using tensorflow::int32;
+// LONG LIVE TENSORFLOW
+// using tensorflow::Flag;
+// using tensorflow::Tensor;
+// using tensorflow::Status;
+// using tensorflow::string;
+// using tensorflow::int32;
 
 //convert all values in mat > threshold to 0
 void filter(cv::Mat mat, int threshold){
@@ -224,55 +226,57 @@ int main(int argc, char **argv) {
 	bool expected = false;
 	bool was_expected = false;
 
-	//path variables
-	string rootdir = "./pbfiles/";
-	string hand_labels = "labels_map.pbtxt";
-	string hand_graph = "frozen_inference_graph.pb";
-	string gesture_graph = "output_graph.pb";
-	string inputLayer = "image_tensor:0";
-	vector<string> outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
-
-	//load and initialize the hand model
-	std::unique_ptr<tensorflow::Session> session;
-	string graph_path = tensorflow::io::JoinPath(rootdir, hand_graph);
-	LOG(INFO) << "handgraphPath:" << graph_path;
-	Status load_graph_status = loadGraph(graph_path, &session);
-	if (!load_graph_status.ok()) {
-		LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status;
-		return -1;
-	}
-
-	//load hand labels
-	std::map<int, std::string> labels_map = std::map<int,std::string>();
-	Status read_labels_status = readLabelsMapFile(tensorflow::io::JoinPath(rootdir, hand_labels), labels_map);
-	if (!read_labels_status.ok()) {
-		LOG(ERROR) << "readLabelsMapFile(): ERROR" << read_labels_status;
-		return -1;
-	}
-
-	//load and initialize the gesture model
-	std::unique_ptr<tensorflow::Session> session2;
-	string graph_path2 = tensorflow::io::JoinPath(rootdir, gesture_graph);
-	LOG(INFO) << "handgraphPath:" << graph_path2;
-	Status load_graph_status2 = loadGraph(graph_path2, &session2);
-	if (!load_graph_status2.ok()) {
-		LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status2;
-		return -1;
-	}
+// 	LONG LIVE TENSORFLOW
+// 	//path variables
+// 	string rootdir = "./pbfiles/";
+// 	string hand_labels = "labels_map.pbtxt";
+// 	string hand_graph = "frozen_inference_graph.pb";
+// 	string gesture_graph = "output_graph.pb";
+// 	string inputLayer = "image_tensor:0";
+// 	vector<string> outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
+// 
+// 	//load and initialize the hand model
+// 	std::unique_ptr<tensorflow::Session> session;
+// 	string graph_path = tensorflow::io::JoinPath(rootdir, hand_graph);
+// 	LOG(INFO) << "handgraphPath:" << graph_path;
+// 	Status load_graph_status = loadGraph(graph_path, &session);
+// 	if (!load_graph_status.ok()) {
+// 		LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status;
+// 		return -1;
+// 	}
+// 
+// 	//load hand labels
+// 	std::map<int, std::string> labels_map = std::map<int,std::string>();
+// 	Status read_labels_status = readLabelsMapFile(tensorflow::io::JoinPath(rootdir, hand_labels), labels_map);
+// 	if (!read_labels_status.ok()) {
+// 		LOG(ERROR) << "readLabelsMapFile(): ERROR" << read_labels_status;
+// 		return -1;
+// 	}
+// 
+// 	//load and initialize the gesture model
+// 	std::unique_ptr<tensorflow::Session> session2;
+// 	string graph_path2 = tensorflow::io::JoinPath(rootdir, gesture_graph);
+// 	LOG(INFO) << "handgraphPath:" << graph_path2;
+// 	Status load_graph_status2 = loadGraph(graph_path2, &session2);
+// 	if (!load_graph_status2.ok()) {
+// 		LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status2;
+// 		return -1;
+// 	}
 
 	Mat resized;
 	bool decrement = false;
 
-	//tensor shape
-	Tensor tensor;
-	vector<Tensor> outputs;
-	double thresholdScore = 0.5;
-	double thresholdIOU = 0.8;
-	tensorflow::TensorShape shape = tensorflow::TensorShape();
-	shape.AddDim(1);
-	shape.AddDim(down_height);
-	shape.AddDim(down_width);
-	shape.AddDim(3);
+// 	LONG LIVE TENSORFLOW
+// 	//tensor shape
+// 	Tensor tensor;
+// 	vector<Tensor> outputs;
+// 	double thresholdScore = 0.5;
+// 	double thresholdIOU = 0.8;
+// 	tensorflow::TensorShape shape = tensorflow::TensorShape();
+// 	shape.AddDim(1);
+// 	shape.AddDim(down_height);
+// 	shape.AddDim(down_width);
+// 	shape.AddDim(3);
 
 	//create all the vectors that we'll need
 	vector<vector<Point>> contours;
@@ -361,46 +365,47 @@ int main(int argc, char **argv) {
 
 		//LOG(INFO)<<"show captured"<<endl;
 
-		if(iterations%15==0 && gesture==true) {
-			cvtColor(rgb_down, rgb_down, COLOR_BGR2RGB);
-
-			// Convert mat to tensor
-			tensor = Tensor(tensorflow::DT_FLOAT, shape);
-			Status read_tensor_status = readTensorFromMat(rgb_down, tensor);
-			if (!read_tensor_status.ok()) {
-				LOG(ERROR) << "Mat->Tensor conversion failed: " << read_tensor_status;
-				return -1;
-			}
-
-			// Run the graph on tensor
-			outputs.clear();
-			Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
-			if (!runStatus.ok()) {
-				LOG(ERROR) << "Running model failed: " << runStatus;
-				return -1;
-			}
-
-			// Extract results from the outputs vector
-			tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
-			//tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
-			//tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
-			tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
-
-			vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
-
-			// Draw boxes and captions
-			cvtColor(rgb_down, rgb_down, COLOR_BGR2RGB);
-			// LOG(INFO)<<"rgb_down cols:"<<rgb_down.cols<<endl;
-			// LOG(INFO)<<"rgb_down height:"<<rgb_down.size().height<<endl;
-
-			detect(rec, session2, rgb_down, scores, boxes, goodIdxs, &expected);
-			//if(iterations%30==0){expected = true;}else{expected = false;}
-			if(expected){
-				audio.play_sound(iterations%32+1);
-				was_expected = true;
-				count_frames = 30;
-			}
-		}
+// 		LONG LIVE TENSORFLOW
+// 		if(iterations%15==0 && gesture==true) {
+// 			cvtColor(rgb_down, rgb_down, COLOR_BGR2RGB);
+// 
+// 			// Convert mat to tensor
+// 			tensor = Tensor(tensorflow::DT_FLOAT, shape);
+// 			Status read_tensor_status = readTensorFromMat(rgb_down, tensor);
+// 			if (!read_tensor_status.ok()) {
+// 				LOG(ERROR) << "Mat->Tensor conversion failed: " << read_tensor_status;
+// 				return -1;
+// 			}
+// 
+// 			// Run the graph on tensor
+// 			outputs.clear();
+// 			Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
+// 			if (!runStatus.ok()) {
+// 				LOG(ERROR) << "Running model failed: " << runStatus;
+// 				return -1;
+// 			}
+// 
+// 			// Extract results from the outputs vector
+// 			tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
+// 			//tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
+// 			//tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
+// 			tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
+// 
+// 			vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
+// 
+// 			// Draw boxes and captions
+// 			cvtColor(rgb_down, rgb_down, COLOR_BGR2RGB);
+// 			// LOG(INFO)<<"rgb_down cols:"<<rgb_down.cols<<endl;
+// 			// LOG(INFO)<<"rgb_down height:"<<rgb_down.size().height<<endl;
+// 
+// 			detect(rec, session2, rgb_down, scores, boxes, goodIdxs, &expected);
+// 			//if(iterations%30==0){expected = true;}else{expected = false;}
+// 			if(expected){
+// 				audio.play_sound(iterations%32+1);
+// 				was_expected = true;
+// 				count_frames = 30;
+// 			}
+// 		}
 
 		//resize input image and depth for decreased computation
 		cv::resize(cropRgbIn, rgb_down, Size(down_width, down_height));
