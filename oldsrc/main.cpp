@@ -38,7 +38,7 @@ using tensorflow::int32;
 
 //convert all values in mat > threshold to 0
 void filter(cv::Mat mat, int threshold){
-  for(signed i = 0; i<mat.rows; i++){
+	for(signed i = 0; i<mat.rows; i++){
 		for(signed j = 0; j<mat.cols; j++){
 			int mat_val = mat.data[mat.step[0]*i + mat.step[1]* j];
 			if(mat_val == 255 or mat_val > threshold){
@@ -53,12 +53,12 @@ void filter(cv::Mat mat, int threshold){
 //https://stackoverflow.com/questions/2844817/how-do-i-check-if-a-c-string-is-an-int
 inline bool isInteger(const std::string & s)
 {
-   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false;
+	if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false;
 
-   char * p;
-   strtol(s.c_str(), &p, 10);
+	char * p;
+	strtol(s.c_str(), &p, 10);
 
-   return (*p == 0);
+	return (*p == 0);
 }
 
 /*
@@ -82,10 +82,10 @@ vector<Point> drop_contours_1d(vector<vector<Point>> contours, int prop){
 /*
 potential arguments :
 --bees <number of bees>
---time		(if present, times the exection)
---videos	(if present, shows the videos for rgb in, background subtracted and edges)
+--time (if present, times the exection)
+--videos (if present, shows the videos for rgb in, background subtracted and edges)
 --scale <scale> (currently multiplied by 320x240 to get screen size)
---size <size>   (the size of each bee)
+--size <size> (the size of each bee)
 --soundb <sound divisor> (the sound divisor used for the audiohandler)
 --steps (shows intermediate images)
 --fullscreen (displays the window to entire screen)
@@ -101,23 +101,23 @@ int main(int argc, char **argv) {
 	int down_height = 480;
 	int contour_drop = 1; //we keep 1/<contour_drop> contours
 	int depth_threshold = 1500; //threshold depth in mm
-  float scale = 3.0f; //scale for graphics window
-  float bee_size = 2.0f; //size of each bee
+	float scale = 3.0f; //scale for graphics window
+	float bee_size = 2.0f; //size of each bee
 	int num_bees = 1200; //number of bees
-  int bee_total = 0; //time spent on bee module
+	int bee_total = 0; //time spent on bee module
 	bool time_it = false; //whether we use timing or not
-  int sound_divisor = 20; //parameter for audiohandler
-  int randgen = 1;
-  bool steps = false; //whether or not to show intermediate images
-  bool fullscreen = false; //whether the graphics window should occupy the entire screen
-  int c_lower_thres = 50; //lower threshold for canny edge detection
-  int c_upper_thres = 100;  //upper thrshold for canny edge detection
-  int step_size = 3;
-  bool gesture = false;
-  int frame_counter = 50;
-  int count_frames = 0;
+	int sound_divisor = 20; //parameter for audiohandler
+	int randgen = 1;
+	bool steps = false; //whether or not to show intermediate images
+	bool fullscreen = false; //whether the graphics window should occupy the entire screen
+	int c_lower_thres = 50; //lower threshold for canny edge detection
+	int c_upper_thres = 100; //upper thrshold for canny edge detection
+	int step_size = 3;
+	bool gesture = false;
+	int frame_counter = 50;
+	int count_frames = 0;
 
-  	//set variables for timing
+	//set variables for timing
 	chrono::time_point<std::chrono::high_resolution_clock> time_start;
 	chrono::time_point<std::chrono::high_resolution_clock> time_stop;
 	chrono::time_point<std::chrono::high_resolution_clock> bee_start;
@@ -133,8 +133,8 @@ int main(int argc, char **argv) {
 	chrono::system_clock::time_point qr_start;
 	chrono::system_clock::time_point qr_current;
 
-  	int contour_count = 0;
-  	vector<Point> set_contour;
+	int contour_count = 0;
+	vector<Point> set_contour;
 
 	//argument parsing
 	if(argc > 1){
@@ -143,65 +143,65 @@ int main(int argc, char **argv) {
 				num_bees = stoi(String(argv[i+1]));
 			}
 
-      if(String(argv[i]).compare("--time")==0){
-        time_it = true;
-        bee_total = 0;
-      }
+			if(String(argv[i]).compare("--time")==0){
+				time_it = true;
+				bee_total = 0;
+			}
 
-      if(String(argv[i]).compare("--scale")==0 && argc>(i+1)){
-        scale = stof(String(argv[i+1]));
-      }
-      if(String(argv[i]).compare("--gesture")==0){
-        gesture = true;
-      }
+			if(String(argv[i]).compare("--scale")==0 && argc>(i+1)){
+				scale = stof(String(argv[i+1]));
+			}
+			if(String(argv[i]).compare("--gesture")==0){
+				gesture = true;
+			}
 
-      if(String(argv[i]).compare("--size")==0 && argc>(i+1)){
-        bee_size = stof(String(argv[i+1]));
-      }
+			if(String(argv[i]).compare("--size")==0 && argc>(i+1)){
+				bee_size = stof(String(argv[i+1]));
+			}
 
-      if(String(argv[i]).compare("--stepsize")==0 && argc>(i+1)){
-        step_size = stof(String(argv[i+1]));
-      }
+			if(String(argv[i]).compare("--stepsize")==0 && argc>(i+1)){
+				step_size = stof(String(argv[i+1]));
+			}
 
-      if(String(argv[i]).compare("--soundb")==0 && argc>(i+1) && isInteger(argv[i+1])){
-        sound_divisor = stoi(String(argv[i+1]));
-      }
+			if(String(argv[i]).compare("--soundb")==0 && argc>(i+1) && isInteger(argv[i+1])){
+				sound_divisor = stoi(String(argv[i+1]));
+			}
 
-      if(String(argv[i]).compare("--canny")==0 && argc>(i+2) && isInteger(argv[i+1]) && isInteger(argv[i+2])){
-        c_lower_thres = stoi(String(argv[i+1]));
-        c_upper_thres = stoi(String(argv[i+2]));
-      }
+			if(String(argv[i]).compare("--canny")==0 && argc>(i+2) && isInteger(argv[i+1]) && isInteger(argv[i+2])){
+				c_lower_thres = stoi(String(argv[i+1]));
+				c_upper_thres = stoi(String(argv[i+2]));
+			}
 
-      if(String(argv[i]).compare("--steps")==0){
-        steps = true;
-      }
+			if(String(argv[i]).compare("--steps")==0){
+				steps = true;
+			}
 
-      if(String(argv[i]).compare("--fullscreen")==0){
-        fullscreen = true;
-      }
+			if(String(argv[i]).compare("--fullscreen")==0){
+				fullscreen = true;
+			}
 
-    }
-  }
+		}
+	}
 
 	//create bee handler for calculating bee dynamics
-  //xwidth - width of matrix
-  //ywidth - height of matrix
-  //stepSize - how far a bee will move in a single frame
-  //randomFactor - how random the bee movement is [-pi/2, pi/2]
-  //numThreads - how many threads
-  //storedFrames - how many frames are stored for averaging
-  //avgPercent - % of the stored frames that must contain a contour before considering that contour
+	//xwidth - width of matrix
+	//ywidth - height of matrix
+	//stepSize - how far a bee will move in a single frame
+	//randomFactor - how random the bee movement is [-pi/2, pi/2]
+	//numThreads - how many threads
+	//storedFrames - how many frames are stored for averaging
+	//avgPercent - % of the stored frames that must contain a contour before considering that contour
 	BeeHandle bee_handle = BeeHandle(down_width, down_height, step_size, 0.2, 4, 15, (double) 1/5);
 	//bee_handle.add_bees(num_bees);
-  for (int i = 0; i < num_bees; i++){
-    bee_handle.addP();
-  }
+	for (int i = 0; i < num_bees; i++){
+		bee_handle.addP();
+	}
 
 	//BeeHandle bee_handle = BeeHandle(down_width, down_height);
 	//bee_handle.add_bees(num_bees);
 
 	AudioHandler audio = AudioHandler(down_width, down_height);
-  //audio.play_sound(32);
+	//audio.play_sound(32);
 
 	//seed our random number generator
 	RNG rng(1235);
@@ -209,8 +209,8 @@ int main(int argc, char **argv) {
 	//create the matrices we'll use
 	Mat depthIn = Mat::zeros(Size(640,480), CV_16UC1); //kinect always reads in at this size
 	Mat rgbIn = Mat::zeros(Size(640,480), CV_8UC3);
-  Mat cropDepthIn = Mat::zeros(Size(width, height), CV_16UC1);
-  Mat cropRgbIn = Mat::zeros(Size(width, height), CV_8UC3);
+	Mat cropDepthIn = Mat::zeros(Size(width, height), CV_16UC1);
+	Mat cropRgbIn = Mat::zeros(Size(width, height), CV_8UC3);
 	Mat depth_down = Mat::zeros(Size(down_width,down_height),CV_16UC1);
 	Mat rgb_down = Mat::zeros(Size(down_width,down_height),CV_8UC3);
 	Mat depthf = Mat::zeros(Size(down_width,down_height),CV_8UC3);
@@ -223,11 +223,10 @@ int main(int argc, char **argv) {
 
 	bool expected = false;
 	bool was_expected = false;
-	
 
-  //path variables
-  string rootdir = "./pbfiles/";
-  string hand_labels = "labels_map.pbtxt";
+	//path variables
+	string rootdir = "./pbfiles/";
+	string hand_labels = "labels_map.pbtxt";
 	string hand_graph = "frozen_inference_graph.pb";
 	string gesture_graph = "output_graph.pb";
 	string inputLayer = "image_tensor:0";
@@ -239,16 +238,16 @@ int main(int argc, char **argv) {
 	LOG(INFO) << "handgraphPath:" << graph_path;
 	Status load_graph_status = loadGraph(graph_path, &session);
 	if (!load_graph_status.ok()) {
-	    LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status;
-	    return -1;
+		LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status;
+		return -1;
 	}
 
 	//load hand labels
 	std::map<int, std::string> labels_map = std::map<int,std::string>();
 	Status read_labels_status = readLabelsMapFile(tensorflow::io::JoinPath(rootdir, hand_labels), labels_map);
 	if (!read_labels_status.ok()) {
-	    LOG(ERROR) << "readLabelsMapFile(): ERROR" << read_labels_status;
-	    return -1;
+		LOG(ERROR) << "readLabelsMapFile(): ERROR" << read_labels_status;
+		return -1;
 	}
 
 	//load and initialize the gesture model
@@ -257,8 +256,8 @@ int main(int argc, char **argv) {
 	LOG(INFO) << "handgraphPath:" << graph_path2;
 	Status load_graph_status2 = loadGraph(graph_path2, &session2);
 	if (!load_graph_status2.ok()) {
-	    LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status2;
-	    return -1;
+		LOG(ERROR) << "loadGraph(): ERROR" << load_graph_status2;
+		return -1;
 	}
 
 	Mat resized;
@@ -266,15 +265,14 @@ int main(int argc, char **argv) {
 
 	//tensor shape
 	Tensor tensor;
-    	vector<Tensor> outputs;
+	vector<Tensor> outputs;
 	double thresholdScore = 0.5;
-    	double thresholdIOU = 0.8;
+	double thresholdIOU = 0.8;
 	tensorflow::TensorShape shape = tensorflow::TensorShape();
-    	shape.AddDim(1);
-    	shape.AddDim(down_height);
-    	shape.AddDim(down_width);
-    	shape.AddDim(3);
-
+	shape.AddDim(1);
+	shape.AddDim(down_height);
+	shape.AddDim(down_width);
+	shape.AddDim(3);
 
 	//create all the vectors that we'll need
 	vector<vector<Point>> contours;
@@ -303,39 +301,39 @@ int main(int argc, char **argv) {
 	int num_dropped = 0;
 
 	//initialization for graphics module
-	GraphicsModule gm (num_bees, down_width, down_height,
-		                 scale, bee_size/10.0f, fullscreen,
-		                 "./graphics/abee.png",
-	                   "./graphics/");
+	GraphicsModule gm(num_bees, down_width, down_height,
+		scale, bee_size/10.0f, fullscreen,
+		"./graphics/abee.png",
+		"./graphics/");
 	vector<int> bee_x (num_bees);
 	vector<int> bee_y (num_bees);
 	vector<int> bee_stage (num_bees);
 
-  // 0 - 7 starting north going clockwise
+	// 0 - 7 starting north going clockwise
 	vector<int> bee_dir (num_bees);
-  vector<int> bee_landed;
+	vector<int> bee_landed;
 
-  //windows for displaying intermediates
-  if(steps){
-    cv::namedWindow("rgb", cv::WINDOW_AUTOSIZE);
-    cv::namedWindow("masked", cv::WINDOW_AUTOSIZE);
-    cv::namedWindow("edges", cv::WINDOW_AUTOSIZE);
-  }
-  //cv::waitKey(0);
+	//windows for displaying intermediates
+	if(steps){
+		cv::namedWindow("rgb", cv::WINDOW_AUTOSIZE);
+		cv::namedWindow("masked", cv::WINDOW_AUTOSIZE);
+		cv::namedWindow("edges", cv::WINDOW_AUTOSIZE);
+	}
+	//cv::waitKey(0);
 
 	if(time_it)
 		time_start = chrono::high_resolution_clock::now();
 
 	//main loop
-  do {
+	do {
 
 		//get time for frame limiting
 		limiter_start = chrono::system_clock::now();
 		chrono::duration<double, std::milli> work_time = limiter_start - limiter_end;
 		if(work_time.count() < 33.0){ //30 FPS
 			chrono::duration<double, std::milli> delta_ms(33.0 - work_time.count());
-            		auto delta_ms_duration = chrono::duration_cast<chrono::milliseconds>(delta_ms);
-            		this_thread::sleep_for(chrono::milliseconds(delta_ms_duration.count()));
+			auto delta_ms_duration = chrono::duration_cast<chrono::milliseconds>(delta_ms);
+			this_thread::sleep_for(chrono::milliseconds(delta_ms_duration.count()));
 		}
 
 		//time and wait if we are doing frame limiting
@@ -350,13 +348,13 @@ int main(int argc, char **argv) {
 		device.getVideo(rgbIn);
 		device.getDepth(depthIn);
 
-    //crop frame to fit on vertical screen
-    int h_left = (640 - width)/2;
-    int h_right = 640 - (640 - width)/2;
-    int v_left = (480 - height)/2;
-    int v_right = 480 - (480 - height)/2;
-    cropRgbIn = rgbIn(cv::Rect(cv::Point(h_left, v_left), cv::Point(h_right, v_right))).clone();
-    cropDepthIn = depthIn(cv::Rect(cv::Point(h_left, v_left), cv::Point(h_right, v_right))).clone();
+		//crop frame to fit on vertical screen
+		int h_left = (640 - width)/2;
+		int h_right = 640 - (640 - width)/2;
+		int v_left = (480 - height)/2;
+		int v_right = 480 - (480 - height)/2;
+		cropRgbIn = rgbIn(cv::Rect(cv::Point(h_left, v_left), cv::Point(h_right, v_right))).clone();
+		cropDepthIn = depthIn(cv::Rect(cv::Point(h_left, v_left), cv::Point(h_right, v_right))).clone();
 
 		//gesture detection
 		Rect rec;
@@ -370,19 +368,19 @@ int main(int argc, char **argv) {
 			tensor = Tensor(tensorflow::DT_FLOAT, shape);
 			Status read_tensor_status = readTensorFromMat(rgb_down, tensor);
 			if (!read_tensor_status.ok()) {
-		 	   LOG(ERROR) << "Mat->Tensor conversion failed: " << read_tensor_status;
-	   	         return -1;
+				LOG(ERROR) << "Mat->Tensor conversion failed: " << read_tensor_status;
+				return -1;
 			}
 
-	 	      	// Run the graph on tensor
-	 	       	outputs.clear();
-	 	       	Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
-	 	       	if (!runStatus.ok()) {
-	 	           LOG(ERROR) << "Running model failed: " << runStatus;
-	 	           return -1;
-	   	     	}
+			// Run the graph on tensor
+			outputs.clear();
+			Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
+			if (!runStatus.ok()) {
+				LOG(ERROR) << "Running model failed: " << runStatus;
+				return -1;
+			}
 
-	    	    	// Extract results from the outputs vector
+			// Extract results from the outputs vector
 			tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
 			//tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
 			//tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
@@ -392,7 +390,7 @@ int main(int argc, char **argv) {
 
 			// Draw boxes and captions
 			cvtColor(rgb_down, rgb_down, COLOR_BGR2RGB);
-	 		// LOG(INFO)<<"rgb_down cols:"<<rgb_down.cols<<endl;
+			// LOG(INFO)<<"rgb_down cols:"<<rgb_down.cols<<endl;
 			// LOG(INFO)<<"rgb_down height:"<<rgb_down.size().height<<endl;
 
 			detect(rec, session2, rgb_down, scores, boxes, goodIdxs, &expected);
@@ -404,7 +402,6 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		
 		//resize input image and depth for decreased computation
 		cv::resize(cropRgbIn, rgb_down, Size(down_width, down_height));
 		cv::resize(cropDepthIn, depth_down, Size(down_width, down_height));
@@ -415,8 +412,8 @@ int main(int argc, char **argv) {
 
 		//background subtraction, filter our video mased on our depth thresholding
 		cv::threshold(depthf, mask, 1, 255, THRESH_BINARY);
-    rgb_down.setTo(Scalar(64, 177, 0), 255-mask);
-    cv::cvtColor(rgb_down, outMat, cv::COLOR_BGR2GRAY);
+		rgb_down.setTo(Scalar(64, 177, 0), 255-mask);
+		cv::cvtColor(rgb_down, outMat, cv::COLOR_BGR2GRAY);
 
 		//find edges and contours
 		cv::medianBlur(outMat, outMat, 3);
@@ -424,9 +421,9 @@ int main(int argc, char **argv) {
 			Mat roi = outMat(rec);
 			cv::Canny(roi, cannyResult, c_lower_thres, c_upper_thres, 3);
 		}else{
-    			cv::Canny(outMat, cannyResult, c_lower_thres, c_upper_thres, 3);
+			cv::Canny(outMat, cannyResult, c_lower_thres, c_upper_thres, 3);
 		}
-    		cv::findContours(cannyResult, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_L1, cv::Point(0,0));
+		cv::findContours(cannyResult, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_L1, cv::Point(0,0));
 		flat_contours = drop_contours_1d(contours, contour_drop);
 		int old_size = flat_contours.size();
 
@@ -473,29 +470,28 @@ int main(int argc, char **argv) {
 			bee_start = chrono::high_resolution_clock::now();
 		}
 
-    //if(1000 > contour_count){
-      //printf("%d\n", contour_count);
-    //  contour_count++;
-    //  bee_handle.addAttractorsAvg(flat_contours);
-    //} else if (contour_count == 1000){
-    //  printf("%d\n", contour_count);
-    //  contour_count++;
-    //  set_contour = flat_contours;
-    //  bee_handle.addAttractorsAvg(set_contour);
-    //} else if (contour_count > 2000){
-    //  bee_handle.addAttractorsAvg(flat_contours);
-    //} else {
-    //  //printf("%d\n", contour_count);
-    //  contour_count++;
-    //  bee_handle.addAttractorsAvg(set_contour);
-    //}
+		//if(1000 > contour_count){
+			//printf("%d\n", contour_count);
+			//contour_count++;
+			//bee_handle.addAttractorsAvg(flat_contours);
+		//} else if (contour_count == 1000){
+			//printf("%d\n", contour_count);
+			//contour_count++;
+			//set_contour = flat_contours;
+			//bee_handle.addAttractorsAvg(set_contour);
+		//} else if (contour_count > 2000){
+			//bee_handle.addAttractorsAvg(flat_contours);
+		//} else {
+			//printf("%d\n", contour_count);
+			//contour_count++;
+			//bee_handle.addAttractorsAvg(set_contour);
+		//}
 
 		//flatten contours and add as "flowers" to bee_handle
 		//bee_handle.add_flowers(flat_contours);
 
 		if(was_expected){
 			count_frames--;
-			
 		}
 		if(count_frames==0 && was_expected ==true){
 			was_expected = false;
@@ -522,47 +518,46 @@ int main(int argc, char **argv) {
 		bee_positions.clear();
 
 		//bee_positions = bee_handle.get_bees();
-    bee_positions = bee_handle.getPoints();
-    //bee_positions = flat_contours;
-    //std::vector<Point> combined(flat_contours);
-    //std::vector<Point> bh_points = bee_handle.getPoints();
-    //combined.insert(combined.end(), bh_points.begin(), bh_points.end());
-    //bee_positions = combined;
-    bee_dir = bee_handle.get_dirs();
-    bee_landed = bee_handle.get_landed();
-    for(int i = 0; i < num_bees/sound_divisor; i++){
-      if(bee_landed[i] == 1){
+		bee_positions = bee_handle.getPoints();
+		//bee_positions = flat_contours;
+		//std::vector<Point> combined(flat_contours);
+		//std::vector<Point> bh_points = bee_handle.getPoints();
+		//combined.insert(combined.end(), bh_points.begin(), bh_points.end());
+		//bee_positions = combined;
+		bee_dir = bee_handle.get_dirs();
+		bee_landed = bee_handle.get_landed();
+		for(int i = 0; i < num_bees/sound_divisor; i++){
+			if(bee_landed[i] == 1){
 
-	//sounds same as below
-        if(bee_positions[i].x < down_width/2 && bee_positions[i].y < down_height/2){
-          randgen = rand() % 8;
-          audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
-          //audio.play_sound(randgen);
-        }
+				//sounds same as below
+				if(bee_positions[i].x < down_width/2 && bee_positions[i].y < down_height/2){
+					randgen = rand() % 8;
+					audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
+					//audio.play_sound(randgen);
+				}
 
-	//sounds like two sounds - bwooiii and dn
-        if(bee_positions[i].x < down_width/2 && bee_positions[i].y >= down_height/2){
-          randgen = rand() % 8 + 8;
-          audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
-        //  audio.play_sound(randgen);
-        }
+				//sounds like two sounds - bwooiii and dn
+				if(bee_positions[i].x < down_width/2 && bee_positions[i].y >= down_height/2){
+					randgen = rand() % 8 + 8;
+					audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
+					//audio.play_sound(randgen);
+				}
 
-	//buzzing
-        if(bee_positions[i].x >= down_width/2 && bee_positions[i].y < down_height/2){
-          randgen = rand() % 8 + 16;
-          audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
-        //  audio.play_sound(randgen);
-        }
+				//buzzing
+				if(bee_positions[i].x >= down_width/2 && bee_positions[i].y < down_height/2){
+					randgen = rand() % 8 + 16;
+					audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
+					//audio.play_sound(randgen);
+				}
 
-	//chimes
-        if(bee_positions[i].x >= down_width/2 && bee_positions[i].y >= down_height/2){
-          randgen = rand()%(31-25 + 1) + 25;
-          audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
-          audio.play_sound(randgen);
-        }
-      }
-
-    }
+				//chimes
+				if(bee_positions[i].x >= down_width/2 && bee_positions[i].y >= down_height/2){
+					randgen = rand()%(31-25 + 1) + 25;
+					audio.set_point(randgen,bee_positions[i].x,bee_positions[i].y);
+					audio.play_sound(randgen);
+				}
+			}
+		}
 
 		//update our graphics module
 		for(int i = 0; i < num_bees; i++){
@@ -578,12 +573,12 @@ int main(int argc, char **argv) {
 		if(display_qr){
 			qr_current = chrono::system_clock::now();
 			chrono::duration<double, std::milli> qr_time = qr_current - qr_start;
-	    		gm.update_qr(true, "./graphics/video.png", (int)down_width/10, (int)down_height/10, 5.0f);
-        	if(qr_time.count() >= 20000.0){ //delete qr code
-            gm.update_qr(false, "", 320, 240, 2.0f);
-         		display_qr = false;
-  				  system("sudo rm ./graphics/video.png");
-  			  }
+			gm.update_qr(true, "./graphics/video.png", (int)down_width/10, (int)down_height/10, 5.0f);
+			if(qr_time.count() >= 20000.0){ //delete qr code
+				gm.update_qr(false, "", 320, 240, 2.0f);
+				display_qr = false;
+				system("sudo rm ./graphics/video.png");
+			}
 		}else{
 			qr_start = chrono::system_clock::now();
 		}
@@ -598,8 +593,6 @@ int main(int argc, char **argv) {
 		iterations++;
 		//LOG(INFO)<<"frames: "<<iterations<<endl;
 	}while(!gm.should_close());
-
-
 
 	//output the results of our timing
 	if(time_it){
