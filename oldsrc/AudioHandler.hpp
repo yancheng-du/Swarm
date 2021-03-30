@@ -51,12 +51,12 @@ class AudioHandler{
 
 private:
 	ALboolean enumeration;
-	const ALCchar *devices;
+	//const ALCchar *devices;
 	const ALCchar *defaultDeviceName;
-	int ret;
+	//int ret;
 //	int sound_bees;
 	int buffnum;
-	char *bufferData;
+	//char *bufferData;
 	ALCdevice *device;
 	ALvoid *data;
 	ALCcontext *context;
