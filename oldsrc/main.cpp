@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
 	chrono::system_clock::time_point qr_start;
 	chrono::system_clock::time_point qr_current;
 
-	int contour_count = 0;
+	//int contour_count = 0;
 	vector<Point> set_contour;
 
 	//argument parsing
@@ -223,7 +223,8 @@ int main(int argc, char **argv) {
 	Mat outMat = Mat::zeros(Size(width, height),CV_8UC1);
 	Mat finalFrame = Mat::zeros(Size(down_width, down_height), CV_8UC1);
 
-	bool expected = false;
+// 	LONG LIVE TENSORFLOW
+// 	bool expected = false;
 	bool was_expected = false;
 
 // 	LONG LIVE TENSORFLOW
@@ -342,7 +343,7 @@ int main(int argc, char **argv) {
 
 		//time and wait if we are doing frame limiting
 		limiter_end = chrono::system_clock::now();
-		std::chrono::duration<double, std::milli> sleep_time = limiter_end - limiter_start;
+		//std::chrono::duration<double, std::milli> sleep_time = limiter_end - limiter_start;
 
 		//reset our matrices
 		outMat = Scalar(0);
