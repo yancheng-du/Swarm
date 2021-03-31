@@ -31,11 +31,11 @@ SIMULATION_BOUNDS= (720, 1280)
 
 BEE_SIZE= 2.0
 BEE_COLOR= YELLOW_COLOR
-BEE_TURN= 2*math.pi
-BEE_STOP_TIME= (0.1, 0.4)
-BEE_MOVE_TIME= (0.2, 0.8)
-BEE_SPEED= 120.0
-BEE_INITIAL_COUNT= 1000
+BEE_CHANGE_TIME= (0.2, 0.8)
+BEE_TURN_RATE= (-math.pi, math.pi)
+BEE_SPEED= 150.0
+BEE_INITIAL_COUNT= 2400
+BEE_COUNT_RATE= 300
 
 ######## vector2d ########
 
@@ -124,20 +124,6 @@ class c_vector2d(object):
 		sine= math.sin(angle)
 		return c_vector2d((self.x*cosine-self.y*sine, self.y*cosine+self.x*sine))
 
-######## display helpers ########
-
-def display_point(position):
-	return (int(position[0]+0.5), int(SIMULATION_BOUNDS[1]-position[1]+0.5))
-
-def display_points(positions):
-	result= []
-	for position in positions:
-		result.append(display_point(position))
-	return result
-
-def display_size(size):
-	return int(size+0.5)
-
 ######## entity ########
 
 class c_entity(object):
@@ -167,7 +153,7 @@ class c_entity(object):
 			self.angular_position-= 2*math.pi
 	
 	def draw(self, surface):
-		pygame.draw.circle(surface, self.color, display_point(self.linear_position), display_size(self.size))
+		pygame.draw.circle(surface, self.color, self.linear_position, self.size)
 
 ######## bee ########
 
@@ -179,23 +165,17 @@ class c_bee(c_entity):
 		else:
 			linear_position= (-BEE_SIZE, position-SIMULATION_BOUNDS[0]-2*BEE_SIZE-BEE_SIZE)
 		c_entity.__init__(self, BEE_SIZE, BEE_COLOR, linear_position, c_vector2d(), random.uniform(0.0, 2*math.pi), 0)
-		self.moving= False
 		self.timer= 0.0
 	
 	def update(self):
-		self.timer-= DT
-		if self.timer<0:
-			self.moving= not self.moving
-			self.timer= random.uniform(*BEE_MOVE_TIME) if self.moving else random.uniform(*BEE_STOP_TIME)
-			if self.moving:
-				self.angular_velocity= random.uniform(-BEE_TURN, BEE_TURN)
-			else:
-				self.linear_velocity= c_vector2d()
-				self.angular_velocity= random.uniform(-BEE_TURN, BEE_TURN)
-		if self.moving:
-			self.linear_velocity= c_vector2d(facing= self.angular_position, magnitude= BEE_SPEED)
+		if self.timer<=0.0:
+			self.timer= random.uniform(*BEE_CHANGE_TIME)
+			self.angular_velocity= random.uniform(*BEE_TURN_RATE)
+		else:
+			self.timer-= DT
+		self.linear_velocity= c_vector2d(facing= self.angular_position, magnitude= BEE_SPEED)
 		c_entity.update(self)
-	
+
 ######## swarm ########
 
 class c_swarm(object):
@@ -222,10 +202,11 @@ class c_swarm(object):
 	
 	def update(self):
 		if self.mode==BEE_MODE:
-			if len(self.bees)<self.desired_bee_count:
-				self.bees.append(c_bee())
-			elif len(self.bees)>self.desired_bee_count:
-				self.bees.pop()
+			for i in range(BEE_COUNT_RATE//FRAMES_PER_SECOND):
+				if len(self.bees)<self.desired_bee_count:
+					self.bees.append(c_bee())
+				elif len(self.bees)>self.desired_bee_count:
+					self.bees.pop()
 			for bee in self.bees:
 				bee.update()
 	
