@@ -283,5 +283,4 @@ class c_swarm(object):
 
 if __name__ == '__main__':
 	game = c_swarm()
-	game.mai
-n()
+	game.main()
