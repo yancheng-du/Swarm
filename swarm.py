@@ -304,7 +304,7 @@ class c_swarm(object):
 		blur = cv2.GaussianBlur(frame, (3, 3), 0)
 		edges = cv2.Canny(blur, 150, 150)
 		x_idx,y_idx = np.nonzero(edges)
-		print(x_idx.shape)
+		#print(x_idx.shape)
 		for i in range(len(x_idx)):
 			self.addNectar(y_idx[i], x_idx[i], i)
 
