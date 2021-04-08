@@ -9,6 +9,7 @@ from pygame.locals import *
 import numpy as np
 
 import cv2
+import sys
 
 ######## constants ########
 
@@ -24,7 +25,7 @@ WHITE_COLOR= (255, 255, 255)
 MILLISECONDS_PER_SECOND= 1000
 
 TIMER_EVENT= USEREVENT
-FRAMES_PER_SECOND= 60
+FRAMES_PER_SECOND= 30
 DT= 1.0/FRAMES_PER_SECOND
 
 QUIT_MODE= 0
@@ -49,7 +50,7 @@ CAMERA = 1
 NECTAR_BOX_SIZE= 15
 NECTAR_BOX_STRIDE= 3
 NECTAR_EDGE_SIZE= 3
-
+#define the attraction matrix
 ATTRACTION_MATRIX = np.zeros((2*NECTAR_BOX_SIZE+1, 2*NECTAR_BOX_SIZE+1,2))
 for y in range(ATTRACTION_MATRIX.shape[0]):
 	for x in range(ATTRACTION_MATRIX.shape[1]):
@@ -194,24 +195,24 @@ class c_bee(c_entity):
 		self.nectar= False
 	
 	def update(self, vectar_map):
-		speed = self.near_nect(vectar_map)
+		speed = self.readField(vectar_map)
 		# 0,0 means no nectar near by
 		if speed[0]==0 and speed[1]==0:
 			if self.timer<=0.0:
-				self.timer = random.uniform(*BEE_CHANGE_TIME)
+				self.timer= random.uniform(*BEE_CHANGE_TIME)
 				self.angular_velocity = random.uniform(*BEE_TURN_RATE)
 			else:
-				self.timer -= DT
+				self.timer-= DT
 			self.linear_velocity = c_vector2d(facing=self.angular_position, magnitude=BEE_SPEED)
 		#inf,inf means its on the nectar
 		elif speed[0]==np.inf and speed[1]==np.inf:
-			self.linear_velocity = c_vector2d()
+			self.linear_velocity= c_vector2d()
 		else:
 			theta = np.arctan2(speed[1],speed[0])
-			self.linear_velocity = c_vector2d(facing=theta, magnitude=BEE_SPEED)
+			self.linear_velocity= c_vector2d(facing=theta, magnitude=BEE_SPEED)
 		c_entity.update(self)
 
-	def near_nect(self, vector_map):
+	def readField(self, vector_map):
 		map_x= int(self.linear_position[0])
 		map_y= int(self.linear_position[1])
 		if map_x<0:
@@ -222,7 +223,7 @@ class c_bee(c_entity):
 			map_y= 0
 		if map_y>=SIMULATION_BOUNDS[1]:
 			map_y= SIMULATION_BOUNDS[1]-1
-		return vector_map[map_x, map_y]
+		return vector_map[map_x,map_y]
 
 
 ####### nectar ########
@@ -243,43 +244,35 @@ class c_swarm(object):
 		self.mode= BEE_MODE
 		self.desired_bee_count= BEE_INITIAL_COUNT
 		self.bees= []
-		self.vect_map = np.zeros([SIMULATION_BOUNDS[0], SIMULATION_BOUNDS[1],2])
 
-		self.see_nectar = see_nectar
-		self.cap = cv2.VideoCapture(CAMERA)
+		self.vect_map= np.zeros([SIMULATION_BOUNDS[0], SIMULATION_BOUNDS[1],2])
+		self.see_nectar= see_nectar
+		self.cap= cv2.VideoCapture(CAMERA)
 		self.cap.set(3, SIMULATION_BOUNDS[0])
 		self.cap.set(4, SIMULATION_BOUNDS[1])
 		self.nectar= []
 
-
+	#add nectar with a field described by ATTRACTION_MATRIX
 	def addNectar(self, x, y, stride):
+		#only add within certain range to avoid index out of bounds
 		if (NECTAR_BOX_SIZE<x<SIMULATION_BOUNDS[0]-NECTAR_BOX_SIZE and NECTAR_BOX_SIZE<y<SIMULATION_BOUNDS[1]-NECTAR_BOX_SIZE):
 			if(self.see_nectar):
-				nect = c_nectar(2, WHITE_COLOR, [x, y])
+				nect= c_nectar(2, WHITE_COLOR, [x, y])
 				self.nectar.append(nect)
-			if(self.vect_map[x,y,0] == np.inf and self.vect_map[x,y,1] == np.inf):
-					return
+			#use a stride to avoid adding vector field for every single nectar
 			if stride%NECTAR_BOX_STRIDE==0:
-				#box_x_min = np.abs(min(x-NECTAR_BOX_SIZE, 0))
-				#box_x_max = 2*NECTAR_BOX_SIZE+1-max(0, NECTAR_BOX_SIZE-(SIMULATION_BOUNDS[0]-x))
-				#box_y_min = np.abs(min(y-NECTAR_BOX_SIZE, 0))
-				#box_y_max = 2*NECTAR_BOX_SIZE+1-max(0, NECTAR_BOX_SIZE-(SIMULATION_BOUNDS[1]-y))
-				# print(box_x_min,box_x_max)
-				# print(box_y_min, box_y_max)
-				# print()
-				# print(point_x,point_y)
 				self.vect_map[max(x-NECTAR_BOX_SIZE, 0): min(SIMULATION_BOUNDS[0]+1, x+NECTAR_BOX_SIZE+1),
-				max(y-NECTAR_BOX_SIZE, 0): min(SIMULATION_BOUNDS[1]+1,y+NECTAR_BOX_SIZE+1)] += ATTRACTION_MATRIX[
+				max(y-NECTAR_BOX_SIZE, 0): min(SIMULATION_BOUNDS[1]+1,y+NECTAR_BOX_SIZE+1)]+= ATTRACTION_MATRIX[
 																								0:2*NECTAR_BOX_SIZE+1,
-																								0:2*NECTAR_BOX_SIZE+1]
+																							    0:2*NECTAR_BOX_SIZE+1]
+
+	#add nectar without field, faster performance
 	def addNectarNoField(self, x ,y):
 		if (0<=x<SIMULATION_BOUNDS[0] and 0<=y<SIMULATION_BOUNDS[1]):
-			if (self.vect_map[x, y, 0]==np.inf and self.vect_map[x, y, 1]==np.inf):
-				return
 			if(self.see_nectar):
-				nect = c_nectar(2, WHITE_COLOR, [x, y])
+				nect= c_nectar(2, WHITE_COLOR, [x, y])
 				self.nectar.append(nect)
-			self.vect_map[max(x-2, 0): min(SIMULATION_BOUNDS[0]+1, x+2+1),max(y-2,0): min(SIMULATION_BOUNDS[1]+1, y+2+1)] = (np.inf, np.inf)
+			self.vect_map[max(x-NECTAR_EDGE_SIZE, 0): min(SIMULATION_BOUNDS[0]+1, x+NECTAR_EDGE_SIZE+1),max(y-NECTAR_EDGE_SIZE,0): min(SIMULATION_BOUNDS[1]+1, y+NECTAR_EDGE_SIZE+1)] = (np.inf, np.inf)
 			#self.vect_map[x,y] = (np.inf, np.inf)
 
 	# draw a circle around mouse input
@@ -302,12 +295,11 @@ class c_swarm(object):
 		self.nectar = []
 		ret, frame = self.cap.read()
 		blur = cv2.GaussianBlur(frame, (3, 3), 0)
-		edges = cv2.Canny(blur, 150, 150)
+		edges = cv2.Canny(blur, 100, 200)
 		x_idx,y_idx = np.nonzero(edges)
 		#print(x_idx.shape)
 		for i in range(len(x_idx)):
-			self.addNectar(y_idx[i], x_idx[i], i)
-
+			self.addNectar(y_idx[i], x_idx[i],i)
 
 
 	def main(self):
@@ -323,6 +315,8 @@ class c_swarm(object):
 			elif event.type==QUIT:
 				self.mode = QUIT_MODE
 		pygame.quit()
+		pygame.display.quit()
+		sys.exit()
 	
 	def update(self):
 		if self.mode==BEE_MODE:
@@ -333,6 +327,7 @@ class c_swarm(object):
 					self.bees.pop()
 			for bee in self.bees:
 				bee.update(self.vect_map)
+
 	def draw(self):
 		self.display.fill(BLACK_COLOR)
 		if self.mode==BEE_MODE:
@@ -341,6 +336,7 @@ class c_swarm(object):
 			if self.see_nectar:
 				for nect in self.nectar:
 					nect.draw(self.display)
+
 ######## glue code ########
 
 if __name__=='__main__':
