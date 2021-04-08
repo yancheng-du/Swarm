@@ -31,14 +31,14 @@ DT= 1.0/FRAMES_PER_SECOND
 QUIT_MODE= 0
 BEE_MODE= 1
 
-SIMULATION_BOUNDS= (640, 480)
+SIMULATION_BOUNDS= (1920, 1080)
 
 BEE_SIZE= 2.0
 BEE_COLOR= YELLOW_COLOR
 BEE_CHANGE_TIME= (0.2, 0.8)
 BEE_TURN_RATE= (-math.pi, math.pi)
 BEE_SPEED= 150.0
-BEE_INITIAL_COUNT= 1200
+BEE_INITIAL_COUNT= 4000
 BEE_COUNT_RATE= 300
 
 #Constants only for circle
@@ -193,9 +193,10 @@ class c_bee(c_entity):
 		self.nectar= False
 	
 	def update(self, vectar_map):
-		speed= self.readField(vectar_map)
+		pos= self.readField(vectar_map)
 		# 0,0 means no nectar near by
-		if speed[0]==0 and speed[1]==0:
+		#if speed[0]==0 and speed[1]==0:
+		if vectar_map[pos[0],pos[1]]== 0:
 			if self.timer<=0.0:
 				self.timer= random.uniform(*BEE_CHANGE_TIME)
 				self.angular_velocity= random.uniform(*BEE_TURN_RATE)
@@ -203,13 +204,15 @@ class c_bee(c_entity):
 				self.timer-= DT
 			self.linear_velocity= c_vector2d(facing=self.angular_position, magnitude=BEE_SPEED)
 		#inf,inf means its on the nectar
-		elif speed[0]==np.inf and speed[1]==np.inf:
+		else: #speed[0]==np.inf and speed[1]==np.inf:
 			self.linear_velocity= c_vector2d()
-		else:
-			theta= np.arctan2(speed[1],speed[0])
-			self.linear_velocity= c_vector2d(facing=theta, magnitude=BEE_SPEED)
+			vectar_map[pos[0],pos[1]]=0
+
+		#else:
+		#	theta= np.arctan2(speed[1],speed[0])
+		#	self.linear_velocity= c_vector2d(facing=theta, magnitude=BEE_SPEED)
 		c_entity.update(self)
-	
+
 	def readField(self, vector_map):
 		map_x= int(self.linear_position[0])
 		map_y= int(self.linear_position[1])
@@ -221,13 +224,15 @@ class c_bee(c_entity):
 			map_y= 0
 		if map_y>=SIMULATION_BOUNDS[1]:
 			map_y= SIMULATION_BOUNDS[1]-1
-		return vector_map[map_x, map_y]
+		return [map_x, map_y]
+
 
 ####### nectar ########
 
 class c_nectar(c_entity):
 	def __init__(self, size, color, position):
 		c_entity.__init__(self, size, color, position, c_vector2d(), random.uniform(0.0, 2*math.pi), 0)
+
 
 ######## swarm ########
 
@@ -240,6 +245,7 @@ class c_swarm(object):
 		self.mode= BEE_MODE
 		self.desired_bee_count= BEE_INITIAL_COUNT
 		self.bees= []
+
 		self.vect_map= np.zeros([SIMULATION_BOUNDS[0], SIMULATION_BOUNDS[1],2])
 		self.see_nectar= see_nectar
 		self.cap= None
@@ -254,7 +260,7 @@ class c_swarm(object):
 		if self.cap==None:
 			print("No camera found")
 		self.nectar= []
-	
+
 	#add nectar with a field described by ATTRACTION_MATRIX
 	def addNectar(self, x, y, stride):
 		#only add within certain range to avoid index out of bounds
@@ -268,7 +274,7 @@ class c_swarm(object):
 					max(x-NECTAR_BOX_SIZE, 0) : min(SIMULATION_BOUNDS[0]+1, x+NECTAR_BOX_SIZE+1), \
 					max(y-NECTAR_BOX_SIZE, 0) : min(SIMULATION_BOUNDS[1]+1, y+NECTAR_BOX_SIZE+1) \
 					]+= ATTRACTION_MATRIX[0:2*NECTAR_BOX_SIZE+1, 0:2*NECTAR_BOX_SIZE+1]
-	
+
 	#add nectar without field, faster performance
 	def addNectarNoField(self, x ,y):
 		if 0<=x<SIMULATION_BOUNDS[0] and 0<=y<SIMULATION_BOUNDS[1]:
@@ -280,23 +286,26 @@ class c_swarm(object):
 				max(y-NECTAR_EDGE_SIZE,0): min(SIMULATION_BOUNDS[1]+1, y+NECTAR_EDGE_SIZE+1) \
 				]= (np.inf, np.inf)
 			#self.vect_map[x,y]= (np.inf, np.inf)
-	
+
 	# use video camera and edge detection to place nectars
 	def captureNectar(self):
-		self.vect_map= np.zeros([SIMULATION_BOUNDS[0], SIMULATION_BOUNDS[1], 2])
+		self.vect_map= np.zeros([SIMULATION_BOUNDS[0], SIMULATION_BOUNDS[1]])
 		self.nectar= []
 		if self.cap!=None:
-			ret, frame= self.cap.read()			
+			ret, frame= self.cap.read()
 			if ret:
 				frame= cv2.flip(frame, 1)
 				blur= cv2.GaussianBlur(frame, (3, 3), 0)
 				edges= cv2.Canny(blur, 100, 200)
-				x_idx,y_idx= np.nonzero(edges)
+				edges_thick = cv2.blur(edges, (5,5))
+				#x_idx,y_idx= np.nonzero(edges)
 				#print(x_idx.shape)
-				for i in range(len(x_idx)):
+				#for i in range(len(x_idx)):
 					#self.addNectar(y_idx[i], x_idx[i], i)
-					self.addNectarNoField(y_idx[i], x_idx[i])
-	
+					#self.addNectarNoField(y_idx[i], x_idx[i])
+				#set the vector map directly to the output of canny to increase performance
+				self.vect_map= edges_thick.T
+
 	def main(self):
 		while self.mode!=QUIT_MODE:
 			tick= False
@@ -324,7 +333,7 @@ class c_swarm(object):
 					self.bees.pop()
 			for bee in self.bees:
 				bee.update(self.vect_map)
-	
+
 	def draw(self):
 		self.display.fill(BLACK_COLOR)
 		if self.mode==BEE_MODE:
