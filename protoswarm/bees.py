@@ -20,14 +20,13 @@ BEE_COUNT_RATE= 300
 
 class c_bee(c_entity):
 	def __init__(self):
-		position= random.uniform(0.0, SIMULATION_BOUNDS[0]+SIMULATION_BOUNDS[1]+4*BEE_SIZE)
-		if position<SIMULATION_BOUNDS[0]+2*BEE_SIZE:
-			linear_position= (position-BEE_SIZE, -BEE_SIZE)
+		edge_position= random.uniform(0.0, SIMULATION_BOUNDS[0]+SIMULATION_BOUNDS[1]+4*BEE_SIZE)
+		if edge_position<SIMULATION_BOUNDS[0]+2*BEE_SIZE:
+			linear_position= (edge_position-BEE_SIZE, -BEE_SIZE)
 		else:
-			linear_position= (-BEE_SIZE, position-SIMULATION_BOUNDS[0]-2*BEE_SIZE-BEE_SIZE)
+			linear_position= (-BEE_SIZE, edge_position-SIMULATION_BOUNDS[0]-2*BEE_SIZE-BEE_SIZE)
 		c_entity.__init__(self, BEE_SIZE, BEE_COLOR, linear_position, c_vector2d(), random.uniform(0.0, 2*math.pi), 0)
 		self.timer= 0.0
-		self.nectar= False
 
 	def update(self, frame):
 		(x, y)= np.clip((int(self.linear_position.x), int(self.linear_position.y)), 0, (SIMULATION_BOUNDS[0]-1, SIMULATION_BOUNDS[1]-1))
@@ -46,7 +45,6 @@ class c_bees(object):
 	def __init__(self, see_nectar= False):
 		self.desired_bee_count= BEE_INITIAL_COUNT
 		self.bees= []
-		self.vect_map= np.zeros([SIMULATION_BOUNDS[0], SIMULATION_BOUNDS[1],2])
 		self.see_nectar= see_nectar
 
 	def update(self, frame):
