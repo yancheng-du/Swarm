@@ -16,6 +16,9 @@ DISPLAY_TITLE= 'Protoswarm'
 FONT_NAME= 'Comic Sans MS'
 FONT_SIZE= 30
 
+FPS_COLOR= (220, 0, 0)
+FPS_POSITION= (0, 0)
+
 TIMER_EVENT= USEREVENT
 MILLISECONDS_PER_SECOND= 1000
 
@@ -56,7 +59,7 @@ if __name__=='__main__':
 		if tick:
 			clock.tick()
 			if show_fps:
-				display.blit(font.render(str(int(clock.get_fps())), False, (220, 0, 0)), (0,0))
+				display.blit(font.render(str(int(clock.get_fps())), False, FPS_COLOR), FPS_POSITION)
 			pygame.display.flip()
 			swarm.update(camera.process_frame(camera.read_frame()))
 			swarm.draw(display)
