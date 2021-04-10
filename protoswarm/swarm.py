@@ -17,13 +17,11 @@ MILLISECONDS_PER_SECOND= 1000
 QUIT_MODE= 0
 BEE_MODE= 1
 
-clock = pygame.time.Clock()
-
 ######## code ########
 
 def initialize_pygame():
 	pygame.init()
-	display= pygame.display.set_mode(SIMULATION_BOUNDS, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+	display= pygame.display.set_mode(SIMULATION_BOUNDS, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.HWACCEL)
 	pygame.display.set_caption('Protoswarm')
 	pygame.time.set_timer(TIMER_EVENT, MILLISECONDS_PER_SECOND//FRAMES_PER_SECOND)
 	return display
@@ -31,6 +29,7 @@ def initialize_pygame():
 if __name__=='__main__':
 	display= initialize_pygame()
 	camera= c_camera()
+	clock = pygame.time.Clock()
 	mode= BEE_MODE
 	swarm= c_bees(see_nectar=False)
 	while mode!=QUIT_MODE:
@@ -47,7 +46,9 @@ if __name__=='__main__':
 				mode= QUIT_MODE
 		if tick:
 			clock.tick(FRAMES_PER_SECOND)
-			print(clock.get_fps())
+			fps_counter = pygame.font.SysFont('Comic Sans MS', 30)
+			fps_surface = fps_counter.render(str(int(clock.get_fps())), False, (220, 0, 0))
+			display.blit(fps_surface, (0,0))
 			pygame.display.flip()
 			swarm.update(camera.process_frame(camera.read_frame()))
 			swarm.draw(display)
