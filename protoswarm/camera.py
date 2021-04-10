@@ -19,6 +19,7 @@ class c_camera(object):
 					capture.set(4, SIMULATION_BOUNDS[1])
 					self.capture= capture
 					return
+		self.capture= None
 		print("No camera")
 
 	def read_frame(self):
@@ -26,7 +27,7 @@ class c_camera(object):
 			good, frame= self.capture.read()
 			if good:
 				return frame
-		print("Bad frame")
+			print("Bad frame")
 		return None
 
 	def process_frame(self, frame):
