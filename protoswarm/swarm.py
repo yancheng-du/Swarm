@@ -8,6 +8,7 @@ from pygame.locals import *
 from camera import c_camera
 from constants import *
 from bees import c_bees
+from life import c_life
 
 ######## constants ########
 
@@ -21,9 +22,7 @@ FPS_POSITION= (0, 0)
 
 TIMER_EVENT= USEREVENT
 MILLISECONDS_PER_SECOND= 1000
-
-QUIT_MODE= 0
-BEE_MODE= 1
+QUIT_MODE= -1
 
 ######## code ########
 
@@ -40,8 +39,8 @@ if __name__=='__main__':
 	clock= pygame.time.Clock()
 	show_fps= False
 	font= pygame.font.SysFont(FONT_NAME, FONT_SIZE)
-	mode= BEE_MODE
-	swarm= c_bees(see_nectar=False)
+	mode= 0
+	swarm= [c_bees(), c_life()]
 	while mode!=QUIT_MODE:
 		tick= False
 		events= [pygame.event.wait()]
@@ -54,6 +53,8 @@ if __name__=='__main__':
 					mode= QUIT_MODE
 				elif event.key==K_LCTRL or event.key==K_RCTRL:
 					show_fps= not show_fps
+				elif event.key==K_LALT or event.key==K_RALT:
+					mode= (mode+1)%len(swarm)
 			elif event.type==QUIT:
 				mode= QUIT_MODE
 		if tick:
@@ -61,5 +62,5 @@ if __name__=='__main__':
 			if show_fps:
 				display.blit(font.render(str(int(clock.get_fps())), False, FPS_COLOR), FPS_POSITION)
 			pygame.display.flip()
-			swarm.update(camera.process_frame(camera.read_frame()))
-			swarm.draw(display)
+			swarm[mode].update(camera.process_frame(camera.read_frame()))
+			swarm[mode].draw(display)
