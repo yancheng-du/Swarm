@@ -30,7 +30,7 @@ class c_bee(c_entity):
 	def update(self, frame):
 		x= int(self.linear_position.x)
 		y= int(self.linear_position.y)
-		if x<0 or y<0 or x>=SIMULATION_BOUNDS[0] or y>=SIMULATION_BOUNDS[1] or frame[x, y]==0:
+		if x<0 or y<0 or x>=SIMULATION_BOUNDS[0] or y>=SIMULATION_BOUNDS[1] or frame[y, x]==0:
 			if self.timer<=0.0:
 				self.timer= random.uniform(*BEE_CHANGE_TIME)
 				self.angular_velocity= random.uniform(*BEE_TURN_RATE)
