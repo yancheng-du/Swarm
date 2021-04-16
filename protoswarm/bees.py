@@ -13,7 +13,7 @@ BEE_COLOR= BLACK_COLOR
 BEE_CHANGE_TIME= (0.2, 0.8)
 BEE_TURN_RATE= (-math.pi, math.pi)
 BEE_SPEED= 150.0
-BEE_DISTANCE= 3
+BEE_DISTANCE= 6
 
 BEE_BACKGROUND_COLOR= WHITE_COLOR
 
@@ -36,7 +36,7 @@ class c_bee(c_entity):
 	def update(self, frame, bee_map):
 		x= int(self.linear_position.x)
 		y= int(self.linear_position.y)
-		if x<0 or y<0 or x>=SIMULATION_BOUNDS[0] or y>=SIMULATION_BOUNDS[1] or frame[y, x]==0 or bee_map[y, x]==1:
+		if x<0 or y<0 or x>=SIMULATION_BOUNDS[0] or y>=SIMULATION_BOUNDS[1] or frame[y, x]==0 or bee_map[y//BEE_DISTANCE, x//BEE_DISTANCE]==1:
 			if self.timer<=0.0:
 				self.timer= random.uniform(*BEE_CHANGE_TIME)
 				self.angular_velocity= random.uniform(*BEE_TURN_RATE)
@@ -45,14 +45,14 @@ class c_bee(c_entity):
 			self.linear_velocity= c_vector2d(facing=self.angular_position, magnitude=BEE_SPEED)
 		else:
 			self.linear_velocity= c_vector2d()
-			bee_map[max(y-BEE_DISTANCE,0):min(y+BEE_DISTANCE,SIMULATION_BOUNDS[1]), max(x-BEE_DISTANCE,0):min(x+BEE_DISTANCE,SIMULATION_BOUNDS[0])]= 1
+			bee_map[y//BEE_DISTANCE, x//BEE_DISTANCE]= 1
 		c_entity.update(self)
 
 class c_bees(object):
 	def __init__(self, see_nectar= False):
 		self.desired_bee_count= BEE_INITIAL_COUNT
 		self.bees= []
-		self.bee_map= np.zeros((SIMULATION_BOUNDS[1], SIMULATION_BOUNDS[0]))
+		self.bee_map= np.zeros((SIMULATION_BOUNDS[1]//BEE_DISTANCE+1, SIMULATION_BOUNDS[0]//BEE_DISTANCE+1))
 
 	def update(self, frame):
 		bee_count_delta= self.desired_bee_count - len(self.bees)
@@ -65,7 +65,7 @@ class c_bees(object):
 					self.bees.pop()
 		for bee in self.bees:
 			bee.update(frame,self.bee_map)
-		self.bee_map= np.zeros((SIMULATION_BOUNDS[1], SIMULATION_BOUNDS[0]))
+		self.bee_map= np.zeros((SIMULATION_BOUNDS[1]//BEE_DISTANCE+1, SIMULATION_BOUNDS[0]//BEE_DISTANCE+1))
 
 	def draw(self, display):
 		display.fill(BEE_BACKGROUND_COLOR)
