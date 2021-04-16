@@ -41,6 +41,7 @@ if __name__=='__main__':
 	font= pygame.font.SysFont(FONT_NAME, FONT_SIZE)
 	mode= 0
 	swarm= [c_bees(), c_life()]
+	camera.start()
 	while mode!=QUIT_MODE:
 		tick= False
 		events= [pygame.event.wait()]
@@ -62,5 +63,7 @@ if __name__=='__main__':
 			if show_fps:
 				display.blit(font.render(str(int(clock.get_fps())), False, FPS_COLOR), FPS_POSITION)
 			pygame.display.flip()
-			swarm[mode].update(camera.process_frame(camera.read_frame()))
+			swarm[mode].update(camera.get_frame())
 			swarm[mode].draw(display)
+	camera.stop()
+	camera.join()
