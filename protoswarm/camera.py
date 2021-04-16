@@ -2,13 +2,17 @@
 
 import cv2
 import numpy as np
+import threading
 
 from constants import *
 
 ######## code ########
 
-class c_camera(object):
+class c_camera(threading.Thread):
 	def __init__(self):
+		threading.Thread.__init__(self)
+		self.stopped= False
+		self.frame= np.zeros((SIMULATION_BOUNDS[1], SIMULATION_BOUNDS[0]))
 		for camera in range(2):
 			capture= cv2.VideoCapture(camera)
 			if capture is not None:
@@ -17,8 +21,20 @@ class c_camera(object):
 					capture.set(cv2.CAP_PROP_FRAME_HEIGHT, SIMULATION_BOUNDS[1])
 					self.capture= capture
 					return
-		self.capture= None
 		print("No camera")
+		self.capture= None
+
+	def run(self):
+		while not self.stopped:
+			frame= self.process_frame(self.read_frame())
+			if frame is not None:
+				self.frame= frame
+
+	def get_frame(self):
+		return self.frame
+
+	def stop(self):
+		self.stopped= True
 
 	def read_frame(self):
 		if self.capture is not None:
@@ -34,5 +50,4 @@ class c_camera(object):
 			cv2.GaussianBlur(frame, (3, 3), 0, frame)
 			frame= cv2.Canny(frame, 100, 200)
 			cv2.blur(frame, (5, 5), frame)
-			return frame
-		return np.zeros((SIMULATION_BOUNDS[1], SIMULATION_BOUNDS[0]))
+		return frame
