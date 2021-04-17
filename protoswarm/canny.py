@@ -16,6 +16,7 @@ class c_canny():
 
     def update(self, frame):
         self.frame = np.rot90(frame)
+        self.frame = np.flip(self.frame, 0)
 
     def draw(self, display):
         surface = pygame.surfarray.make_surface(self.frame)
