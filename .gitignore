@@ -2,3 +2,4 @@
 .DS_Store
 *.o
 protoswarm/__pycache__
+webUI/node_modules
