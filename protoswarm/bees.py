@@ -9,17 +9,17 @@ from entity import *
 ######## constants ########
 
 BEE_SIZE= 3.0
-BEE_COLOR= BLACK_COLOR
+BEE_COLOR= YELLOW_COLOR
 BEE_CHANGE_TIME= (0.2, 0.8)
 BEE_TURN_RATE= (-math.pi, math.pi)
-BEE_SPEED= 150.0
-BEE_DISTANCE= 6
+BEE_FLY_SPEED= 150.0
+BEE_WALK_SPEED= 1.0
+BEE_DISTANCE= 4
 
-BEE_BACKGROUND_COLOR= WHITE_COLOR
+BEE_BACKGROUND_COLOR= BLACK_COLOR
 
 BEE_INITIAL_COUNT= 1500
 BEE_COUNT_RATE= 300
-
 
 ######## code ########
 
@@ -37,22 +37,21 @@ class c_bee(c_entity):
 		x= int(self.linear_position.x)
 		y= int(self.linear_position.y)
 		if x<0 or y<0 or x>=SIMULATION_BOUNDS[0] or y>=SIMULATION_BOUNDS[1] or frame[y, x]==0 or bee_map[y//BEE_DISTANCE, x//BEE_DISTANCE]==1:
-			if self.timer<=0.0:
-				self.timer= random.uniform(*BEE_CHANGE_TIME)
-				self.angular_velocity= random.uniform(*BEE_TURN_RATE)
-			else:
-				self.timer-= DT
-			self.linear_velocity= c_vector2d(facing=self.angular_position, magnitude=BEE_SPEED)
+			self.linear_velocity= c_vector2d(facing=self.angular_position, magnitude=BEE_FLY_SPEED)
 		else:
-			self.linear_velocity= c_vector2d()
+			self.linear_velocity= c_vector2d(facing=self.angular_position, magnitude=BEE_WALK_SPEED)
 			bee_map[y//BEE_DISTANCE, x//BEE_DISTANCE]= 1
+		if self.timer<=0.0:
+			self.timer= random.uniform(*BEE_CHANGE_TIME)
+			self.angular_velocity= random.uniform(*BEE_TURN_RATE)
+		else:
+			self.timer-= DT
 		c_entity.update(self)
 
 class c_bees(object):
 	def __init__(self, see_nectar= False):
 		self.desired_bee_count= BEE_INITIAL_COUNT
 		self.bees= []
-		self.bee_map= np.zeros((SIMULATION_BOUNDS[1]//BEE_DISTANCE+1, SIMULATION_BOUNDS[0]//BEE_DISTANCE+1))
 
 	def update(self, frame):
 		bee_count_delta= self.desired_bee_count - len(self.bees)
@@ -63,9 +62,9 @@ class c_bees(object):
 			else:
 				for i in range(min(-bee_count_delta, BEE_COUNT_RATE//FRAMES_PER_SECOND)):
 					self.bees.pop()
+		bee_map= np.zeros((SIMULATION_BOUNDS[1]//BEE_DISTANCE+1, SIMULATION_BOUNDS[0]//BEE_DISTANCE+1))
 		for bee in self.bees:
-			bee.update(frame,self.bee_map)
-		self.bee_map= np.zeros((SIMULATION_BOUNDS[1]//BEE_DISTANCE+1, SIMULATION_BOUNDS[0]//BEE_DISTANCE+1))
+			bee.update(frame, bee_map)
 
 	def draw(self, display):
 		display.fill(BEE_BACKGROUND_COLOR)
