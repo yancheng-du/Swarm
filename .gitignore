@@ -1,5 +1,10 @@
 # General
-.DS_Store
 *.o
-protoswarm/__pycache__
+*__pycache__*
 webUI/node_modules
+
+# Mac
+.DS_Store
+*.pbxuser
+xcuserdata
+*.xcworkspace
