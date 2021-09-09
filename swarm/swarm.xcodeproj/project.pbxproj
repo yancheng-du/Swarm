@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		231605AD26E185F00093A12C /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 231605AC26E185F00093A12C /* libSDL2.a */; };
+		2310148E26E9D18E008C0A36 /* libSDL2-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2310148D26E9D18E008C0A36 /* libSDL2-2.0.0.dylib */; };
 		23BCC30726815417002681EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23BCC30626815417002681EC /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -23,7 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		231605AC26E185F00093A12C /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2.a; path = ext/SDL2/lib/mac/libSDL2.a; sourceTree = "<group>"; };
+		2310148D26E9D18E008C0A36 /* libSDL2-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libSDL2-2.0.0.dylib"; path = "ext/SDL2/lib/mac/libSDL2-2.0.0.dylib"; sourceTree = "<group>"; };
 		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -33,7 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				231605AD26E185F00093A12C /* libSDL2.a in Frameworks */,
+				2310148E26E9D18E008C0A36 /* libSDL2-2.0.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,7 +43,7 @@
 		235E0C7026E17A5E003EA2A2 /* ext */ = {
 			isa = PBXGroup;
 			children = (
-				231605AC26E185F00093A12C /* libSDL2.a */,
+				2310148D26E9D18E008C0A36 /* libSDL2-2.0.0.dylib */,
 			);
 			name = ext;
 			sourceTree = "<group>";
