@@ -12,6 +12,8 @@
 		23BCC30726815417002681EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23BCC30626815417002681EC /* main.cpp */; };
 		23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; };
 		23D54E7526EAB02E008C2D1C /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23F5794126EBE5940017F781 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5793F26EBE5940017F781 /* camera.cpp */; };
+		23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5794226EBF5CA0017F781 /* graphics.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +44,10 @@
 		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		23D54E7226EAAEC1008C2D1C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ext/SDL2/mac/SDL2.framework; sourceTree = "<group>"; };
+		23F5793F26EBE5940017F781 /* camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
+		23F5794026EBE5940017F781 /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		23F5794226EBF5CA0017F781 /* graphics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
+		23F5794326EBF5CA0017F781 /* graphics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = graphics.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +95,10 @@
 			isa = PBXGroup;
 			children = (
 				23BCC30626815417002681EC /* main.cpp */,
+				23F5793F26EBE5940017F781 /* camera.cpp */,
+				23F5794026EBE5940017F781 /* camera.h */,
+				23F5794226EBF5CA0017F781 /* graphics.cpp */,
+				23F5794326EBF5CA0017F781 /* graphics.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -150,7 +160,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23F5794126EBE5940017F781 /* camera.cpp in Sources */,
 				23BCC30726815417002681EC /* main.cpp in Sources */,
+				23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
