@@ -11,7 +11,7 @@ bool graphics_initialize()
 {
 	bool success= false;
 
-	if (SDL_CreateWindowAndRenderer(1920, 1080, SDL_WINDOW_RESIZABLE, &g_window, &g_renderer)==0)
+	if (SDL_CreateWindowAndRenderer(640, 360, SDL_WINDOW_RESIZABLE, &g_window, &g_renderer)==0)
 	{
 		SDL_Surface *surface= SDL_LoadBMP("res/carnage.bmp");
 
