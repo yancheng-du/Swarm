@@ -435,7 +435,7 @@ FREENECTAPI void freenect_set_video_chunk_callback(freenect_device *dev, freenec
 FREENECTAPI int freenect_set_depth_buffer(freenect_device *dev, void *buf);
 
 /**
- * Set the buffer to store depth information to. Size of buffer is
+ * Set the buffer to store video information to. Size of buffer is
  * dependant on video format. See FREENECT_VIDEO_*_SIZE defines for
  * more information.
  *
