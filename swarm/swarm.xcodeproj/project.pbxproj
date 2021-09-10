@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2382884626EB154000F589ED /* libfreenect.0.6.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */; };
+		2382884826EB156F00F589ED /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2382884726EB156F00F589ED /* libusb-1.0.0.dylib */; };
 		23BCC30726815417002681EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23BCC30626815417002681EC /* main.cpp */; };
 		23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; };
 		23D54E7526EAB02E008C2D1C /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -35,6 +37,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreenect.0.6.2.dylib; path = ext/libfreenect/lib/mac/libfreenect.0.6.2.dylib; sourceTree = "<group>"; };
+		2382884726EB156F00F589ED /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libusb-1.0.0.dylib"; path = "ext/libusb/lib/mac/libusb-1.0.0.dylib"; sourceTree = "<group>"; };
 		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		23D54E7226EAAEC1008C2D1C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ext/SDL2/mac/SDL2.framework; sourceTree = "<group>"; };
@@ -46,6 +50,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */,
+				2382884626EB154000F589ED /* libfreenect.0.6.2.dylib in Frameworks */,
+				2382884826EB156F00F589ED /* libusb-1.0.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +62,8 @@
 			isa = PBXGroup;
 			children = (
 				23D54E7226EAAEC1008C2D1C /* SDL2.framework */,
+				2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */,
+				2382884726EB156F00F589ED /* libusb-1.0.0.dylib */,
 			);
 			name = ext;
 			sourceTree = "<group>";
@@ -199,7 +207,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2/mac/SDL2.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/ext/SDL2/mac/SDL2.framework/Headers",
+					"$(PROJECT_DIR)/ext/libfreenect/include",
+					"$(PROJECT_DIR)/ext/libusb/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/ext/libfreenect/lib/mac",
+					"$(PROJECT_DIR)/ext/libusb/lib/mac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -251,7 +267,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2/mac/SDL2.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/ext/SDL2/mac/SDL2.framework/Headers",
+					"$(PROJECT_DIR)/ext/libfreenect/include",
+					"$(PROJECT_DIR)/ext/libusb/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/ext/libfreenect/lib/mac",
+					"$(PROJECT_DIR)/ext/libusb/lib/mac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				SDKROOT = macosx;
 			};
