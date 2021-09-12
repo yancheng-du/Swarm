@@ -39,6 +39,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2310419026EEA5B500F7DC42 /* camera_frame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
 		2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreenect.0.6.2.dylib; path = ext/libfreenect/lib/mac/libfreenect.0.6.2.dylib; sourceTree = "<group>"; };
 		2382884726EB156F00F589ED /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libusb-1.0.0.dylib"; path = "ext/libusb/lib/mac/libusb-1.0.0.dylib"; sourceTree = "<group>"; };
 		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +98,7 @@
 				23BCC30626815417002681EC /* main.cpp */,
 				23F5793F26EBE5940017F781 /* camera.cpp */,
 				23F5794026EBE5940017F781 /* camera.h */,
+				2310419026EEA5B500F7DC42 /* camera_frame.h */,
 				23F5794226EBF5CA0017F781 /* graphics.cpp */,
 				23F5794326EBF5CA0017F781 /* graphics.h */,
 			);

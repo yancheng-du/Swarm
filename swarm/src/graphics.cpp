@@ -4,36 +4,15 @@
 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
-SDL_Texture *g_texture= NULL;
 static int g_frame_count= 0;
 
 bool graphics_initialize()
 {
 	bool success= false;
 
-	if (SDL_CreateWindowAndRenderer(640, 360, SDL_WINDOW_RESIZABLE, &g_window, &g_renderer)==0)
+	if (SDL_CreateWindowAndRenderer(k_camera_width, k_camera_height, 0, &g_window, &g_renderer)==0)
 	{
-		SDL_Surface *surface= SDL_LoadBMP("res/carnage.bmp");
-
-		if (surface)
-		{
-			g_texture= SDL_CreateTextureFromSurface(g_renderer, surface);
-
-			SDL_FreeSurface(surface);
-
-			if (g_texture)
-			{
-				success= true;
-			}
-			else
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture from surface: %s", SDL_GetError());
-			}
-		}
-		else
-		{
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create surface from image: %s", SDL_GetError());
-		}
+		success= true;
 	}
 	else
 	{
@@ -45,12 +24,6 @@ bool graphics_initialize()
 
 void graphics_dispose()
 {
-	if (g_texture)
-	{
-		SDL_DestroyTexture(g_texture);
-		g_texture= NULL;
-	}
-
 	if (g_renderer)
 	{
 		SDL_DestroyRenderer(g_renderer);
@@ -65,16 +38,35 @@ void graphics_dispose()
 	}
 }
 
-int graphics_render()
+int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth_frame)
 {
 	if (g_renderer)
 	{
+		SDL_Surface *video_surface;
+
 		SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
 		SDL_RenderClear(g_renderer);
 
-		if (g_texture)
+		video_surface= SDL_CreateRGBSurfaceFrom((void *)video_frame, k_camera_width, k_camera_height, 24, 3*k_camera_width, 0xff, 0xff00, 0xff0000, 0);
+
+		if (video_surface)
 		{
-			SDL_RenderCopy(g_renderer, g_texture, NULL, NULL);
+			SDL_Texture *video_texture= SDL_CreateTextureFromSurface(g_renderer, video_surface);
+			SDL_FreeSurface(video_surface);
+
+			if (video_texture)
+			{
+				SDL_RenderCopy(g_renderer, video_texture, NULL, NULL);
+				SDL_DestroyTexture(video_texture);
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture from surface: %s", SDL_GetError());
+			}
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create surface: %s", SDL_GetError());
 		}
 
 		SDL_RenderPresent(g_renderer);
