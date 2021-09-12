@@ -22,11 +22,11 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				RGB_frame_t RGB_frame;
+				video_frame_t video_frame;
 				depth_frame_t depth_frame;
 
-				camera_read_frame(&RGB_frame, &depth_frame);
-				graphics_render();
+				camera_read_frame(&video_frame, &depth_frame);
+				graphics_render(&video_frame, &depth_frame);
 			}
 		}
 
