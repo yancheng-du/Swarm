@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2382884626EB154000F589ED /* libfreenect.0.6.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */; };
-		2382884826EB156F00F589ED /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2382884726EB156F00F589ED /* libusb-1.0.0.dylib */; };
+		23F5794126EBE5940017F781 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5793F26EBE5940017F781 /* camera.cpp */; };
+		23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5794226EBF5CA0017F781 /* graphics.cpp */; };
 		23BCC30726815417002681EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23BCC30626815417002681EC /* main.cpp */; };
 		23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; };
 		23D54E7526EAB02E008C2D1C /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		23F5794126EBE5940017F781 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5793F26EBE5940017F781 /* camera.cpp */; };
-		23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5794226EBF5CA0017F781 /* graphics.cpp */; };
+		23046CB526EF300B007C7232 /* libfreenect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CB126EF2F79007C7232 /* libfreenect.a */; };
+		23046CB626EF301B007C7232 /* libusb-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CB326EF2FAC007C7232 /* libusb-1.0.a */; };
+		23046CB926EF30BA007C7232 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CB826EF30BA007C7232 /* CoreFoundation.framework */; };
+		23046CBB26EF30D1007C7232 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CBA26EF30D1007C7232 /* IOKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,16 +41,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2310419026EEA5B500F7DC42 /* camera_frame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
-		2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreenect.0.6.2.dylib; path = ext/libfreenect/lib/mac/libfreenect.0.6.2.dylib; sourceTree = "<group>"; };
-		2382884726EB156F00F589ED /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libusb-1.0.0.dylib"; path = "ext/libusb/lib/mac/libusb-1.0.0.dylib"; sourceTree = "<group>"; };
 		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
-		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		23D54E7226EAAEC1008C2D1C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ext/SDL2/mac/SDL2.framework; sourceTree = "<group>"; };
 		23F5793F26EBE5940017F781 /* camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
 		23F5794026EBE5940017F781 /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		2310419026EEA5B500F7DC42 /* camera_frame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
 		23F5794226EBF5CA0017F781 /* graphics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
 		23F5794326EBF5CA0017F781 /* graphics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = graphics.h; sourceTree = "<group>"; };
+		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		23D54E7226EAAEC1008C2D1C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ext/SDL2/mac/SDL2.framework; sourceTree = "<group>"; };
+		23046CB126EF2F79007C7232 /* libfreenect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreenect.a; path = ext/libfreenect/lib/mac/libfreenect.a; sourceTree = "<group>"; };
+		23046CB326EF2FAC007C7232 /* libusb-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libusb-1.0.a"; path = "ext/libusb/lib/mac/libusb-1.0.a"; sourceTree = "<group>"; };
+		23046CB826EF30BA007C7232 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		23046CBA26EF30D1007C7232 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,22 +61,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */,
-				2382884626EB154000F589ED /* libfreenect.0.6.2.dylib in Frameworks */,
-				2382884826EB156F00F589ED /* libusb-1.0.0.dylib in Frameworks */,
+				23046CB526EF300B007C7232 /* libfreenect.a in Frameworks */,
+				23046CB626EF301B007C7232 /* libusb-1.0.a in Frameworks */,
+				23046CB926EF30BA007C7232 /* CoreFoundation.framework in Frameworks */,
+				23046CBB26EF30D1007C7232 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		235E0C7026E17A5E003EA2A2 /* ext */ = {
+		23BCC30526815417002681EC /* src */ = {
 			isa = PBXGroup;
 			children = (
-				23D54E7226EAAEC1008C2D1C /* SDL2.framework */,
-				2382884526EB154000F589ED /* libfreenect.0.6.2.dylib */,
-				2382884726EB156F00F589ED /* libusb-1.0.0.dylib */,
+				23F5793F26EBE5940017F781 /* camera.cpp */,
+				23F5794026EBE5940017F781 /* camera.h */,
+				2310419026EEA5B500F7DC42 /* camera_frame.h */,
+				23F5794226EBF5CA0017F781 /* graphics.cpp */,
+				23F5794326EBF5CA0017F781 /* graphics.h */,
+				23BCC30626815417002681EC /* main.cpp */,
 			);
-			name = ext;
+			path = src;
 			sourceTree = "<group>";
 		};
 		23BCC2FA26815417002681EC = {
@@ -81,6 +90,7 @@
 				23BCC30526815417002681EC /* src */,
 				23BCC30426815417002681EC /* bin */,
 				235E0C7026E17A5E003EA2A2 /* ext */,
+				23046CB726EF30BA007C7232 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,17 +102,23 @@
 			name = bin;
 			sourceTree = "<group>";
 		};
-		23BCC30526815417002681EC /* src */ = {
+		23046CB726EF30BA007C7232 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				23BCC30626815417002681EC /* main.cpp */,
-				23F5793F26EBE5940017F781 /* camera.cpp */,
-				23F5794026EBE5940017F781 /* camera.h */,
-				2310419026EEA5B500F7DC42 /* camera_frame.h */,
-				23F5794226EBF5CA0017F781 /* graphics.cpp */,
-				23F5794326EBF5CA0017F781 /* graphics.h */,
+				23046CBA26EF30D1007C7232 /* IOKit.framework */,
+				23046CB826EF30BA007C7232 /* CoreFoundation.framework */,
 			);
-			path = src;
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		235E0C7026E17A5E003EA2A2 /* ext */ = {
+			isa = PBXGroup;
+			children = (
+				23D54E7226EAAEC1008C2D1C /* SDL2.framework */,
+				23046CB126EF2F79007C7232 /* libfreenect.a */,
+				23046CB326EF2FAC007C7232 /* libusb-1.0.a */,
+			);
+			name = ext;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,8 +179,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				23F5794126EBE5940017F781 /* camera.cpp in Sources */,
-				23BCC30726815417002681EC /* main.cpp in Sources */,
 				23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */,
+				23BCC30726815417002681EC /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
