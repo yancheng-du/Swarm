@@ -1,6 +1,9 @@
+#include <cassert>
 #include <SDL.h>
 
 #include "graphics.h"
+
+static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_frame_t *depth_frame);
 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
@@ -10,7 +13,7 @@ bool graphics_initialize()
 {
 	bool success= false;
 
-	if (SDL_CreateWindowAndRenderer(k_camera_width, k_camera_height, 0, &g_window, &g_renderer)==0)
+	if (SDL_CreateWindowAndRenderer(k_camera_width, 2*k_camera_height, 0, &g_window, &g_renderer)==0)
 	{
 		success= true;
 	}
@@ -42,7 +45,7 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 {
 	if (g_renderer)
 	{
-		SDL_Surface *video_surface;
+		SDL_Surface *video_surface, *depth_surface;
 
 		SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
 		SDL_RenderClear(g_renderer);
@@ -56,21 +59,76 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 
 			if (video_texture)
 			{
-				SDL_RenderCopy(g_renderer, video_texture, NULL, NULL);
+				SDL_Rect video_rect= {0, 0, k_camera_width, k_camera_height};
+
+				SDL_RenderCopy(g_renderer, video_texture, NULL, &video_rect);
 				SDL_DestroyTexture(video_texture);
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture from surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video texture: %s", SDL_GetError());
 			}
 		}
 		else
 		{
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create surface: %s", SDL_GetError());
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video surface: %s", SDL_GetError());
+		}
+
+		depth_surface= graphics_create_SDL_surface_from_depth_frame(depth_frame);
+
+		if (depth_surface)
+		{
+			SDL_Texture *depth_texture= SDL_CreateTextureFromSurface(g_renderer, depth_surface);
+			SDL_FreeSurface(depth_surface);
+
+			if (depth_texture)
+			{
+				SDL_Rect depth_rect= {0, k_camera_height, k_camera_width, k_camera_height};
+
+				SDL_RenderCopy(g_renderer, depth_texture, NULL, &depth_rect);
+				SDL_DestroyTexture(depth_texture);
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth texture: %s", SDL_GetError());
+			}
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth surface: %s", SDL_GetError());
 		}
 
 		SDL_RenderPresent(g_renderer);
 	}
 
 	return g_frame_count++;
+}
+
+static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_frame_t *depth_frame)
+{
+	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, k_camera_width, k_camera_height, 24, SDL_PIXELFORMAT_RGB24);
+
+	assert(!SDL_MUSTLOCK(surface));
+
+	if (surface)
+	{
+		const uint16_t *depth= (const uint16_t *)depth_frame;
+		uint8_t *color= (uint8_t *)surface->pixels;
+
+		assert(surface->pitch==3*k_camera_width);
+
+		for (int y= 0; y<k_camera_height; ++y)
+		{
+			for (int x= 0; x<k_camera_width; ++x)
+			{
+				uint8_t depth8= 255-((*depth++)*255)/10000;
+
+				*color++= depth8;
+				*color++= depth8;
+				*color++= depth8;
+			}
+		}
+	}
+
+	return surface;
 }
