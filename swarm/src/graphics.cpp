@@ -1,4 +1,5 @@
 #include <cassert>
+#include <libfreenect.h>
 #include <SDL.h>
 
 #include "graphics.h"
@@ -37,7 +38,6 @@ void graphics_dispose()
 	{
 		SDL_DestroyWindow(g_window);
 		g_window= NULL;
-
 	}
 }
 
@@ -121,7 +121,7 @@ static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_fra
 		{
 			for (int x= 0; x<k_camera_width; ++x)
 			{
-				uint8_t depth8= 255-((*depth++)*255)/10000;
+				uint8_t depth8= UINT8_MAX-((*depth++)*UINT8_MAX)/FREENECT_DEPTH_MM_MAX_VALUE;
 
 				*color++= depth8;
 				*color++= depth8;
