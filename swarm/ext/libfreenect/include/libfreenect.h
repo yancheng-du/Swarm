@@ -183,19 +183,7 @@ typedef struct _freenect_device freenect_device; /**< Holds device information. 
 typedef void freenect_usb_context; /**< Holds libusb-1.0 context */
 //
 
-/// If Win32, export all functions for DLL usage
-#ifndef _WIN32
-  #define FREENECTAPI /**< DLLExport information for windows, set to nothing on other platforms */
-#else
-  /**< DLLExport information for windows, set to nothing on other platforms */
-  #ifdef __cplusplus
-    #define FREENECTAPI extern "C" __declspec(dllexport)
-  #else
-    // this is required when building from a Win32 port of gcc without being
-    // forced to compile all of the library files (.c) with g++...
-    #define FREENECTAPI __declspec(dllexport)
-  #endif
-#endif
+#define FREENECTAPI
 
 /// Enumeration of message logging levels
 typedef enum {
