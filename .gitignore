@@ -2,9 +2,14 @@
 *.o
 *__pycache__*
 webUI/node_modules
+swarm/bin/
 
 # Mac
 .DS_Store
 *.pbxuser
 xcuserdata
 *.xcworkspace
+
+# PC
+*.user
+.vs/
