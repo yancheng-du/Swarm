@@ -4,6 +4,7 @@
 #include <thread>
 #include <libfreenect.h>
 #include <SDL_log.h>
+#include <opencv2/core.hpp>
 
 #include "camera.h"
 
