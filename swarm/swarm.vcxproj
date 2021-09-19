@@ -87,6 +87,9 @@
     <OutDir>$(PROJECTDIR)bin\$(PLATFORMSHORTNAME)\</OutDir>
     <IntDir>$(OUTDIR)$(CONFIGURATION)\</IntDir>
     <TargetName>$(ProjectName)_$(CONFIGURATION)</TargetName>
+    <IncludePath>$(ProjectDir)ext\opencv\win\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\duyc8\git\senior_design\Swarm\swarm\ext\opencv\win\lib\x64;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ProjectDir)ext\opencv\win\bin;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -148,13 +151,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(PROJECTDIR)ext\libusb\include;$(PROJECTDIR)ext\libfreenect\include;$(PROJECTDIR)ext\SDL2\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PROJECTDIR)ext\libusb\include;$(PROJECTDIR)ext\libfreenect\include;$(PROJECTDIR)ext\SDL2\win\include;$(PROJECTDIR)ext\opencv\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(PROJECTDIR)ext\libusb\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\libfreenect\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\SDL2\win\lib\$(PLATFORMSHORTNAME);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libusb-1.0.lib;freenect.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(PROJECTDIR)ext\libusb\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\libfreenect\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\SDL2\win\lib\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\opencv\win\lib\$(PLATFORMSHORTNAME);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libusb-1.0.lib;freenect.lib;SDL2.lib;SDL2main.lib;opencv_world453d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>16777216</StackReserveSize>
       <StackCommitSize>
       </StackCommitSize>
