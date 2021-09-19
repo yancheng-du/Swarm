@@ -10,3 +10,9 @@ To build and run the old version on macOS:
 7. Install opencv with `brew install opencv`
 8. In oldsrc directory `make`
 9. In oldsrc directory `./main`
+
+## Using git pull
+tutorial source here: https://git-lfs.github.com/
+1. Install git lfs using homebrew or from the link above
+2. On command line use `git lfs install`
+3. Now you should use `git pull` as normal
