@@ -5,6 +5,7 @@
 #include<opencv2/imgproc/imgproc.hpp>
 
 #include "graphics.h"
+#include "Swarm.h"
 
 static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_frame_t *depth_frame);
 
@@ -17,7 +18,7 @@ bool graphics_initialize()
 {
 	bool success= false;
 
-	if (SDL_CreateWindowAndRenderer(k_camera_width, 2*k_camera_height, 0, &g_window, &g_renderer)==0)
+	if (SDL_CreateWindowAndRenderer(k_camera_width, k_camera_height, 0, &g_window, &g_renderer)==0)
 	{
 		success= true;
 	}
@@ -44,6 +45,15 @@ void graphics_dispose()
 	}
 }
 
+int draw_bees(Swarm* bee_swarm) {
+	SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
+	SDL_RenderClear(g_renderer);
+	SDL_SetRenderDrawColor(g_renderer, 255, 150, 100, 255);
+	SDL_RenderDrawPoints(g_renderer, bee_swarm->get_points(), BEE_NUM);
+	SDL_RenderPresent(g_renderer);
+	return 0;
+}
+
 int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth_frame)
 {
 	if (g_renderer)
@@ -53,28 +63,13 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 		SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
 		SDL_RenderClear(g_renderer);
 
-		cv :: Mat original, grey,blurred,edges,edges_3channel;
-		original = cv::Mat(k_camera_height, k_camera_width, CV_8UC3, (uint8_t*)video_frame);
-
-		cv::cvtColor(original, grey, cv::COLOR_BGR2GRAY);
-		cv::GaussianBlur(grey,            // input image
-			blurred,                            // output image
-			cv::Size(3, 3),                        // smoothing window width and height in pixels
-			2);
-		cv::Canny(blurred,            // input image
-			edges,                    // output image
-			100,                        // low threshold
-			250);
-		cv::cvtColor(edges, edges_3channel, cv::COLOR_GRAY2BGR);
-
-		cv::imshow("test", blurred);
 		Uint32 rmask, gmask, bmask, amask;
 		rmask = 0x000000ff;
 		gmask = 0x0000ff00;
 		bmask = 0x00ff0000;
 		amask = 0xff000000;
 
-		video_surface= SDL_CreateRGBSurfaceFrom((void *)edges_3channel.data, k_camera_width, k_camera_height, 24, 3*k_camera_width, rmask, gmask, bmask, 0);
+		video_surface= SDL_CreateRGBSurfaceFrom((void *)video_frame, k_camera_width, k_camera_height, 24, 3*k_camera_width, rmask, gmask, bmask, 0);
 
 		if (video_surface)
 		{

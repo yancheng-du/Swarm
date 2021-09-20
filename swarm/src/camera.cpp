@@ -4,7 +4,10 @@
 #include <thread>
 #include <libfreenect.h>
 #include <SDL_log.h>
+
 #include <opencv2/core.hpp>
+#include<opencv2/highgui/highgui.hpp>
+#include<opencv2/imgproc/imgproc.hpp>
 
 #include "camera.h"
 
@@ -144,7 +147,8 @@ void camera_dispose()
 
 int camera_read_frame(
 	video_frame_t *video_frame,
-	depth_frame_t *depth_frame)
+	depth_frame_t *depth_frame,
+	edge_frame_t*edge_frame)
 {
 	int frame_count;
 
@@ -154,8 +158,24 @@ int camera_read_frame(
 	frame_count= g_frame_count;
 	g_frame_mutex.unlock();
 
+	cv::Mat original, grey, blurred, edges;
+	original = cv::Mat(k_camera_height, k_camera_width, CV_8UC3, (uint8_t*)video_frame);
+	cv::cvtColor(original, grey, cv::COLOR_BGR2GRAY);
+	cv::GaussianBlur(grey,            // input image
+		blurred,                      // output image
+		cv::Size(3, 3),               // smoothing window width and height in pixels
+		2);							  //sigma
+	cv::Canny(blurred,				  // input image
+		edges,						  // output image
+		100,                          // low threshold
+		250);
+	cv::imshow("edges", edges);
+	std::memcpy(edge_frame, edges.data, sizeof(*edge_frame));
+
 	return frame_count;
 }
+
+
 
 static void kinect_thread_function()
 {
