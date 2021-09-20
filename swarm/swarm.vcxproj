@@ -197,11 +197,14 @@
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Swarm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\camera_frame.h" />
+    <ClInclude Include="src\const.h" />
     <ClInclude Include="src\graphics.h" />
+    <ClInclude Include="src\Swarm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
