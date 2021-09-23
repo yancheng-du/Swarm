@@ -8,6 +8,7 @@ from pygame.locals import *
 from camera import c_camera
 from constants import *
 from bees import c_bees
+from snow import c_snow
 from life import c_life
 from passthrough import c_passthrough
 
@@ -41,7 +42,7 @@ if __name__=='__main__':
 	show_fps= False
 	font= pygame.font.SysFont(FONT_NAME, FONT_SIZE)
 	mode= 0
-	swarm= [c_bees(), c_life(), c_passthrough()]
+	swarm= [c_bees(), c_snow(), c_life(), c_passthrough()]
 	camera.start()
 	while mode!=QUIT_MODE:
 		tick= False
