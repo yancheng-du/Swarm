@@ -7,25 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		23046CB526EF300B007C7232 /* libfreenect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CB126EF2F79007C7232 /* libfreenect.a */; };
 		23046CB926EF30BA007C7232 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CB826EF30BA007C7232 /* CoreFoundation.framework */; };
 		23046CBB26EF30D1007C7232 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CBA26EF30D1007C7232 /* IOKit.framework */; };
+		2380436B26FFC2CC0009FEE4 /* libusb-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380436A26FFC2CC0009FEE4 /* libusb-1.0.a */; };
+		2380436D26FFC2DA0009FEE4 /* libfreenect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380436C26FFC2DA0009FEE4 /* libfreenect.a */; };
+		2380436F26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */; };
+		2380437226FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */; };
+		2380437326FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */; };
+		2380437626FFC3470009FEE4 /* libopencv_core.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */; };
+		2380437826FFC3490009FEE4 /* libopencv_highgui.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */; };
+		2380437926FFC34A0009FEE4 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */; };
+		2380437A26FFC34B0009FEE4 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380437426FFC33D0009FEE4 /* SDL2.framework */; };
+		2380437B26FFC34B0009FEE4 /* SDL2.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380437426FFC33D0009FEE4 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		23BCC30726815417002681EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23BCC30626815417002681EC /* main.cpp */; };
-		23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; };
-		23D54E7526EAB02E008C2D1C /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23D54E7226EAAEC1008C2D1C /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		23EE690326FF0959006E1619 /* libusb-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE690226FF0867006E1619 /* libusb-1.0.a */; };
-		23EE690B26FF0F55006E1619 /* libopencv_core.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE690A26FF0F55006E1619 /* libopencv_core.4.5.3.dylib */; };
-		23EE690C26FF0F55006E1619 /* libopencv_core.4.5.3.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE690A26FF0F55006E1619 /* libopencv_core.4.5.3.dylib */; };
-		23EE690E26FF0FA2006E1619 /* libopencv_highgui.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE690D26FF0FA2006E1619 /* libopencv_highgui.4.5.3.dylib */; };
-		23EE690F26FF0FA3006E1619 /* libopencv_highgui.4.5.3.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE690D26FF0FA2006E1619 /* libopencv_highgui.4.5.3.dylib */; };
-		23EE691126FF1003006E1619 /* libopencv_imgproc.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE691026FF1003006E1619 /* libopencv_imgproc.4.5.3.dylib */; };
-		23EE691226FF102A006E1619 /* libopencv_imgproc.4.5.3.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 23EE691026FF1003006E1619 /* libopencv_imgproc.4.5.3.dylib */; };
 		23F5794126EBE5940017F781 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5793F26EBE5940017F781 /* camera.cpp */; };
 		23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5794226EBF5CA0017F781 /* graphics.cpp */; };
 		23F98ABC26F92EF000B810E6 /* Swarm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F98ABA26F92EF000B810E6 /* Swarm.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		2380437726FFC3470009FEE4 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2380437626FFC3470009FEE4 /* libopencv_core.4.5.3.dylib in Embed Libraries */,
+				2380437926FFC34A0009FEE4 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */,
+				2380437826FFC3490009FEE4 /* libopencv_highgui.4.5.3.dylib in Embed Libraries */,
+				2380437B26FFC34B0009FEE4 /* SDL2.framework in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		23BCC30126815417002681EC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 0;
@@ -34,34 +48,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		23D54E7626EAB02E008C2D1C /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				23D54E7526EAB02E008C2D1C /* SDL2.framework in Embed Frameworks */,
-				23EE690C26FF0F55006E1619 /* libopencv_core.4.5.3.dylib in Embed Frameworks */,
-				23EE690F26FF0FA3006E1619 /* libopencv_highgui.4.5.3.dylib in Embed Frameworks */,
-				23EE691226FF102A006E1619 /* libopencv_imgproc.4.5.3.dylib in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		23046CB126EF2F79007C7232 /* libfreenect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreenect.a; path = ext/libfreenect/lib/mac/libfreenect.a; sourceTree = "<group>"; };
 		23046CB826EF30BA007C7232 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		23046CBA26EF30D1007C7232 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		2310419026EEA5B500F7DC42 /* camera_frame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
+		2380436A26FFC2CC0009FEE4 /* libusb-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libusb-1.0.a"; path = "ext/libusb-1.0.24/lib/mac/libusb-1.0.a"; sourceTree = "<group>"; };
+		2380436C26FFC2DA0009FEE4 /* libfreenect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreenect.a; path = "ext/libfreenect-0.6.2/lib/mac/libfreenect.a"; sourceTree = "<group>"; };
+		2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_core.4.5.3.dylib"; sourceTree = "<group>"; };
+		2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_imgproc.4.5.3.dylib"; sourceTree = "<group>"; };
+		2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_highgui.4.5.3.dylib"; sourceTree = "<group>"; };
+		2380437426FFC33D0009FEE4 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = "ext/SDL2-2.0.16/mac/SDL2.framework"; sourceTree = "<group>"; };
 		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		23D54E7226EAAEC1008C2D1C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ext/SDL2/mac/SDL2.framework; sourceTree = "<group>"; };
-		23EE690226FF0867006E1619 /* libusb-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libusb-1.0.a"; path = "ext/libusb-1.0.24/lib/mac/libusb-1.0.a"; sourceTree = "<group>"; };
-		23EE690A26FF0F55006E1619 /* libopencv_core.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_core.4.5.3.dylib"; sourceTree = "<group>"; };
-		23EE690D26FF0FA2006E1619 /* libopencv_highgui.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_highgui.4.5.3.dylib"; sourceTree = "<group>"; };
-		23EE691026FF1003006E1619 /* libopencv_imgproc.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_imgproc.4.5.3.dylib"; sourceTree = "<group>"; };
 		23F5793F26EBE5940017F781 /* camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
 		23F5794026EBE5940017F781 /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		23F5794226EBF5CA0017F781 /* graphics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
@@ -76,14 +76,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23C1FE6926EAB5CE00E01939 /* SDL2.framework in Frameworks */,
-				23EE690B26FF0F55006E1619 /* libopencv_core.4.5.3.dylib in Frameworks */,
-				23EE690E26FF0FA2006E1619 /* libopencv_highgui.4.5.3.dylib in Frameworks */,
-				23EE691126FF1003006E1619 /* libopencv_imgproc.4.5.3.dylib in Frameworks */,
-				23046CB526EF300B007C7232 /* libfreenect.a in Frameworks */,
-				23EE690326FF0959006E1619 /* libusb-1.0.a in Frameworks */,
+				2380437226FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib in Frameworks */,
+				2380437326FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib in Frameworks */,
+				2380436F26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib in Frameworks */,
+				2380436D26FFC2DA0009FEE4 /* libfreenect.a in Frameworks */,
+				2380436B26FFC2CC0009FEE4 /* libusb-1.0.a in Frameworks */,
 				23046CB926EF30BA007C7232 /* CoreFoundation.framework in Frameworks */,
 				23046CBB26EF30D1007C7232 /* IOKit.framework in Frameworks */,
+				2380437A26FFC34B0009FEE4 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,12 +102,12 @@
 		235E0C7026E17A5E003EA2A2 /* ext */ = {
 			isa = PBXGroup;
 			children = (
-				23D54E7226EAAEC1008C2D1C /* SDL2.framework */,
-				23EE690A26FF0F55006E1619 /* libopencv_core.4.5.3.dylib */,
-				23EE690D26FF0FA2006E1619 /* libopencv_highgui.4.5.3.dylib */,
-				23EE691026FF1003006E1619 /* libopencv_imgproc.4.5.3.dylib */,
-				23046CB126EF2F79007C7232 /* libfreenect.a */,
-				23EE690226FF0867006E1619 /* libusb-1.0.a */,
+				2380437426FFC33D0009FEE4 /* SDL2.framework */,
+				2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */,
+				2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */,
+				2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */,
+				2380436C26FFC2DA0009FEE4 /* libfreenect.a */,
+				2380436A26FFC2CC0009FEE4 /* libusb-1.0.a */,
 			);
 			name = ext;
 			sourceTree = "<group>";
@@ -156,7 +156,7 @@
 				23BCC2FF26815417002681EC /* Sources */,
 				23BCC30026815417002681EC /* Frameworks */,
 				23BCC30126815417002681EC /* CopyFiles */,
-				23D54E7626EAB02E008C2D1C /* Embed Frameworks */,
+				2380437726FFC3470009FEE4 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -173,7 +173,7 @@
 		23BCC2FB26815417002681EC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					23BCC30226815417002681EC = {
 						CreatedOnToolsVersion = 12.5;
@@ -248,7 +248,8 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2/mac";
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2-2.0.16/mac";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -264,14 +265,14 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/ext/SDL2/mac/SDL2.framework/Headers",
+					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac/SDL2.framework/Headers",
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/include",
-					"$(PROJECT_DIR)/ext/libfreenect/include",
+					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/include",
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/lib",
-					"$(PROJECT_DIR)/ext/libfreenect/lib/mac",
+					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/lib/mac",
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/lib/mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
@@ -316,7 +317,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2/mac";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2-2.0.16/mac";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -326,14 +327,14 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/ext/SDL2/mac/SDL2.framework/Headers",
+					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac/SDL2.framework/Headers",
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/include",
-					"$(PROJECT_DIR)/ext/libfreenect/include",
+					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/include",
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/lib",
-					"$(PROJECT_DIR)/ext/libfreenect/lib/mac",
+					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/lib/mac",
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/lib/mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
@@ -345,6 +346,7 @@
 		23BCC30B26815417002681EC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -353,6 +355,7 @@
 		23BCC30C26815417002681EC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
