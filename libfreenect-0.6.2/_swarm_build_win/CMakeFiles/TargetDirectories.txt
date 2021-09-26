@@ -1,0 +1,7 @@
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/uninstall.dir
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/INSTALL.dir
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/ALL_BUILD.dir
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/ZERO_CHECK.dir
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/src/CMakeFiles/freenect.dir
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/src/CMakeFiles/freenectstatic.dir
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/src/CMakeFiles/INSTALL.dir
