@@ -1,0 +1,32 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CheckIncludeFileCXX.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/CheckTypeSize.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake/share/cmake-3.21/Modules/TestBigEndian.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/CMakeLists.txt
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/3.21.2/CMakeCCompiler.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/3.21.2/CMakeCXXCompiler.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/3.21.2/CMakeRCCompiler.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/_swarm_build_win/CMakeFiles/3.21.2/CMakeSystem.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/cmake_modules/FindOS.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/cmake_modules/Findlibusb-1.0.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/cmake_modules/SetupDirectories.cmake
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/cmake_modules/UninstallTarget.cmake.in
+C:/Users/chuck/Desktop/repository/libfreenect-0.6.2/libfreenectConfig.cmake.in
