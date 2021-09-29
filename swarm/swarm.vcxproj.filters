@@ -20,7 +20,7 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Swarm.cpp">
+    <ClCompile Include="src\swarm.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -34,7 +34,7 @@
     <ClInclude Include="src\graphics.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Swarm.h">
+    <ClInclude Include="src\swarm.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\const.h">
