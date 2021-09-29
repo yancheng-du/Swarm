@@ -1,9 +1,6 @@
 #ifndef camera_h
 #define camera_h
 
-#include <cstddef>
-#include <cstdint>
-
 #include "camera_frame.h"
 
 bool camera_initialize();

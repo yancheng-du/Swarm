@@ -1,20 +1,19 @@
 #include <SDL.h>
 
 #include "camera.h"
+#include "constants.h"
 #include "graphics.h"
-#include "Swarm.h"
+#include "swarm.h"
 
 int main(int argc, char *argv[])
-{	
-
+{
 	if (SDL_Init(SDL_INIT_VIDEO)==0)
 	{
 		camera_initialize();
 		graphics_initialize();
 
-		Swarm bee_swarm = Swarm();
-		bee_swarm.swarm_init();
-		
+		swarm_t swarm;
+
 		while (true)
 		{
 			SDL_Event event;
@@ -27,15 +26,13 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				edge_frame_t edge_frame;
 				video_frame_t video_frame;
 				depth_frame_t depth_frame;
+				edge_frame_t edge_frame;
 
 				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				bee_swarm.swarm_update(edge_frame);
-				draw_bees(&bee_swarm);
-				//graphics_render(&video_frame, &depth_frame);
-				
+				swarm.update(edge_frame, 1.0f/k_fps);
+				graphics_render(&video_frame, &depth_frame, &edge_frame, &swarm);
 			}
 		}
 

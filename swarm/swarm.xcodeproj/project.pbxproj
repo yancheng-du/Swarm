@@ -3,160 +3,164 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		23046CB926EF30BA007C7232 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CB826EF30BA007C7232 /* CoreFoundation.framework */; };
-		23046CBB26EF30D1007C7232 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23046CBA26EF30D1007C7232 /* IOKit.framework */; };
-		2380436B26FFC2CC0009FEE4 /* libusb-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380436A26FFC2CC0009FEE4 /* libusb-1.0.a */; };
-		2380436D26FFC2DA0009FEE4 /* libfreenect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380436C26FFC2DA0009FEE4 /* libfreenect.a */; };
-		2380436F26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */; };
-		2380437226FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */; };
-		2380437326FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */; };
-		2380437626FFC3470009FEE4 /* libopencv_core.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */; };
-		2380437826FFC3490009FEE4 /* libopencv_highgui.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */; };
-		2380437926FFC34A0009FEE4 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */; };
-		2380437A26FFC34B0009FEE4 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2380437426FFC33D0009FEE4 /* SDL2.framework */; };
-		2380437B26FFC34B0009FEE4 /* SDL2.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2380437426FFC33D0009FEE4 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		23BCC30726815417002681EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23BCC30626815417002681EC /* main.cpp */; };
-		23F5794126EBE5940017F781 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5793F26EBE5940017F781 /* camera.cpp */; };
-		23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F5794226EBF5CA0017F781 /* graphics.cpp */; };
-		23F98ABC26F92EF000B810E6 /* Swarm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F98ABA26F92EF000B810E6 /* Swarm.cpp */; };
+		23F8450827042E6D004DA116 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F844FF27042E6D004DA116 /* graphics.cpp */; };
+		23F8450927042E6D004DA116 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F8450027042E6D004DA116 /* camera.cpp */; };
+		23F8450A27042E6D004DA116 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F8450327042E6D004DA116 /* main.cpp */; };
+		23F8450B27042E6D004DA116 /* swarm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F8450727042E6D004DA116 /* swarm.cpp */; };
+		23F8450E27043171004DA116 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F8450D27043171004DA116 /* CoreFoundation.framework */; };
+		23F8451027043179004DA116 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F8450F27043179004DA116 /* IOKit.framework */; };
+		23F845122704319F004DA116 /* libusb-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F845112704318A004DA116 /* libusb-1.0.a */; };
+		23F84514270431F1004DA116 /* libfreenect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F84513270431B0004DA116 /* libfreenect.a */; };
+		23F845162704322D004DA116 /* libopencv_core.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F845152704322D004DA116 /* libopencv_core.4.5.3.dylib */; };
+		23F845172704322D004DA116 /* libopencv_core.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 23F845152704322D004DA116 /* libopencv_core.4.5.3.dylib */; };
+		23F8451A27043243004DA116 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F8451927043243004DA116 /* SDL2_ttf.framework */; };
+		23F8451B27043243004DA116 /* SDL2_ttf.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 23F8451927043243004DA116 /* SDL2_ttf.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23F8451D27043254004DA116 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F8451C27043254004DA116 /* SDL2.framework */; };
+		23F8451E27043254004DA116 /* SDL2.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 23F8451C27043254004DA116 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23F845202704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F8451F2704326E004DA116 /* libopencv_imgproc.4.5.3.dylib */; };
+		23F845212704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 23F8451F2704326E004DA116 /* libopencv_imgproc.4.5.3.dylib */; };
+		23F8452427043B12004DA116 /* camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 23F8450427042E6D004DA116 /* camera.h */; };
+		23F8452527043B12004DA116 /* camera_frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 23F8450127042E6D004DA116 /* camera_frame.h */; };
+		23F8452627043B12004DA116 /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 23F8450527042E6D004DA116 /* constants.h */; };
+		23F8452727043B12004DA116 /* graphics.h in Headers */ = {isa = PBXBuildFile; fileRef = 23F8450627042E6D004DA116 /* graphics.h */; };
+		23F8452827043B12004DA116 /* swarm.h in Headers */ = {isa = PBXBuildFile; fileRef = 23F8450227042E6D004DA116 /* swarm.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2380437726FFC3470009FEE4 /* Embed Libraries */ = {
+		23F845182704322D004DA116 /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2380437626FFC3470009FEE4 /* libopencv_core.4.5.3.dylib in Embed Libraries */,
-				2380437926FFC34A0009FEE4 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */,
-				2380437826FFC3490009FEE4 /* libopencv_highgui.4.5.3.dylib in Embed Libraries */,
-				2380437B26FFC34B0009FEE4 /* SDL2.framework in Embed Libraries */,
+				23F845172704322D004DA116 /* libopencv_core.4.5.3.dylib in Embed Libraries */,
+				23F845212704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */,
+				23F8451E27043254004DA116 /* SDL2.framework in Embed Libraries */,
+				23F8451B27043243004DA116 /* SDL2_ttf.framework in Embed Libraries */,
 			);
 			name = "Embed Libraries";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		23BCC30126815417002681EC /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 0;
-			dstSubfolderSpec = 0;
-			files = (
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		23046CB826EF30BA007C7232 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		23046CBA26EF30D1007C7232 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		2310419026EEA5B500F7DC42 /* camera_frame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
-		2380436A26FFC2CC0009FEE4 /* libusb-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libusb-1.0.a"; path = "ext/libusb-1.0.24/lib/mac/libusb-1.0.a"; sourceTree = "<group>"; };
-		2380436C26FFC2DA0009FEE4 /* libfreenect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreenect.a; path = "ext/libfreenect-0.6.2/lib/mac/libfreenect.a"; sourceTree = "<group>"; };
-		2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_core.4.5.3.dylib"; sourceTree = "<group>"; };
-		2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_imgproc.4.5.3.dylib"; sourceTree = "<group>"; };
-		2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_highgui.4.5.3.dylib"; sourceTree = "<group>"; };
-		2380437426FFC33D0009FEE4 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = "ext/SDL2-2.0.16/mac/SDL2.framework"; sourceTree = "<group>"; };
-		23BCC30326815417002681EC /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
-		23BCC30626815417002681EC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		23F5793F26EBE5940017F781 /* camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
-		23F5794026EBE5940017F781 /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
-		23F5794226EBF5CA0017F781 /* graphics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
-		23F5794326EBF5CA0017F781 /* graphics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = graphics.h; sourceTree = "<group>"; };
-		23F98AB926F92EF000B810E6 /* Swarm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swarm.h; sourceTree = "<group>"; };
-		23F98ABA26F92EF000B810E6 /* Swarm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Swarm.cpp; sourceTree = "<group>"; };
-		23F98ABB26F92EF000B810E6 /* const.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = const.h; sourceTree = "<group>"; };
+		23F844F527042E23004DA116 /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
+		23F844FF27042E6D004DA116 /* graphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
+		23F8450027042E6D004DA116 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
+		23F8450127042E6D004DA116 /* camera_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
+		23F8450227042E6D004DA116 /* swarm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = swarm.h; sourceTree = "<group>"; };
+		23F8450327042E6D004DA116 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		23F8450427042E6D004DA116 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		23F8450527042E6D004DA116 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		23F8450627042E6D004DA116 /* graphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphics.h; sourceTree = "<group>"; };
+		23F8450727042E6D004DA116 /* swarm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = swarm.cpp; sourceTree = "<group>"; };
+		23F8450D27043171004DA116 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		23F8450F27043179004DA116 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		23F845112704318A004DA116 /* libusb-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libusb-1.0.a"; path = "ext/libusb-1.0.24/lib/mac/libusb-1.0.a"; sourceTree = "<group>"; };
+		23F84513270431B0004DA116 /* libfreenect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreenect.a; path = "ext/libfreenect-0.6.2/lib/mac/libfreenect.a"; sourceTree = "<group>"; };
+		23F845152704322D004DA116 /* libopencv_core.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_core.4.5.3.dylib"; sourceTree = "<group>"; };
+		23F8451927043243004DA116 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = "ext/SDL2_ttf-2.0.15/mac/SDL2_ttf.framework"; sourceTree = "<group>"; };
+		23F8451C27043254004DA116 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = "ext/SDL2-2.0.16/mac/SDL2.framework"; sourceTree = "<group>"; };
+		23F8451F2704326E004DA116 /* libopencv_imgproc.4.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.4.5.3.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_imgproc.4.5.3.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		23BCC30026815417002681EC /* Frameworks */ = {
+		23F844F227042E23004DA116 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2380437226FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib in Frameworks */,
-				2380437326FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib in Frameworks */,
-				2380436F26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib in Frameworks */,
-				2380436D26FFC2DA0009FEE4 /* libfreenect.a in Frameworks */,
-				2380436B26FFC2CC0009FEE4 /* libusb-1.0.a in Frameworks */,
-				23046CB926EF30BA007C7232 /* CoreFoundation.framework in Frameworks */,
-				23046CBB26EF30D1007C7232 /* IOKit.framework in Frameworks */,
-				2380437A26FFC34B0009FEE4 /* SDL2.framework in Frameworks */,
+				23F8450E27043171004DA116 /* CoreFoundation.framework in Frameworks */,
+				23F8451027043179004DA116 /* IOKit.framework in Frameworks */,
+				23F845122704319F004DA116 /* libusb-1.0.a in Frameworks */,
+				23F84514270431F1004DA116 /* libfreenect.a in Frameworks */,
+				23F845162704322D004DA116 /* libopencv_core.4.5.3.dylib in Frameworks */,
+				23F845202704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Frameworks */,
+				23F8451D27043254004DA116 /* SDL2.framework in Frameworks */,
+				23F8451A27043243004DA116 /* SDL2_ttf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		23046CB726EF30BA007C7232 /* Frameworks */ = {
+		23F844EC27042E23004DA116 = {
 			isa = PBXGroup;
 			children = (
-				23046CB826EF30BA007C7232 /* CoreFoundation.framework */,
-				23046CBA26EF30D1007C7232 /* IOKit.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		235E0C7026E17A5E003EA2A2 /* ext */ = {
-			isa = PBXGroup;
-			children = (
-				2380437426FFC33D0009FEE4 /* SDL2.framework */,
-				2380436E26FFC2FE0009FEE4 /* libopencv_core.4.5.3.dylib */,
-				2380437126FFC3290009FEE4 /* libopencv_highgui.4.5.3.dylib */,
-				2380437026FFC3290009FEE4 /* libopencv_imgproc.4.5.3.dylib */,
-				2380436C26FFC2DA0009FEE4 /* libfreenect.a */,
-				2380436A26FFC2CC0009FEE4 /* libusb-1.0.a */,
-			);
-			name = ext;
-			sourceTree = "<group>";
-		};
-		23BCC2FA26815417002681EC = {
-			isa = PBXGroup;
-			children = (
-				23BCC30526815417002681EC /* src */,
-				23BCC30426815417002681EC /* bin */,
-				235E0C7026E17A5E003EA2A2 /* ext */,
-				23046CB726EF30BA007C7232 /* Frameworks */,
+				23F844F727042E23004DA116 /* src */,
+				23F844F627042E23004DA116 /* bin */,
+				23F8450C27043171004DA116 /* ext */,
 			);
 			sourceTree = "<group>";
 		};
-		23BCC30426815417002681EC /* bin */ = {
+		23F844F627042E23004DA116 /* bin */ = {
 			isa = PBXGroup;
 			children = (
-				23BCC30326815417002681EC /* swarm */,
+				23F844F527042E23004DA116 /* swarm */,
 			);
 			name = bin;
 			sourceTree = "<group>";
 		};
-		23BCC30526815417002681EC /* src */ = {
+		23F844F727042E23004DA116 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				23F5793F26EBE5940017F781 /* camera.cpp */,
-				23F5794026EBE5940017F781 /* camera.h */,
-				2310419026EEA5B500F7DC42 /* camera_frame.h */,
-				23F98ABB26F92EF000B810E6 /* const.h */,
-				23F5794226EBF5CA0017F781 /* graphics.cpp */,
-				23F5794326EBF5CA0017F781 /* graphics.h */,
-				23BCC30626815417002681EC /* main.cpp */,
-				23F98ABA26F92EF000B810E6 /* Swarm.cpp */,
-				23F98AB926F92EF000B810E6 /* Swarm.h */,
+				23F8450027042E6D004DA116 /* camera.cpp */,
+				23F8450427042E6D004DA116 /* camera.h */,
+				23F8450127042E6D004DA116 /* camera_frame.h */,
+				23F8450527042E6D004DA116 /* constants.h */,
+				23F844FF27042E6D004DA116 /* graphics.cpp */,
+				23F8450627042E6D004DA116 /* graphics.h */,
+				23F8450327042E6D004DA116 /* main.cpp */,
+				23F8450727042E6D004DA116 /* swarm.cpp */,
+				23F8450227042E6D004DA116 /* swarm.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
 		};
+		23F8450C27043171004DA116 /* ext */ = {
+			isa = PBXGroup;
+			children = (
+				23F8450D27043171004DA116 /* CoreFoundation.framework */,
+				23F8450F27043179004DA116 /* IOKit.framework */,
+				23F845112704318A004DA116 /* libusb-1.0.a */,
+				23F84513270431B0004DA116 /* libfreenect.a */,
+				23F845152704322D004DA116 /* libopencv_core.4.5.3.dylib */,
+				23F8451F2704326E004DA116 /* libopencv_imgproc.4.5.3.dylib */,
+				23F8451C27043254004DA116 /* SDL2.framework */,
+				23F8451927043243004DA116 /* SDL2_ttf.framework */,
+			);
+			name = ext;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		23F8452327043AF9004DA116 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23F8452427043B12004DA116 /* camera.h in Headers */,
+				23F8452527043B12004DA116 /* camera_frame.h in Headers */,
+				23F8452627043B12004DA116 /* constants.h in Headers */,
+				23F8452727043B12004DA116 /* graphics.h in Headers */,
+				23F8452827043B12004DA116 /* swarm.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		23BCC30226815417002681EC /* swarm */ = {
+		23F844F427042E23004DA116 /* swarm */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23BCC30A26815417002681EC /* Build configuration list for PBXNativeTarget "swarm" */;
+			buildConfigurationList = 23F844FC27042E23004DA116 /* Build configuration list for PBXNativeTarget "swarm" */;
 			buildPhases = (
-				23BCC2FF26815417002681EC /* Sources */,
-				23BCC30026815417002681EC /* Frameworks */,
-				23BCC30126815417002681EC /* CopyFiles */,
-				2380437726FFC3470009FEE4 /* Embed Libraries */,
+				23F8452327043AF9004DA116 /* Headers */,
+				23F844F127042E23004DA116 /* Sources */,
+				23F844F227042E23004DA116 /* Frameworks */,
+				23F845182704322D004DA116 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -164,62 +168,63 @@
 			);
 			name = swarm;
 			productName = swarm;
-			productReference = 23BCC30326815417002681EC /* swarm */;
+			productReference = 23F844F527042E23004DA116 /* swarm */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		23BCC2FB26815417002681EC /* Project object */ = {
+		23F844ED27042E23004DA116 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
-					23BCC30226815417002681EC = {
-						CreatedOnToolsVersion = 12.5;
+					23F844F427042E23004DA116 = {
+						CreatedOnToolsVersion = 13.0;
 					};
 				};
 			};
-			buildConfigurationList = 23BCC2FE26815417002681EC /* Build configuration list for PBXProject "swarm" */;
-			compatibilityVersion = "Xcode 12.0";
+			buildConfigurationList = 23F844F027042E23004DA116 /* Build configuration list for PBXProject "swarm" */;
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 23BCC2FA26815417002681EC;
-			productRefGroup = 23BCC30426815417002681EC /* bin */;
+			mainGroup = 23F844EC27042E23004DA116;
+			productRefGroup = 23F844F627042E23004DA116 /* bin */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				23BCC30226815417002681EC /* swarm */,
+				23F844F427042E23004DA116 /* swarm */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		23BCC2FF26815417002681EC /* Sources */ = {
+		23F844F127042E23004DA116 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23F5794126EBE5940017F781 /* camera.cpp in Sources */,
-				23F5794426EBF5CA0017F781 /* graphics.cpp in Sources */,
-				23BCC30726815417002681EC /* main.cpp in Sources */,
-				23F98ABC26F92EF000B810E6 /* Swarm.cpp in Sources */,
+				23F8450927042E6D004DA116 /* camera.cpp in Sources */,
+				23F8450827042E6D004DA116 /* graphics.cpp in Sources */,
+				23F8450A27042E6D004DA116 /* main.cpp in Sources */,
+				23F8450B27042E6D004DA116 /* swarm.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		23BCC30826815417002681EC /* Debug */ = {
+		23F844FA27042E23004DA116 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -230,7 +235,7 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -249,7 +254,10 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2-2.0.16/mac";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac",
+					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -266,6 +274,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac/SDL2.framework/Headers",
+					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac/SDL2_ttf.framework/Headers",
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/include",
 					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/include",
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/include",
@@ -276,18 +285,20 @@
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/lib/mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
-		23BCC30926815417002681EC /* Release */ = {
+		23F844FB27042E23004DA116 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -298,7 +309,7 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -317,7 +328,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/ext/SDL2-2.0.16/mac";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac",
+					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -328,6 +342,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac/SDL2.framework/Headers",
+					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac/SDL2_ttf.framework/Headers",
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/include",
 					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/include",
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/include",
@@ -338,24 +353,24 @@
 					"$(PROJECT_DIR)/ext/libusb-1.0.24/lib/mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		23BCC30B26815417002681EC /* Debug */ = {
+		23F844FD27042E23004DA116 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		23BCC30C26815417002681EC /* Release */ = {
+		23F844FE27042E23004DA116 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -364,25 +379,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		23BCC2FE26815417002681EC /* Build configuration list for PBXProject "swarm" */ = {
+		23F844F027042E23004DA116 /* Build configuration list for PBXProject "swarm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				23BCC30826815417002681EC /* Debug */,
-				23BCC30926815417002681EC /* Release */,
+				23F844FA27042E23004DA116 /* Debug */,
+				23F844FB27042E23004DA116 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23BCC30A26815417002681EC /* Build configuration list for PBXNativeTarget "swarm" */ = {
+		23F844FC27042E23004DA116 /* Build configuration list for PBXNativeTarget "swarm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				23BCC30B26815417002681EC /* Debug */,
-				23BCC30C26815417002681EC /* Release */,
+				23F844FD27042E23004DA116 /* Debug */,
+				23F844FE27042E23004DA116 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 23BCC2FB26815417002681EC /* Project object */;
+	rootObject = 23F844ED27042E23004DA116 /* Project object */;
 }
