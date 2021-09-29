@@ -6,8 +6,7 @@
 #include <SDL_log.h>
 
 #include <opencv2/core.hpp>
-#include<opencv2/highgui/highgui.hpp>
-#include<opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #include "camera.h"
 
@@ -148,7 +147,7 @@ void camera_dispose()
 int camera_read_frame(
 	video_frame_t *video_frame,
 	depth_frame_t *depth_frame,
-	edge_frame_t*edge_frame)
+	edge_frame_t *edge_frame)
 {
 	int frame_count;
 
@@ -169,7 +168,6 @@ int camera_read_frame(
 		edges,						  // output image
 		100,                          // low threshold
 		250);
-	cv::imshow("edges", edges);
 	std::memcpy(edge_frame, edges.data, sizeof(*edge_frame));
 
 	return frame_count;
