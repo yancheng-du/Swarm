@@ -1,24 +1,23 @@
 #include <cassert>
 #include <libfreenect.h>
 #include <SDL.h>
-#include<opencv2/highgui/highgui.hpp>
-#include<opencv2/imgproc/imgproc.hpp>
 
 #include "graphics.h"
-#include "Swarm.h"
+#include "constants.h"
 
+static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const video_frame_t *video_frame);
 static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_frame_t *depth_frame);
+static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const edge_frame_t *edge_frame);
 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
 static int g_frame_count= 0;
 
-
 bool graphics_initialize()
 {
 	bool success= false;
 
-	if (SDL_CreateWindowAndRenderer(k_camera_width, k_camera_height, 0, &g_window, &g_renderer)==0)
+	if (SDL_CreateWindowAndRenderer(2*k_camera_width, 2*k_camera_height, 0, &g_window, &g_renderer)==0)
 	{
 		success= true;
 	}
@@ -45,76 +44,116 @@ void graphics_dispose()
 	}
 }
 
-int draw_bees(Swarm* bee_swarm) {
-	SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
-	SDL_RenderClear(g_renderer);
-	SDL_SetRenderDrawColor(g_renderer, 255, 150, 100, 255);
-	SDL_RenderDrawPoints(g_renderer, bee_swarm->get_points(), BEE_NUM);
-	SDL_RenderPresent(g_renderer);
+int draw_bees(swarm_t* bee_swarm)
+{
+
 	return 0;
 }
 
-int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth_frame)
+int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth_frame, const edge_frame_t *edge_frame, const swarm_t *swarm)
 {
 	if (g_renderer)
 	{
-		SDL_Surface *video_surface, *depth_surface;
-
-		SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
-		SDL_RenderClear(g_renderer);
-
-		Uint32 rmask, gmask, bmask, amask;
-		rmask = 0x000000ff;
-		gmask = 0x0000ff00;
-		bmask = 0x00ff0000;
-		amask = 0xff000000;
-
-		video_surface= SDL_CreateRGBSurfaceFrom((void *)video_frame, k_camera_width, k_camera_height, 24, 3*k_camera_width, rmask, gmask, bmask, 0);
-
-		if (video_surface)
+		// render black background
 		{
-			SDL_Texture *video_texture= SDL_CreateTextureFromSurface(g_renderer, video_surface);
-			SDL_FreeSurface(video_surface);
+			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
+			SDL_RenderClear(g_renderer);
+		}
 
-			if (video_texture)
+		// render video
+		{
+			SDL_Surface *video_surface= graphics_create_SDL_surface_from_video_frame(video_frame);
+
+			if (video_surface)
 			{
-				SDL_Rect video_rect= {0, 0, k_camera_width, k_camera_height};
+				SDL_Texture *video_texture= SDL_CreateTextureFromSurface(g_renderer, video_surface);
+				SDL_FreeSurface(video_surface);
 
-				SDL_RenderCopy(g_renderer, video_texture, NULL, &video_rect);
-				SDL_DestroyTexture(video_texture);
+				if (video_texture)
+				{
+					SDL_Rect video_rect= {0, 0, k_camera_width, k_camera_height};
+
+					SDL_RenderCopy(g_renderer, video_texture, NULL, &video_rect);
+					SDL_DestroyTexture(video_texture);
+				}
+				else
+				{
+					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video texture: %s", SDL_GetError());
+				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video texture: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video surface: %s", SDL_GetError());
 			}
 		}
-		else
+
+		// render depth
 		{
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video surface: %s", SDL_GetError());
-		}
+			SDL_Surface *depth_surface= graphics_create_SDL_surface_from_depth_frame(depth_frame);
 
-		depth_surface= graphics_create_SDL_surface_from_depth_frame(depth_frame);
-
-		if (depth_surface)
-		{
-			SDL_Texture *depth_texture= SDL_CreateTextureFromSurface(g_renderer, depth_surface);
-			SDL_FreeSurface(depth_surface);
-
-			if (depth_texture)
+			if (depth_surface)
 			{
-				SDL_Rect depth_rect= {0, k_camera_height, k_camera_width, k_camera_height};
+				SDL_Texture *depth_texture= SDL_CreateTextureFromSurface(g_renderer, depth_surface);
+				SDL_FreeSurface(depth_surface);
 
-				SDL_RenderCopy(g_renderer, depth_texture, NULL, &depth_rect);
-				SDL_DestroyTexture(depth_texture);
+				if (depth_texture)
+				{
+					SDL_Rect depth_rect= {0, k_camera_height, k_camera_width, k_camera_height};
+
+					SDL_RenderCopy(g_renderer, depth_texture, NULL, &depth_rect);
+					SDL_DestroyTexture(depth_texture);
+				}
+				else
+				{
+					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth texture: %s", SDL_GetError());
+				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth texture: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth surface: %s", SDL_GetError());
 			}
 		}
-		else
+
+		// render edges
 		{
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth surface: %s", SDL_GetError());
+			SDL_Surface *edge_surface= graphics_create_SDL_surface_from_edge_frame(edge_frame);
+
+			if (edge_surface)
+			{
+				SDL_Texture *edge_texture= SDL_CreateTextureFromSurface(g_renderer, edge_surface);
+				SDL_FreeSurface(edge_surface);
+
+				if (edge_texture)
+				{
+					SDL_Rect edge_rect= {k_camera_width, 0, k_camera_width, k_camera_height};
+
+					SDL_RenderCopy(g_renderer, edge_texture, NULL, &edge_rect);
+					SDL_DestroyTexture(edge_texture);
+				}
+				else
+				{
+					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create edge texture: %s", SDL_GetError());
+				}
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create edge surface: %s", SDL_GetError());
+			}
+		}
+
+		// render bees
+		if (swarm)
+		{
+			SDL_Point points[k_bee_count];
+
+			for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
+			{
+				points[bee_index].x= k_camera_width+swarm->bees[bee_index].p_x;
+				points[bee_index].y= k_camera_height+swarm->bees[bee_index].p_y;
+			}
+
+			SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255);
+			SDL_RenderDrawPoints(g_renderer, points, k_bee_count);
 		}
 
 		SDL_RenderPresent(g_renderer);
@@ -123,17 +162,26 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 	return g_frame_count++;
 }
 
+static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const video_frame_t *video_frame)
+{
+	const Uint32 k_red_mask= 0x000000ff;
+	const Uint32 k_green_mask= 0x0000ff00;
+	const Uint32 k_blue_mask= 0x00ff0000;
+	const Uint32 k_alpha_mask= 0x00000000;
+
+	return SDL_CreateRGBSurfaceFrom((void *)video_frame, k_camera_width, k_camera_height, 24, 3*k_camera_width, k_red_mask, k_green_mask, k_blue_mask, k_alpha_mask);
+}
+
 static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_frame_t *depth_frame)
 {
 	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, k_camera_width, k_camera_height, 24, SDL_PIXELFORMAT_RGB24);
-
-	assert(!SDL_MUSTLOCK(surface));
 
 	if (surface)
 	{
 		const uint16_t *depth= (const uint16_t *)depth_frame;
 		uint8_t *color= (uint8_t *)surface->pixels;
 
+		assert(!SDL_MUSTLOCK(surface));
 		assert(surface->pitch==3*k_camera_width);
 
 		for (int y= 0; y<k_camera_height; ++y)
@@ -145,6 +193,34 @@ static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const depth_fra
 				*color++= depth8;
 				*color++= depth8;
 				*color++= depth8;
+			}
+		}
+	}
+
+	return surface;
+}
+
+static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const edge_frame_t *edge_frame)
+{
+	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, k_camera_width, k_camera_height, 24, SDL_PIXELFORMAT_RGB24);
+
+	if (surface)
+	{
+		const uint8_t *edge= (const uint8_t *)edge_frame;
+		uint8_t *color= (uint8_t *)surface->pixels;
+
+		assert(!SDL_MUSTLOCK(surface));
+		assert(surface->pitch==3*k_camera_width);
+
+		for (int y= 0; y<k_camera_height; ++y)
+		{
+			for (int x= 0; x<k_camera_width; ++x)
+			{
+				uint8_t temp= *edge++;
+
+				*color++= temp;
+				*color++= temp;
+				*color++= temp;
 			}
 		}
 	}

@@ -1,54 +1,28 @@
-#ifndef SWARM_HEADER
-#define SWARM_HEADER
+#ifndef swarm_h
+#define swarm_h
 
-#include "SDL.h"
-#include <stdio.h>      /* printf, scanf, puts, NULL */
-#include <stdlib.h>     /* srand, rand */
-
-#include "const.h"
 #include "camera_frame.h"
 
-
-class Bee {
-public:
-	Bee();
-	~Bee();
-
-	void bee_init();
-	void bee_update(edge_frame_t edge_frame);
-	SDL_Point get_pos() {
-		return pos;
-	}
-
-private:
-	int x, y;
-	int v_x, v_y;
-	SDL_Point pos;
-};
-
-
-
-
-class Swarm
+class bee_t
 {
-
 public:
-	Swarm();
-	~Swarm();
+	bee_t();
 
-	void swarm_init();
-	void swarm_update(edge_frame_t edge_frame);
-	void swarm_clear();
-	SDL_Point* get_points() {
-		return points;
-	}
+	void update(const edge_frame_t edge_frame, float dt);
 
-private:
-	int bee_num;
-	Bee* bees_ptr;
-	SDL_Point* points;
-
+	int p_x, p_y;
+	int v_x, v_y;
 };
 
+class swarm_t
+{
+public:
+	swarm_t();
+	~swarm_t();
 
-#endif
+	void update(const edge_frame_t edge_frame, float dt);
+
+	bee_t *bees;
+};
+
+#endif /* swarm_h */
