@@ -1,73 +1,61 @@
+#include <cstdlib>
 
-#include "Swarm.h"
+#include "swarm.h"
+#include "constants.h"
 
-
-
-Bee::Bee() {}
-Bee::~Bee() {}
-
-void Bee::bee_init() {
-	x = rand() % k_camera_width;
-	y = rand() % k_camera_height;
-	v_x = (rand() % BEE_VELOCITY - BEE_VELOCITY / 2);
-	v_y = (rand() % BEE_VELOCITY - BEE_VELOCITY / 2);
-	pos.x = x;
-	pos.y = y;
+bee_t::bee_t()
+{
+	p_x= rand()%k_camera_width;
+	p_y= rand()%k_camera_height;
+	v_x= rand()%k_bee_velocity - k_bee_velocity/2;
+	v_y= rand()%k_bee_velocity - k_bee_velocity/2;
 }
 
-void Bee::bee_update(edge_frame_t edge_frame) {
-	if (edge_frame[y* k_camera_width + x] != 0) {
-		v_x = 0;
-		v_y = 0;
+void bee_t::update(const edge_frame_t edge_frame, float dt)
+{
+	if (edge_frame[p_y*k_camera_width+p_x]!=0)
+	{
+		v_x= 0;
+		v_y= 0;
 	}
-	else {
+	else
+	{
 		//bees have an 2% chance to
-		if (rand() % 100 < 2) {
-			v_x += (rand() % BEE_VELOCITY - BEE_VELOCITY / 2);
-			v_y += (rand() % BEE_VELOCITY - BEE_VELOCITY / 2);
+		if (rand()%100<2)
+		{
+			v_x+= rand()%k_bee_velocity - k_bee_velocity/2;
+			v_y+= rand()%k_bee_velocity - k_bee_velocity/2;
 		}
-
 	}
 
-	if (x + v_x < 0 || x + v_x >= k_camera_width) {
-		v_x = -v_x;
+	if (p_x+v_x<0 || p_x+v_x>=k_camera_width)
+	{
+		v_x= -v_x;
 	}
 
-	if (y + v_y < 0 || y + v_y >= k_camera_height) {
-		v_y = -v_y;
+	if (p_y+v_y<0 || p_y+v_y>=k_camera_height)
+	{
+		v_y= -v_y;
 	}
 
-	x += v_x;
-	y += v_y;
-
-	pos.x = x;
-	pos.y = y;
+	p_x+= v_x;
+	p_y+= v_y;
 }
 
+swarm_t::swarm_t()
+{
+	bees= new bee_t[k_bee_count];
+}
 
-Swarm::Swarm() {}
-Swarm::~Swarm() {}
+swarm_t::~swarm_t()
+{
+	delete(bees);
+}
 
-void Swarm::swarm_init() {
-	bee_num = BEE_NUM;
-	bees_ptr = new Bee[bee_num];
-	points = new SDL_Point[bee_num];
-	for (int i = 0; i < bee_num; i++) {
-		bees_ptr[i].bee_init();
-		points[i] = bees_ptr[i].get_pos();
+void swarm_t::update(const edge_frame_t edge_frame, float dt)
+{
+	for (int i= 0; i<k_bee_count; i++)
+	{
+		bees[i].update(edge_frame, dt);
 	}
 }
-
-void Swarm::swarm_update(edge_frame_t edge_frame) {
-	for (int i = 0; i < bee_num; i++) {
-		bees_ptr[i].bee_update(edge_frame);
-		points[i] = bees_ptr[i].get_pos();
-	}
-}
-
-void Swarm::swarm_clear() {
-	delete(bees_ptr);
-	delete(points);
-
-}
-
