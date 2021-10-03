@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "graphics.h"
 #include "swarm.h"
+#include <tensorflow/c/c_api.h>
 
 int main(int argc, char *argv[])
 {
