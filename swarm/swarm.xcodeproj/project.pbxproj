@@ -132,27 +132,11 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		23F8452327043AF9004DA116 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				23F8452427043B12004DA116 /* camera.h in Headers */,
-				23F8452527043B12004DA116 /* camera_frame.h in Headers */,
-				23F8452627043B12004DA116 /* constants.h in Headers */,
-				23F8452727043B12004DA116 /* graphics.h in Headers */,
-				23F8452827043B12004DA116 /* swarm.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		23F844F427042E23004DA116 /* swarm */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 23F844FC27042E23004DA116 /* Build configuration list for PBXNativeTarget "swarm" */;
 			buildPhases = (
-				23F8452327043AF9004DA116 /* Headers */,
 				23F844F127042E23004DA116 /* Sources */,
 				23F844F227042E23004DA116 /* Frameworks */,
 				23F845182704322D004DA116 /* Embed Libraries */,
