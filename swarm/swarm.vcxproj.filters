@@ -37,7 +37,7 @@
     <ClInclude Include="src\swarm.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\const.h">
+    <ClInclude Include="src\constants.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
