@@ -31,8 +31,13 @@
 #ifndef SDL_TTF_H_
 #define SDL_TTF_H_
 
+<<<<<<< HEAD
 #include <SDL.h>
 #include <begin_code.h>
+=======
+#include <SDL2/SDL.h>
+#include <SDL2/begin_code.h>
+>>>>>>> 8177facc49b62b8c4585818dac78daa080707eec
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -287,7 +292,11 @@ extern DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous
 #ifdef __cplusplus
 }
 #endif
+<<<<<<< HEAD
 #include <close_code.h>
+=======
+#include <SDL2/close_code.h>
+>>>>>>> 8177facc49b62b8c4585818dac78daa080707eec
 
 #endif /* SDL_TTF_H_ */
 
