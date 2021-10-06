@@ -1,6 +1,7 @@
 #include <cassert>
 #include <libfreenect.h>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "graphics.h"
 #include "constants.h"
@@ -11,7 +12,10 @@ static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const edge_frame
 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
+TTF_Font *g_font= NULL;
 static int g_frame_count= 0;
+static uint64_t g_last_frame_time= 0;
+static double g_frame_rate= k_fps;
 
 bool graphics_initialize()
 {
@@ -19,11 +23,31 @@ bool graphics_initialize()
 
 	if (SDL_CreateWindowAndRenderer(2*k_camera_width, 2*k_camera_height, 0, &g_window, &g_renderer)==0)
 	{
-		success= true;
+		if (TTF_Init()==0)
+		{
+			g_font= TTF_OpenFont("res/monofonto.otf", 48);
+
+			if (g_font)
+			{
+				g_frame_count= 0;
+				g_last_frame_time= SDL_GetPerformanceCounter();
+				g_frame_rate= k_fps;
+
+				success= true;
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't open font: %s", TTF_GetError());
+			}
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't initialize TTF: %s", TTF_GetError());
+		}
 	}
 	else
 	{
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create window and renderer: %s", SDL_GetError());
 	}
 
 	return success;
@@ -31,6 +55,17 @@ bool graphics_initialize()
 
 void graphics_dispose()
 {
+	if (g_font)
+	{
+		TTF_CloseFont(g_font);
+		g_font= NULL;
+	}
+
+	if (TTF_WasInit())
+	{
+		TTF_Quit();
+	}
+
 	if (g_renderer)
 	{
 		SDL_DestroyRenderer(g_renderer);
@@ -42,12 +77,6 @@ void graphics_dispose()
 		SDL_DestroyWindow(g_window);
 		g_window= NULL;
 	}
-}
-
-int draw_bees(swarm_t* bee_swarm)
-{
-
-	return 0;
 }
 
 int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth_frame, const edge_frame_t *edge_frame, const swarm_t *swarm)
@@ -78,12 +107,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create video texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create video surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create video surface: %s", SDL_GetError());
 			}
 		}
 
@@ -105,12 +134,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create depth texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create depth surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create depth surface: %s", SDL_GetError());
 			}
 		}
 
@@ -132,12 +161,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create edge texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create edge texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create edge surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create edge surface: %s", SDL_GetError());
 			}
 		}
 
@@ -156,7 +185,46 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 			SDL_RenderDrawPoints(g_renderer, points, k_bee_count);
 		}
 
+		// render frame rate
+		if (g_font)
+		{
+			char frame_rate_string[8]= {0, 0, 0, 0, 0, 0, 0, 0};
+			SDL_Color green= {0x0, 0xff, 0x0, 0xff};
+			snprintf(frame_rate_string, sizeof(frame_rate_string)-1, "%.0f", g_frame_rate);
+			SDL_Surface *text_surface= TTF_RenderText_Blended(g_font, frame_rate_string, green);
+
+			if (text_surface)
+			{
+				SDL_Texture *text_texture= SDL_CreateTextureFromSurface(g_renderer, text_surface);
+				SDL_FreeSurface(text_surface);
+
+				if (text_texture)
+				{
+
+					SDL_Rect text_rect= {2*static_cast<int>(k_camera_width)-text_surface->w-8, 2*static_cast<int>(k_camera_height)-text_surface->h-8, text_surface->w, text_surface->h};
+
+					SDL_RenderCopy(g_renderer, text_texture, NULL, &text_rect);
+				}
+				else
+				{
+					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create text texture: %s", SDL_GetError());
+				}
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create text surface: %s", SDL_GetError());
+			}
+		}
+
 		SDL_RenderPresent(g_renderer);
+
+		// update fps
+		{
+			uint64_t current_frame_time= SDL_GetPerformanceCounter();
+
+			g_frame_rate= static_cast<double>(SDL_GetPerformanceFrequency())/(current_frame_time-g_last_frame_time);
+			g_last_frame_time= current_frame_time;
+		}
 	}
 
 	return g_frame_count++;
