@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 			}
 
 			// process events while waiting to start next frame
-			while (!timer.passed(1.0/k_fps))
+			do
 			{
 				SDL_Event event;
 
@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
+			while (!timer.passed(1.0/k_fps));
 		}
 
 		graphics_dispose();
