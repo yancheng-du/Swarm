@@ -32,10 +32,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				23F845172704322D004DA116 /* libopencv_core.4.5.3.dylib in Embed Libraries */,
-				23F845212704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */,
-				23F8451E27043254004DA116 /* SDL2.framework in Embed Libraries */,
 				23F8451B27043243004DA116 /* SDL2_ttf.framework in Embed Libraries */,
+				23F8451E27043254004DA116 /* SDL2.framework in Embed Libraries */,
+				23F845212704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Embed Libraries */,
+				23F845172704322D004DA116 /* libopencv_core.4.5.3.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,14 +68,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23F8450E27043171004DA116 /* CoreFoundation.framework in Frameworks */,
-				23F8451027043179004DA116 /* IOKit.framework in Frameworks */,
-				23F845122704319F004DA116 /* libusb-1.0.a in Frameworks */,
-				23F84514270431F1004DA116 /* libfreenect.a in Frameworks */,
-				23F845162704322D004DA116 /* libopencv_core.4.5.3.dylib in Frameworks */,
-				23F845202704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Frameworks */,
-				23F8451D27043254004DA116 /* SDL2.framework in Frameworks */,
 				23F8451A27043243004DA116 /* SDL2_ttf.framework in Frameworks */,
+				23F8451D27043254004DA116 /* SDL2.framework in Frameworks */,
+				23F845202704326E004DA116 /* libopencv_imgproc.4.5.3.dylib in Frameworks */,
+				23F845162704322D004DA116 /* libopencv_core.4.5.3.dylib in Frameworks */,
+				23F84514270431F1004DA116 /* libfreenect.a in Frameworks */,
+				23F845122704319F004DA116 /* libusb-1.0.a in Frameworks */,
+				23F8451027043179004DA116 /* IOKit.framework in Frameworks */,
+				23F8450E27043171004DA116 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,14 +118,14 @@
 		23F8450C27043171004DA116 /* ext */ = {
 			isa = PBXGroup;
 			children = (
-				23F8450D27043171004DA116 /* CoreFoundation.framework */,
-				23F8450F27043179004DA116 /* IOKit.framework */,
-				23F845112704318A004DA116 /* libusb-1.0.a */,
-				23F84513270431B0004DA116 /* libfreenect.a */,
-				23F845152704322D004DA116 /* libopencv_core.4.5.3.dylib */,
-				23F8451F2704326E004DA116 /* libopencv_imgproc.4.5.3.dylib */,
-				23F8451C27043254004DA116 /* SDL2.framework */,
 				23F8451927043243004DA116 /* SDL2_ttf.framework */,
+				23F8451C27043254004DA116 /* SDL2.framework */,
+				23F8451F2704326E004DA116 /* libopencv_imgproc.4.5.3.dylib */,
+				23F845152704322D004DA116 /* libopencv_core.4.5.3.dylib */,
+				23F84513270431B0004DA116 /* libfreenect.a */,
+				23F845112704318A004DA116 /* libusb-1.0.a */,
+				23F8450F27043179004DA116 /* IOKit.framework */,
+				23F8450D27043171004DA116 /* CoreFoundation.framework */,
 			);
 			name = ext;
 			sourceTree = "<group>";
