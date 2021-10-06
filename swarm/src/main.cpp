@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 	{
 		bool running= true;
 		timer_t timer;
+		swarm_t swarm;
 
 		#ifdef DEBUG
 		SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
@@ -46,11 +47,23 @@ int main(int argc, char *argv[])
 		camera_initialize();
 		graphics_initialize();
 
-		swarm_t swarm;
-
 		while (running)
 		{
-			if (SDL_WaitEventTimeout(NULL, 1))
+			timer.reset();
+
+			// process frame
+			{
+				video_frame_t video_frame;
+				depth_frame_t depth_frame;
+				edge_frame_t edge_frame;
+
+				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
+				swarm.update(edge_frame, 1.0f/k_fps);
+				graphics_render(&video_frame, &depth_frame, &edge_frame, &swarm);
+			}
+
+			// process events while waiting to start next frame
+			while (!timer.passed(1.0/k_fps))
 			{
 				SDL_Event event;
 
@@ -87,20 +100,6 @@ int main(int argc, char *argv[])
 						}
 					}
 				}
-			}
-
-			if (timer.passed(1.0/k_fps-0.001))
-			{
-				while (!timer.passed(1.0/k_fps)) ;
-				timer.reset();
-
-				video_frame_t video_frame;
-				depth_frame_t depth_frame;
-				edge_frame_t edge_frame;
-
-				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(edge_frame, 1.0f/k_fps);
-				graphics_render(&video_frame, &depth_frame, &edge_frame, &swarm);
 			}
 		}
 
