@@ -1,14 +1,14 @@
 #ifndef swarm_h
 #define swarm_h
 
-#include "camera_frame.h"
+#include <opencv2/core.hpp>
 
 class bee_t
 {
 public:
 	bee_t();
 
-	void update(const edge_frame_t edge_frame, float dt);
+	void update(const cv::Mat1b *edge_frame, float dt);
 
 	int p_x, p_y;
 	int v_x, v_y;
@@ -20,7 +20,7 @@ public:
 	swarm_t();
 	~swarm_t();
 
-	void update(const edge_frame_t edge_frame, float dt);
+	void update(const cv::Mat1b *edge_frame, float dt);
 
 	bee_t *bees;
 };
