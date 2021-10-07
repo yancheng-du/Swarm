@@ -53,12 +53,12 @@ int main(int argc, char *argv[])
 
 			// process frame
 			{
-				video_frame_t video_frame;
-				depth_frame_t depth_frame;
-				edge_frame_t edge_frame;
+				cv::Mat3b video_frame;
+				cv::Mat1w depth_frame;
+				cv::Mat1b edge_frame;
 
 				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(edge_frame, 1.0f/k_fps);
+				swarm.update(&edge_frame, 1.0f/k_fps);
 				graphics_render(&video_frame, &depth_frame, &edge_frame, &swarm);
 			}
 

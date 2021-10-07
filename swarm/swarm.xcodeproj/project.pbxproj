@@ -46,7 +46,6 @@
 		23F844F527042E23004DA116 /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23F844FF27042E6D004DA116 /* graphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
 		23F8450027042E6D004DA116 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
-		23F8450127042E6D004DA116 /* camera_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera_frame.h; sourceTree = "<group>"; };
 		23F8450227042E6D004DA116 /* swarm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = swarm.h; sourceTree = "<group>"; };
 		23F8450327042E6D004DA116 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		23F8450427042E6D004DA116 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
@@ -104,7 +103,6 @@
 			children = (
 				23F8450027042E6D004DA116 /* camera.cpp */,
 				23F8450427042E6D004DA116 /* camera.h */,
-				23F8450127042E6D004DA116 /* camera_frame.h */,
 				23F8450527042E6D004DA116 /* constants.h */,
 				23F844FF27042E6D004DA116 /* graphics.cpp */,
 				23F8450627042E6D004DA116 /* graphics.h */,

@@ -10,6 +10,9 @@
 
 #include "camera.h"
 
+const int k_camera_width= 640;
+const int k_camera_height= 480;
+
 static void kinect_thread_function();
 static void kinect_video_callback(freenect_device *device, void *buffer, uint32_t timestamp);
 static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_t timestamp);
@@ -20,8 +23,8 @@ static bool g_kinect_thread_run= false;
 static std::thread *g_kinect_thread= NULL;
 
 static std::mutex g_frame_mutex;
-static video_frame_t g_video_frame= {0};
-static depth_frame_t g_depth_frame= {0};
+static uint8_t g_video_frame[k_camera_width*k_camera_height*3]= {0};
+static uint16_t g_depth_frame[k_camera_width*k_camera_height]= {0};
 static int g_frame_count= 0;
 
 bool camera_initialize()
@@ -50,7 +53,7 @@ bool camera_initialize()
 					assert(video_mode.video_format==FREENECT_VIDEO_RGB);
 					assert(video_mode.width==k_camera_width);
 					assert(video_mode.height==k_camera_height);
-					assert(video_mode.bytes==sizeof(video_frame_t));
+					assert(video_mode.bytes==sizeof(g_video_frame));
 					#endif
 
 					if (freenect_set_depth_mode(g_kinect_device, freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_REGISTERED))==0)
@@ -61,7 +64,7 @@ bool camera_initialize()
 						assert(depth_mode.depth_format==FREENECT_DEPTH_REGISTERED);
 						assert(depth_mode.width==k_camera_width);
 						assert(depth_mode.height==k_camera_height);
-						assert(depth_mode.bytes==sizeof(depth_frame_t));
+						assert(depth_mode.bytes==sizeof(g_depth_frame));
 						#endif
 
 						freenect_set_video_callback(g_kinect_device, kinect_video_callback);
@@ -126,30 +129,36 @@ void camera_dispose()
 }
 
 int camera_read_frame(
-	video_frame_t *video_frame,
-	depth_frame_t *depth_frame,
-	edge_frame_t *edge_frame)
+	cv::Mat3b *video_frame,
+	cv::Mat1w *depth_frame,
+	cv::Mat1b *edge_frame)
 {
 	int frame_count;
 
+	video_frame->create(k_camera_height, k_camera_width);
+	assert(video_frame->isContinuous());
+	assert(video_frame->dataend-video_frame->datastart==sizeof(g_video_frame));
+
+	depth_frame->create(k_camera_height, k_camera_width);
+	assert(depth_frame->isContinuous());
+	assert(depth_frame->dataend-depth_frame->datastart==sizeof(g_depth_frame));
+
 	g_frame_mutex.lock();
-	std::memcpy(video_frame, g_video_frame, sizeof(*video_frame));
-	std::memcpy(depth_frame, g_depth_frame, sizeof(*depth_frame));
+	std::memcpy(video_frame->data, g_video_frame, sizeof(g_video_frame));
+	std::memcpy(depth_frame->data, g_depth_frame, sizeof(g_depth_frame));
 	frame_count= g_frame_count;
 	g_frame_mutex.unlock();
 
-	cv::Mat original, grey, blurred, edges;
-	original = cv::Mat(k_camera_height, k_camera_width, CV_8UC3, (uint8_t*)video_frame);
-	cv::cvtColor(original, grey, cv::COLOR_BGR2GRAY);
-	cv::GaussianBlur(grey,            // input image
-		blurred,                      // output image
-		cv::Size(3, 3),               // smoothing window width and height in pixels
-		2);							  //sigma
-	cv::Canny(blurred,				  // input image
-		edges,						  // output image
-		100,                          // low threshold
+	cv::Mat grey_frame, blurred_frame;
+	cv::cvtColor(*video_frame, grey_frame, cv::COLOR_BGR2GRAY);
+	cv::GaussianBlur(grey_frame, 	// input image
+		blurred_frame, 				// output image
+		cv::Size(3, 3), 			// smoothing window width and height in pixels
+		2);							//sigma
+	cv::Canny(blurred_frame, 		// input image
+		*edge_frame, 				// output image
+		100, 						// low threshold
 		250);
-	std::memcpy(edge_frame, edges.data, sizeof(*edge_frame));
 
 	return frame_count;
 }
