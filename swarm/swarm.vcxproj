@@ -118,7 +118,6 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
-    <ClInclude Include="src\camera_frame.h" />
     <ClInclude Include="src\constants.h" />
     <ClInclude Include="src\graphics.h" />
     <ClInclude Include="src\swarm.h" />
