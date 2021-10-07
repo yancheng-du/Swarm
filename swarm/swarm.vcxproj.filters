@@ -28,9 +28,6 @@
     <ClInclude Include="src\camera.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\camera_frame.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics.h">
       <Filter>src</Filter>
     </ClInclude>
