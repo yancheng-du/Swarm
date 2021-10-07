@@ -205,6 +205,7 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 					SDL_Rect text_rect= {2*static_cast<int>(k_camera_width)-text_surface->w-8, 2*static_cast<int>(k_camera_height)-text_surface->h-8, text_surface->w, text_surface->h};
 
 					SDL_RenderCopy(g_renderer, text_texture, NULL, &text_rect);
+					SDL_DestroyTexture(text_texture);
 				}
 				else
 				{
