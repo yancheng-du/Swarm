@@ -67,26 +67,10 @@ bool camera_initialize()
 						freenect_set_video_callback(g_kinect_device, kinect_video_callback);
 						freenect_set_depth_callback(g_kinect_device, kinect_depth_callback);
 
-						if (freenect_start_video(g_kinect_device)==0 &&
-							freenect_set_flag(g_kinect_device, FREENECT_MIRROR_VIDEO, FREENECT_ON)==0)
-						{
-							if (freenect_start_depth(g_kinect_device)==0 &&
-								freenect_set_flag(g_kinect_device, FREENECT_MIRROR_DEPTH, FREENECT_ON)==0)
-							{
-								g_kinect_thread_run= true;
-								g_kinect_thread= new std::thread(kinect_thread_function);
+						g_kinect_thread_run= true;
+						g_kinect_thread= new std::thread(kinect_thread_function);
 
-								success= true;
-							}
-							else
-							{
-								SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't start depth streaming");
-							}
-						}
-						else
-						{
-							SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't start video streaming");
-						}
+						success= true;
 					}
 					else
 					{
@@ -130,9 +114,6 @@ void camera_dispose()
 
 	if (g_kinect_device)
 	{
-		freenect_stop_depth(g_kinect_device);
-		freenect_stop_video(g_kinect_device);
-
 		freenect_close_device(g_kinect_device);
 		g_kinect_device= NULL;
 	}
@@ -173,14 +154,26 @@ int camera_read_frame(
 	return frame_count;
 }
 
-
-
 static void kinect_thread_function()
 {
-	if (freenect_set_led(g_kinect_device, LED_GREEN)!=0)
+	while (freenect_set_led(g_kinect_device, LED_GREEN)!=0)
 	{
 		SDL_LogWarn(SDL_LOG_CATEGORY_VIDEO, "Couldn't set kinect LED");
 	}
+
+	while (freenect_start_video(g_kinect_device)!=0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't start video streaming");
+	}
+
+	freenect_set_flag(g_kinect_device, FREENECT_MIRROR_VIDEO, FREENECT_ON);
+
+	while (freenect_start_depth(g_kinect_device)!=0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't start depth streaming");
+	}
+
+	freenect_set_flag(g_kinect_device, FREENECT_MIRROR_DEPTH, FREENECT_ON);
 
 	while (g_kinect_thread_run)
 	{
@@ -190,7 +183,17 @@ static void kinect_thread_function()
 		}
 	}
 
-	if (freenect_set_led(g_kinect_device, LED_RED)!=0)
+	while (freenect_stop_depth(g_kinect_device)!=0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't stop depth streaming");
+	}
+
+	while (freenect_stop_video(g_kinect_device)!=0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't stop video streaming");
+	}
+
+	while (freenect_set_led(g_kinect_device, LED_RED)!=0)
 	{
 		SDL_LogWarn(SDL_LOG_CATEGORY_VIDEO, "Couldn't set kinect LED");
 	}
@@ -202,6 +205,7 @@ static void kinect_video_callback(freenect_device *device, void *buffer, uint32_
 	memcpy(&g_video_frame, buffer, sizeof(g_video_frame));
 	g_frame_count++;
 	g_frame_mutex.unlock();
+	SDL_LogInfo(SDL_LOG_CATEGORY_VIDEO, "Received video frame at timestamp: %u", timestamp);
 }
 
 static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_t timestamp)
@@ -209,4 +213,5 @@ static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_
 	g_frame_mutex.lock();
 	memcpy(&g_depth_frame, buffer, sizeof(g_depth_frame));
 	g_frame_mutex.unlock();
+	SDL_LogInfo(SDL_LOG_CATEGORY_VIDEO, "Received depth frame at timestamp: %u", timestamp);
 }
