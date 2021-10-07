@@ -80,39 +80,39 @@ bool camera_initialize()
 							}
 							else
 							{
-								SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't start depth streaming");
+								SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't start depth streaming");
 							}
 						}
 						else
 						{
-							SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't start video streaming");
+							SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't start video streaming");
 						}
 					}
 					else
 					{
-						SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set depth mode");
+						SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't set depth mode");
 					}
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set video mode");
+					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't set video mode");
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open kinect device");
+				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't open kinect device");
 			}
 
 			freenect_free_device_attributes(device_attributes);
 		}
 		else
 		{
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't find any kinect devices");
+			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't find any kinect devices");
 		}
 	}
 	else
 	{
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create kinect context");
+		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create kinect context");
 	}
 
 	return success;
@@ -179,20 +179,20 @@ static void kinect_thread_function()
 {
 	if (freenect_set_led(g_kinect_device, LED_GREEN)!=0)
 	{
-		SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set kinect LED");
+		SDL_LogWarn(SDL_LOG_CATEGORY_VIDEO, "Couldn't set kinect LED");
 	}
 
 	while (g_kinect_thread_run)
 	{
 		if (freenect_process_events(g_kinect_context)!=0)
 		{
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't process USB events");
+			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't process USB events");
 		}
 	}
 
 	if (freenect_set_led(g_kinect_device, LED_RED)!=0)
 	{
-		SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set kinect LED");
+		SDL_LogWarn(SDL_LOG_CATEGORY_VIDEO, "Couldn't set kinect LED");
 	}
 }
 

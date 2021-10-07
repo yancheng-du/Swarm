@@ -38,17 +38,17 @@ bool graphics_initialize()
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't open font: %s", TTF_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't open font: %s", TTF_GetError());
 			}
 		}
 		else
 		{
-			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't initialize TTF: %s", TTF_GetError());
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't initialize TTF: %s", TTF_GetError());
 		}
 	}
 	else
 	{
-		SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create window and renderer: %s", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create window and renderer: %s", SDL_GetError());
 	}
 
 	return success;
@@ -108,12 +108,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create video texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create video texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create video surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create video surface: %s", SDL_GetError());
 			}
 		}
 
@@ -135,12 +135,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create depth texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create depth texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create depth surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create depth surface: %s", SDL_GetError());
 			}
 		}
 
@@ -162,12 +162,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create edge texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create edge texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create edge surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create edge surface: %s", SDL_GetError());
 			}
 		}
 
@@ -209,12 +209,12 @@ int graphics_render(const video_frame_t *video_frame, const depth_frame_t *depth
 				}
 				else
 				{
-					SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create text texture: %s", SDL_GetError());
+					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create text texture: %s", SDL_GetError());
 				}
 			}
 			else
 			{
-				SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Couldn't create text surface: %s", SDL_GetError());
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create text surface: %s", SDL_GetError());
 			}
 		}
 
