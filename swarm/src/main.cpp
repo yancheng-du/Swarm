@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
 	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS)==0)
 	{
 		bool running= true;
+		bool fps= false;
+		bool debug= false;
 		timer_t timer;
 		swarm_t swarm;
 
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
 
 				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
 				swarm.update(&edge_frame, 1.0f/k_fps);
-				graphics_render(&video_frame, &depth_frame, &edge_frame, &swarm);
+				graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
 			}
 
 			// process events while waiting to start next frame
@@ -86,6 +88,18 @@ int main(int argc, char *argv[])
 								case SDLK_ESCAPE:
 								{
 									running= false;
+									break;
+								}
+
+								case SDLK_LCTRL:
+								{
+									fps= !fps;
+									break;
+								}
+
+								case SDLK_LALT:
+								{
+									debug= !debug;
 									break;
 								}
 
