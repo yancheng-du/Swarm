@@ -2,10 +2,8 @@
 #include <opencv2/core.hpp>
 
 #include "swarm.h"
-#include "constants.h"
 
-const int k_simulation_width= 640;
-const int k_simulation_height= 480;
+const int k_bee_velocity= 15;
 
 bee_t::bee_t()
 {
@@ -17,7 +15,7 @@ bee_t::bee_t()
 
 void bee_t::update(const cv::Mat1b *edge_frame, float dt)
 {
-	if (edge_frame->at<bool>(p_y, p_x)!=0)
+	if (edge_frame->at<bool>(p_y*edge_frame->rows/k_simulation_height, p_x*edge_frame->cols/k_simulation_width)!=0)
 	{
 		v_x= 0;
 		v_y= 0;

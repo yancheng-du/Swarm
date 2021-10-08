@@ -13,6 +13,8 @@
 const int k_camera_width= 640;
 const int k_camera_height= 480;
 
+const int k_edge_width= k_camera_height*9/16;
+
 static void kinect_thread_function();
 static void kinect_video_callback(freenect_device *device, void *buffer, uint32_t timestamp);
 static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_t timestamp);
@@ -150,7 +152,7 @@ int camera_read_frame(
 	g_frame_mutex.unlock();
 
 	cv::Mat grey_frame, blurred_frame;
-	cv::cvtColor(*video_frame, grey_frame, cv::COLOR_BGR2GRAY);
+	cv::cvtColor((*video_frame)(cv::Rect((k_camera_width-k_edge_width)/2, 0, k_edge_width, k_camera_height)), grey_frame, cv::COLOR_BGR2GRAY);
 	cv::GaussianBlur(grey_frame, 	// input image
 		blurred_frame, 				// output image
 		cv::Size(3, 3), 			// smoothing window width and height in pixels
