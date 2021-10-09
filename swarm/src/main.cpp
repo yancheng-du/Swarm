@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 				cv::Mat1b edge_frame;
 
 				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(&edge_frame, 1.0f/k_fps);
+				swarm.update(&edge_frame);
 				graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
 			}
 

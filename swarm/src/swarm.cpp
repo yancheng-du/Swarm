@@ -1,47 +1,105 @@
 #include <cstdlib>
+#include <cmath>
 #include <opencv2/core.hpp>
 
 #include "swarm.h"
+#include "constants.h"
 
-const int k_bee_velocity= 15;
+const float k_tau= 6.2831853f;
+
+const float k_bee_radius= 1.0f;
+
+const float k_timer_minimum= 0.2f;
+const float k_timer_maximum= 0.8f;
+
+// $TODO implement walking in direction of edges
+const float k_walk_speed_minimum= 0.0f;
+const float k_walk_speed_maximum= 0.0f;
+
+const float k_fly_speed_minimum= 120;
+const float k_fly_speed_maximum= 180;
+
+const float k_spin_maximum= 0.5f*k_tau;
+
+inline float uniform_random(float minimum, float maximum)
+{
+	double fraction= static_cast<double>(rand())/RAND_MAX;
+	return minimum+(maximum-minimum)*static_cast<float>(fraction);
+}
+
+inline float wrap_value(float value, float maximum, float gutter)
+{
+	while (value<-gutter) value+= maximum+2.0f*gutter;
+	while (value>=maximum+gutter) value-= maximum+2.0f*gutter;
+	return value;
+}
 
 bee_t::bee_t()
 {
-	p_x= rand()%k_simulation_width;
-	p_y= rand()%k_simulation_height;
-	v_x= rand()%k_bee_velocity - k_bee_velocity/2;
-	v_y= rand()%k_bee_velocity - k_bee_velocity/2;
+	float edge_position= uniform_random(0.0f, k_simulation_width+k_simulation_height+4.0f*k_bee_radius);
+	bool top_edge= edge_position<k_simulation_width+2.0f*k_bee_radius;
+
+	state= _idle;
+	timer= 0.0f;
+	x= top_edge ? edge_position-k_bee_radius : -k_bee_radius;
+	y= top_edge ? -k_bee_radius : edge_position-k_simulation_width-3.0f*k_bee_radius;
+	assert(x>=-k_bee_radius && x<k_simulation_width+k_bee_radius);
+	assert(y>=-k_bee_radius && y<k_simulation_height+k_bee_radius);
+	facing= uniform_random(0.0f, k_tau);
+	speed= 0.0f;
+	rotation= 0.0f;
 }
 
-void bee_t::update(const cv::Mat1b *edge_frame, float dt)
+void bee_t::update(const cv::Mat1b *edge_frame)
 {
-	if (edge_frame->at<bool>(p_y*edge_frame->rows/k_simulation_height, p_x*edge_frame->cols/k_simulation_width)!=0)
+	// update state, speed, and rotation
+	if (x>=0.0f && x<k_simulation_width &&
+		y>=0.0f && y<k_simulation_height &&
+		edge_frame->at<bool>(static_cast<int>(y/k_simulation_height*edge_frame->rows), static_cast<int>(x/k_simulation_width*edge_frame->cols))!=0)
 	{
-		v_x= 0;
-		v_y= 0;
+		if (state==_flying || (state==_crawling && timer<0.0f))
+		{
+			state= _idle;
+			timer= uniform_random(k_timer_minimum, k_timer_maximum);
+			speed= 0.0f;
+			rotation= 0.0f;
+		}
+		else if (state==_idle && timer<0.0f)
+		{
+			state= _crawling;
+			timer= uniform_random(k_timer_minimum, k_timer_maximum);
+			speed= uniform_random(k_walk_speed_minimum, k_walk_speed_maximum);
+			rotation= uniform_random(-k_spin_maximum, k_spin_maximum);
+		}
+		else
+		{
+			timer-= k_dt;
+		}
 	}
 	else
 	{
-		//bees have an 2% chance to
-		if (rand()%100<2)
+		if (state!=_flying || timer<0.0f)
 		{
-			v_x+= rand()%k_bee_velocity - k_bee_velocity/2;
-			v_y+= rand()%k_bee_velocity - k_bee_velocity/2;
+			state= _flying;
+			timer= uniform_random(k_timer_minimum, k_timer_maximum);
+			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+			rotation= uniform_random(-k_spin_maximum, k_spin_maximum);
+		}
+		else
+		{
+			timer-= k_dt;
 		}
 	}
 
-	if (p_x+v_x<0 || p_x+v_x>=k_simulation_width)
+	// update position and facing
 	{
-		v_x= -v_x;
-	}
+		const float cos_facing= cos(facing);
+		const float sin_facing= sin(facing);
 
-	if (p_y+v_y<0 || p_y+v_y>=k_simulation_height)
-	{
-		v_y= -v_y;
+		x= wrap_value(x+(speed*cos_facing+speed*sin_facing)*k_dt, k_simulation_width, k_bee_radius);
+		y= wrap_value(y+(-speed*sin_facing + speed*cos_facing)*k_dt, k_simulation_height, k_bee_radius);
+		facing= wrap_value(facing+rotation*k_dt, k_tau, 0.0f);
 	}
-
-	p_x+= v_x;
-	p_y+= v_y;
 }
 
 swarm_t::swarm_t()
@@ -54,10 +112,10 @@ swarm_t::~swarm_t()
 	delete(bees);
 }
 
-void swarm_t::update(const cv::Mat1b *edge_frame, float dt)
+void swarm_t::update(const cv::Mat1b *edge_frame)
 {
 	for (int i= 0; i<k_bee_count; i++)
 	{
-		bees[i].update(edge_frame, dt);
+		bees[i].update(edge_frame);
 	}
 }
