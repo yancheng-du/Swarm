@@ -188,27 +188,39 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 		// render bees
 		if (swarm)
 		{
-			SDL_Point points[k_bee_count];
 
-			if (debug)
+			int x0= debug ? k_swarm_rect.x : 0;
+			int y0= debug ? k_swarm_rect.y : 0;
+			int dx= debug ? k_swarm_rect.w : k_window_width;
+			int dy= debug ? k_swarm_rect.h : k_window_height;
+
+			for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
 			{
+				SDL_Point points[k_bee_count];
+				int point_count= 0;
+
 				for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 				{
-					points[bee_index].x= k_swarm_rect.x+swarm->bees[bee_index].p_x/(k_simulation_width/k_swarm_rect.w);
-					points[bee_index].y= k_swarm_rect.y+swarm->bees[bee_index].p_y/(k_simulation_height/k_swarm_rect.h);
-				}
-			}
-			else
-			{
-				for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
-				{
-					points[bee_index].x= swarm->bees[bee_index].p_x/(k_simulation_width/k_window_width);
-					points[bee_index].y= swarm->bees[bee_index].p_y/(k_simulation_height/k_window_height);
-				}
-			}
+					const bee_t *bee= &swarm->bees[bee_index];
 
-			SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255);
-			SDL_RenderDrawPoints(g_renderer, points, k_bee_count);
+					if (bee->state==state)
+					{
+						SDL_Point *point= &points[point_count++];
+
+						point->x= x0 + static_cast<int>(bee->x/k_simulation_width*dx);
+						point->y= y0 + static_cast<int>(bee->y/k_simulation_height*dy);
+					}
+				}
+
+				switch (state)
+				{
+					case bee_t::state_t::_idle: 	SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
+					case bee_t::state_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
+					case bee_t::state_t::_flying: 	SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
+				}
+
+				SDL_RenderDrawPoints(g_renderer, points, point_count);
+			}
 		}
 
 		// render frame rate

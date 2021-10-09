@@ -11,12 +11,24 @@ const int k_bee_count= 20000;
 class bee_t
 {
 public:
+	enum state_t
+	{
+		_idle,
+		_crawling,
+		_flying,
+		k_state_count
+	};
+
 	bee_t();
 
-	void update(const cv::Mat1b *edge_frame, float dt);
+	void update(const cv::Mat1b *edge_frame);
 
-	int p_x, p_y;
-	int v_x, v_y;
+	state_t state;
+	float timer;
+	float x, y;
+	float facing;
+	float speed;
+	float rotation;
 };
 
 class swarm_t
@@ -25,7 +37,7 @@ public:
 	swarm_t();
 	~swarm_t();
 
-	void update(const cv::Mat1b *edge_frame, float dt);
+	void update(const cv::Mat1b *edge_frame);
 
 	bee_t *bees;
 };
