@@ -7,6 +7,7 @@
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "camera.h"
 
@@ -163,6 +164,47 @@ int camera_read_frame(
 		250);
 
 	return frame_count;
+}
+
+int idle_camera_read_frame(
+    cv::Mat3b *video_frame,
+    cv::Mat1w *depth_frame,
+    cv::Mat1b *idle_edge_frame)
+{
+    int frame_count;
+
+    video_frame->create(k_camera_height, k_camera_width);
+    assert(video_frame->isContinuous());
+    assert(video_frame->dataend-video_frame->datastart==sizeof(g_video_frame));
+
+    depth_frame->create(k_camera_height, k_camera_width);
+    assert(depth_frame->isContinuous());
+    assert(depth_frame->dataend-depth_frame->datastart==sizeof(g_depth_frame));
+
+    g_frame_mutex.lock();
+    std::memcpy(video_frame->data, g_video_frame, sizeof(g_video_frame));
+    std::memcpy(depth_frame->data, g_depth_frame, sizeof(g_depth_frame));
+    frame_count= g_frame_count;
+    g_frame_mutex.unlock();
+
+    cv::Mat idle_image, grey_frame, blurred_frame;
+    
+    // THIS IS COMMENTED OUT BECAUSE IMREAD() IS NOT FOUND BY BUILD SETTINGS
+    // idle_image = cv::imread("UTEngineering.jpeg", cv::IMREAD_COLOR); // Load idle image
+    
+    cv::cvtColor(idle_image, grey_frame, cv::COLOR_BGR2GRAY); // gray the idle image
+
+    cv::GaussianBlur(grey_frame,     // input image
+        blurred_frame,                 // output image
+        cv::Size(3, 3),             // smoothing window width and height in pixels
+        2);                            //sigma
+    cv::Canny(blurred_frame,         // input image
+        *idle_edge_frame,                 // output image
+        100,                         // low threshold
+        250);
+
+    return frame_count;
+    
 }
 
 static void kinect_thread_function()

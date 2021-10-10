@@ -32,6 +32,9 @@ private:
 
 int main(int argc, char *argv[])
 {
+    
+    bool idle = false; // Bool to determine if idle should be loaded
+    
 	int result= EXIT_SUCCESS;
 
 	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS)==0)
@@ -58,10 +61,21 @@ int main(int argc, char *argv[])
 				cv::Mat3b video_frame;
 				cv::Mat1w depth_frame;
 				cv::Mat1b edge_frame;
+                
+                cv::Mat1b idle_edge_frame; // IDLE IMAGE STUFF
+                
+                if(!idle){ // IDLE is OFF
+                    camera_read_frame(&video_frame, &depth_frame, &edge_frame);
+                    swarm.update(&edge_frame);
+                    graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
+                }
+                
+                else { // IDLE is ON
+                    idle_camera_read_frame(&video_frame, &depth_frame, &idle_edge_frame);
+                    swarm.update(&idle_edge_frame);
+                    graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &idle_edge_frame);
+                }
 
-				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(&edge_frame);
-				graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
 			}
 
 			// process events while waiting to start next frame
@@ -102,6 +116,11 @@ int main(int argc, char *argv[])
 									debug= !debug;
 									break;
 								}
+                                    
+                                case SDLK_i: // toggle idle image
+                                {
+                                    idle = !idle;
+                                }
 
 								// $TODO add other key handling events here
 							}
