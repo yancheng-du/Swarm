@@ -29,6 +29,7 @@ static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
 TTF_Font *g_font= NULL;
+// $TODO add sprite plate image globals
 static int g_frame_count= 0;
 static uint64_t g_last_frame_time= 0;
 static double g_frame_rate= k_fps;
@@ -45,6 +46,8 @@ bool graphics_initialize()
 
 			if (g_font)
 			{
+				// $TODO load sprite plate images
+
 				g_frame_count= 0;
 				g_last_frame_time= SDL_GetPerformanceCounter();
 				g_frame_rate= k_fps;
@@ -71,6 +74,8 @@ bool graphics_initialize()
 
 void graphics_dispose()
 {
+	// $TODO free sprite plate images
+
 	if (g_font)
 	{
 		TTF_CloseFont(g_font);
@@ -188,6 +193,7 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 		// render bees
 		if (swarm)
 		{
+			// $TODO replace with sprite rendering!
 
 			int x0= debug ? k_swarm_rect.x : 0;
 			int y0= debug ? k_swarm_rect.y : 0;
