@@ -96,8 +96,8 @@ void bee_t::update(const cv::Mat1b *edge_frame)
 		const float cos_facing= cos(facing);
 		const float sin_facing= sin(facing);
 
-		x= wrap_value(x+(speed*cos_facing+speed*sin_facing)*k_dt, k_simulation_width, k_bee_radius);
-		y= wrap_value(y+(-speed*sin_facing + speed*cos_facing)*k_dt, k_simulation_height, k_bee_radius);
+		x= wrap_value(x+speed*cos_facing*k_dt, k_simulation_width, k_bee_radius);
+		y= wrap_value(y+speed*sin_facing*k_dt, k_simulation_height, k_bee_radius);
 		facing= wrap_value(facing+rotation*k_dt, k_tau, 0.0f);
 	}
 }
