@@ -89,6 +89,8 @@ void bee_t::update(const cv::Mat1b *edge_frame)
 		{
 			timer-= k_dt;
 		}
+
+		// $TODO fly towards edges if near
 	}
 
 	// update position and facing
