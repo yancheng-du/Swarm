@@ -50,8 +50,11 @@ bee_t::bee_t()
 	rotation= 0.0f;
 }
 
-void bee_t::update(const cv::Mat1b *edge_frame)
+void bee_t::update(const cv::Mat1b *edge_frame, const cv::Mat *x_vector_frame, cv::Mat *y_vector_frame)
 {
+	bool override = false;
+	int dx = 0;
+	int dy = 0;
 	// update state, speed, and rotation
 	if (x>=0.0f && x<k_simulation_width &&
 		y>=0.0f && y<k_simulation_height &&
@@ -78,20 +81,40 @@ void bee_t::update(const cv::Mat1b *edge_frame)
 	}
 	else
 	{
-		if (state!=_flying || timer<0.0f)
-		{
-			state= _flying;
+		if (state!=_flying)
+		{	state= _flying;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
 			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
 			rotation= uniform_random(-k_spin_maximum, k_spin_maximum);
 		}
 		else
-		{
+		{	
+			int i = (int)((y-1) / k_simulation_height * edge_frame->rows);
+			int j = (int)((x-1) / k_simulation_width * edge_frame->cols);
+			int8_t x_vect = x_vector_frame->at<int8_t>(i,j); 
+			int8_t y_vect = y_vector_frame->at<int8_t>(i,j);
+			if (x_vect !=0 || y_vect !=0) {
+				override = true;
+				state = _flying;
+				timer = uniform_random(k_timer_minimum, k_timer_maximum);
+				speed = k_fly_speed_maximum;
+				dx = x_vect;
+				dy = y_vect;
+			}
 			timer-= k_dt;
 		}
 	}
 
 	// update position and facing
+	if (override) {
+		float mag = sqrt(dy*dy+ dx*dx);
+		float cos_facing = cos(dy/dx);
+		float sin_facing = sin(dy/dx);
+		x = wrap_value(x + dx/mag * speed * k_dt, k_simulation_width, k_bee_radius);
+		y = wrap_value(y + dy/mag * speed * k_dt, k_simulation_height, k_bee_radius);
+		facing = wrap_value(facing, k_tau, 0.0f);
+
+	}else
 	{
 		const float cos_facing= cos(facing);
 		const float sin_facing= sin(facing);
@@ -112,10 +135,10 @@ swarm_t::~swarm_t()
 	delete(bees);
 }
 
-void swarm_t::update(const cv::Mat1b *edge_frame)
+void swarm_t::update(const cv::Mat1b* edge_frame, const cv::Mat* x_vector_frame, cv::Mat* y_vector_frame)
 {
 	for (int i= 0; i<k_bee_count; i++)
 	{
-		bees[i].update(edge_frame);
+		bees[i].update(edge_frame, x_vector_frame,y_vector_frame);
 	}
 }

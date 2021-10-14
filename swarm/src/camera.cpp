@@ -7,6 +7,7 @@
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "camera.h"
 
@@ -29,6 +30,10 @@ static uint8_t g_video_frame[k_camera_width*k_camera_height*3]= {0};
 static uint16_t g_depth_frame[k_camera_width*k_camera_height]= {0};
 static int g_frame_count= 0;
 
+static int8_t* x_field;
+static int8_t* y_field;
+
+
 bool camera_initialize()
 {
 	bool success= false;
@@ -49,6 +54,7 @@ bool camera_initialize()
 			{
 				if (freenect_set_video_mode(g_kinect_device, freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB))==0)
 				{
+					init_field(23);
 					#ifdef DEBUG
 					freenect_frame_mode video_mode= freenect_get_current_video_mode(g_kinect_device);
 					assert(video_mode.is_valid);
@@ -153,16 +159,66 @@ int camera_read_frame(
 
 	cv::Mat grey_frame, blurred_frame;
 	cv::cvtColor((*video_frame)(cv::Rect((k_camera_width-k_edge_width)/2, 0, k_edge_width, k_camera_height)), grey_frame, cv::COLOR_BGR2GRAY);
-	cv::GaussianBlur(grey_frame, 	// input image
-		blurred_frame, 				// output image
-		cv::Size(3, 3), 			// smoothing window width and height in pixels
-		2);							//sigma
-	cv::Canny(blurred_frame, 		// input image
+	cv::Canny(grey_frame, 		// input image
 		*edge_frame, 				// output image
-		100, 						// low threshold
-		250);
+		50, 						// low threshold
+		200);
 
 	return frame_count;
+}
+
+void init_field(size_t field_size) {
+	x_field = new int8_t[field_size * field_size];
+	y_field = new int8_t[field_size * field_size];
+	for (size_t i = 0; i < field_size; i++) {
+		for (size_t j = 0; j < field_size; j++) {
+			x_field[i * field_size + j] = (field_size - 1) / 2 - j;
+			y_field[i * field_size + j] = (field_size - 1) / 2 - i;
+		}
+	}
+
+	//for (int i = 0; i < field_size; i++) {
+	//	for (int j = 0; j < field_size; j++) {
+	//		printf("%d  ", y_field[i*field_size + j]);
+	//	}
+	//	printf("\n");
+	//}
+}
+
+
+void get_vector_frame(
+	cv::Mat1b* edge_frame,
+	cv::Mat* x_vector_frame,
+	cv::Mat* y_vector_frame,
+	size_t field_size
+) {
+	for (int i = 0; i < edge_frame->rows; i++) {
+		for (int j = 0; j < edge_frame->cols; j++) {
+			if (edge_frame->at<bool>(i, j) != 0) {
+				//printf("here\n");
+				for (int vec_i = 0; vec_i < field_size; vec_i++) {
+					for (int vec_j = 0; vec_j < field_size; vec_j++) {
+						int i_new = i + vec_i - (field_size - 1) / 2;
+						int j_new = j + vec_j - (field_size - 1) / 2;
+						if (i_new >= 0 && i_new < edge_frame->rows && j_new >= 0 && j_new < edge_frame->cols) {
+							//printf("getting vec from edge\n");
+							x_vector_frame->at<int8_t>(i_new, j_new) = x_field[vec_i * field_size + vec_j];
+							y_vector_frame->at<int8_t>(i_new, j_new) = y_field[vec_i * field_size + vec_j];
+						}
+					}
+				}
+			}
+		}
+	}
+	//puts("finished getting vector frame");
+	//for (int i = 0; i < x_vector_frame->rows; i++) {
+	//	for (int j = 0; j < x_vector_frame->cols; j++) {
+	//		printf("%d  ", x_vector_frame->at<int8_t>(i, j));
+	//	}
+	//	printf("\n");
+	//}
+
+	//puts("");
 }
 
 static void kinect_thread_function()

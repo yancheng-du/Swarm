@@ -21,7 +21,7 @@ public:
 
 	bee_t();
 
-	void update(const cv::Mat1b *edge_frame);
+	void update(const cv::Mat1b* edge_frame, const cv::Mat* x_vector_frame, cv::Mat* y_vector_frame);
 
 	state_t state;
 	float timer;
@@ -37,7 +37,7 @@ public:
 	swarm_t();
 	~swarm_t();
 
-	void update(const cv::Mat1b *edge_frame);
+	void update(const cv::Mat1b* edge_frame, const cv::Mat* x_vector_frame, cv::Mat* y_vector_frame);
 
 	bee_t *bees;
 };

@@ -58,10 +58,14 @@ int main(int argc, char *argv[])
 				cv::Mat3b video_frame;
 				cv::Mat1w depth_frame;
 				cv::Mat1b edge_frame;
+				cv::Mat x_vector_frame = cv::Mat::zeros(cv::Size(480, 640), CV_8S);
+				cv::Mat y_vector_frame = cv::Mat::zeros(cv::Size(480, 640), CV_8S);
 
 				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(&edge_frame);
+				get_vector_frame(&edge_frame, &x_vector_frame, &y_vector_frame, 23);
+				swarm.update(&edge_frame, &x_vector_frame, &y_vector_frame);
 				graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
+				
 			}
 
 			// process events while waiting to start next frame
