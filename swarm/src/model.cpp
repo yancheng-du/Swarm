@@ -41,7 +41,7 @@ std::vector<cv::Mat> model_t::get_gestures(cv::Mat frame)
 {
 	
 	//Create blob to pass to neural network
-	cv::Mat4d blob; //**NEED TO CHECK IF THIS IS THE CORRECT DATATYPE FOR THIS**
+	cv::Mat blob; //**NEED TO CHECK IF THIS IS THE CORRECT DATATYPE FOR THIS**
 
 	//**THE TRUE IN THIS FUNCTION MAY NEED TO CHANGE TO FALSE DEPENDING ON IF INPUT FRAME IS RGB OR BGR**
 	cv::dnn::blobFromImage(frame, blob, 1/255.0, cv::Size(input_width, input_height), cv::Scalar(0,0,0), true, false);
