@@ -3,18 +3,21 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <filesystem>
 #include <fstream>
 #include "model.h"
 
 // Initialize the parameters
-const float confidence_threshold= 0.5; // Confidence threshold
-const float nms_threshold= 0.4;  // Non-maximum suppression threshold
+const double confidence_threshold= 0.5; // Confidence threshold
+const double nms_threshold= 0.4;  // Non-maximum suppression threshold
 const int input_width= 416;        // Width of network's input image, Not actual image size just the network config, this is moderate speed/precision
 const int input_height= 416;       // Height of network's input image, Not actual image size just the network config, this is moderate speed/precision
 
 const std::string classes_file= "obj.names";
 const std::string config_file= "yolov3_custom.cfg";
-const std::string weights_file= "yolov3_custom_last.weights";
+const std::string weights_file= "yolov3_custom_last (1).weights";
+
+
 
 
 
@@ -29,6 +32,8 @@ model_t::model_t()
 	network.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV); 
 	// Right now setting to CPU, will have to research if we can leverage GPU if necessary
 	network.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+
+	std::cout << "Got through initialization";
 	
 }
 
@@ -51,7 +56,7 @@ std::vector<cv::Mat> model_t::get_gestures(cv::Mat frame)
 	return outputs;
 }
 
-std::vector<std::string> get_class_names() 
+std::vector<std::string> model_t::get_class_names() 
 {
 	std::vector<std::string> classes;
 
@@ -62,12 +67,15 @@ std::vector<std::string> get_class_names()
 		classes.push_back(line);
 	}
 
+	for (int i = 0; i < classes.size(); i++) {
+		std::cout << classes.at(i) << ' ';
+	}
 	return classes;
 
 }
 
 // Get the names of the output layers
-std::vector<std::string> get_output_names(const cv::dnn::Net& net)
+std::vector<std::string> model_t::get_output_names(const cv::dnn::Net& net)
 {
 	static std::vector<std::string> names;
 	if (names.empty())
