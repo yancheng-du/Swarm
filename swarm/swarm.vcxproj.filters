@@ -23,6 +23,9 @@
     <ClCompile Include="src\swarm.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\model.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h">
@@ -35,6 +38,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\constants.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
