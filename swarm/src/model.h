@@ -13,16 +13,19 @@ public:
 	~model_t();
 
 	std::vector<cv::Mat> get_gestures(cv::Mat frame);
+	void do_gesture_loop();
+
+	std::vector<std::string> classes;
 
 
 private:
 	std::vector<std::string> get_class_names();
-	std::vector<std::string> classes;
+	
 
 	cv::dnn::Net network;
 
 	std::vector<std::string> get_output_names(const cv::dnn::Net& net);
-
+	int postprocess(cv::Mat& frame, const std::vector<cv::Mat>& outs);
 };
 
 
