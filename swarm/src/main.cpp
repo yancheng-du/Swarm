@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <SDL.h>
+#include <thread>
 
 #include "camera.h"
 #include "constants.h"
@@ -31,6 +32,8 @@ private:
 	uint64_t counter;
 };
 
+
+
 int main(int argc, char *argv[])
 {
 	int result= EXIT_SUCCESS;
@@ -46,8 +49,10 @@ int main(int argc, char *argv[])
 
 		swarm_t swarm;
 		cv::Mat3b video_frame;
+		cv::Mat3b last_video_frame;
 		cv::Mat1w depth_frame;
 		cv::Mat1b edge_frame;
+		
 
 		#ifdef DEBUG
 		SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
@@ -56,26 +61,16 @@ int main(int argc, char *argv[])
 		camera_initialize();
 		graphics_initialize();
 
-		model_t model = model_t();
+		model_t model= model_t();
 
 		while (running)
 		{
 			timer.reset();
-
 			// process frame
-			if (!idle)
-			{
-				camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(&edge_frame);
-				graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
-			}
-
-			else
-			{
-				idle_camera_read_frame(&video_frame, &depth_frame, &edge_frame);
-				swarm.update(&edge_frame);
-				graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
-			}
+			camera_read_frame(&video_frame, &depth_frame, &edge_frame,idle);
+			swarm.update(&edge_frame);
+			graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
+			idle_check(&video_frame, &last_video_frame,&idle);
 
 			// process events while waiting to start next frame
 			do
@@ -139,7 +134,6 @@ int main(int argc, char *argv[])
 
 		graphics_dispose();
 		camera_dispose();
-
 		SDL_Quit();
 	}
 	else
