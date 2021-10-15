@@ -244,7 +244,7 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 
 				if (text_texture)
 				{	
-					SDL_Rect text_rect= {0, 0, 20, 15};
+					SDL_Rect text_rect= {k_window_width-text_surface->w-8, 8, text_surface->w, text_surface->h};
 					SDL_RenderCopy(g_renderer, text_texture, NULL, &text_rect);
 					SDL_DestroyTexture(text_texture);
 				}
