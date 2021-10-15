@@ -1,11 +1,10 @@
 #include <mutex>
 #include <thread>
 
-#include <opencv2/core.hpp>
-
 #include "camera.h"
 #include "constants.h"
 #include "gesture.hpp"
+#include "model.h"
 
 static void gesture_thread_function();
 
@@ -56,24 +55,17 @@ bool gesture_consume_commands(commands_t &commands)
 static void gesture_thread_function()
 {
 	cv::Mat3b video_frame;
-
-	// $TODO create/load model
+	commands_t commands;
+	model_t model;
 
 	while (g_gesture_thread_run)
 	{
 		camera_peek_video_frame(&video_frame);
-
-		// $TODO analyze video fame with model and remove the hack sleep below
-
-		// HACK to represent model analyzing time (so that we don't busy loop copy the video frame)
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		model.analyze_frame(video_frame, commands);
 
 		g_commands_mutex.lock();
-		g_commands.clear();
-		// $TODO add commands from model (note we always set queue available because no commands is valid too)
+		g_commands= commands;
 		g_commands_available= true;
 		g_commands_mutex.unlock();
 	}
-
-	// $TODO free model
 }
