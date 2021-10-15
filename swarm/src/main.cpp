@@ -6,6 +6,7 @@
 #include "constants.h"
 #include "graphics.h"
 #include "swarm.h"
+#include "model.h"
 
 class timer_t
 {
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
 		camera_initialize();
 		graphics_initialize();
 
+		model_t model= model_t();
 
 		while (running)
 		{
