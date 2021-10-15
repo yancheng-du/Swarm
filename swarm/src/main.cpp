@@ -1,12 +1,13 @@
 #include <cstdlib>
-#include <SDL.h>
-#include <thread>
 
+#include <SDL.h>
+
+#include "audio.hpp"
 #include "camera.h"
 #include "constants.h"
+#include "gesture.hpp"
 #include "graphics.h"
 #include "swarm.h"
-#include "model.h"
 
 class timer_t
 {
@@ -19,7 +20,7 @@ public:
 
 	void reset()
 	{
-		counter=SDL_GetPerformanceCounter();
+		counter= SDL_GetPerformanceCounter();
 	}
 
 	bool passed(double time)
@@ -32,8 +33,6 @@ private:
 	uint64_t counter;
 };
 
-
-
 int main(int argc, char *argv[])
 {
 	int result= EXIT_SUCCESS;
@@ -41,36 +40,40 @@ int main(int argc, char *argv[])
 	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS)==0)
 	{
 		bool running= true;
-		bool idle = false;
+		bool idle= false;
 		bool fps= false;
 		bool debug= false;
 
 		timer_t timer;
 
-		swarm_t swarm;
 		cv::Mat3b video_frame;
 		cv::Mat3b last_video_frame;
 		cv::Mat1w depth_frame;
 		cv::Mat1b edge_frame;
-		
+		commands_t commands;
+
+		swarm_t swarm;
 
 		#ifdef DEBUG
 		SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
 		#endif
 
-		camera_initialize();
 		graphics_initialize();
-
-		model_t model= model_t();
+		audio_initialize();
+		camera_initialize();
+		gesture_initialize();
 
 		while (running)
 		{
 			timer.reset();
+
 			// process frame
-			camera_read_frame(&video_frame, &depth_frame, &edge_frame,idle);
+			camera_consume_full_frame(&video_frame, &depth_frame, &edge_frame, idle);
+			idle_check(&video_frame, &last_video_frame,&idle);
+			gesture_consume_commands(commands);
 			swarm.update(&edge_frame);
 			graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
-			idle_check(&video_frame, &last_video_frame,&idle);
+			audio_render(&swarm);
 
 			// process events while waiting to start next frame
 			do
@@ -129,11 +132,14 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-			while (!timer.passed(1.0/k_fps));
+			while (!timer.passed(k_dt));
 		}
 
-		graphics_dispose();
+		gesture_dispose();
 		camera_dispose();
+		audio_dispose();
+		graphics_dispose();
+
 		SDL_Quit();
 	}
 	else

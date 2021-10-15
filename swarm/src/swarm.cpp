@@ -1,9 +1,8 @@
 #include <cstdlib>
 #include <cmath>
-#include <opencv2/core.hpp>
 
-#include "swarm.h"
 #include "constants.h"
+#include "swarm.h"
 
 const float k_tau = 6.2831853f;
 
