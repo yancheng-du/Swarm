@@ -231,21 +231,20 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 
 		// render frame rate
 		if (fps && g_font)
-		{
+		{	
 			char frame_rate_string[4];
 			SDL_Color green= {0x0, 0xff, 0x0, 0xff};
 			snprintf(frame_rate_string, sizeof(frame_rate_string), "%3.0f", g_frame_rate);
 			SDL_Surface *text_surface= TTF_RenderText_Blended(g_font, frame_rate_string, green);
 
 			if (text_surface)
-			{
+			{	
 				SDL_Texture *text_texture= SDL_CreateTextureFromSurface(g_renderer, text_surface);
 				SDL_FreeSurface(text_surface);
 
 				if (text_texture)
-				{
-					SDL_Rect text_rect= {k_window_width-text_surface->w-8, k_window_height-text_surface->h-8, text_surface->w, text_surface->h};
-
+				{	
+					SDL_Rect text_rect= {0, 0, 20, 15};
 					SDL_RenderCopy(g_renderer, text_texture, NULL, &text_rect);
 					SDL_DestroyTexture(text_texture);
 				}
