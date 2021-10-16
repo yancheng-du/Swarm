@@ -10,9 +10,9 @@ const float k_nms_threshold= 0.5f;			// Non-maximum suppression threshold
 const int k_input_width= 416;				// Width of network's input image, Not actual image size just the network config, this is moderate speed/precision
 const int k_input_height= 416;				// Height of network's input image, Not actual image size just the network config, this is moderate speed/precision
 
-const std::string k_classes_filename= "res/obj.names";
-const std::string k_config_filename= "res/yolov3_custom.cfg";
-const std::string k_weights_filename= "res/yolov3_custom_last (1).weights";
+const std::string k_classes_filename= "res/gesture.names";
+const std::string k_config_filename= "res/gesture.cfg";
+const std::string k_weights_filename= "res/gesture.weights";
 
 model_t::model_t()
 {
