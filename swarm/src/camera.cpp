@@ -213,9 +213,9 @@ void init_field(int field_size)
 	x_field= new int8_t[field_size*field_size];
 	y_field= new int8_t[field_size*field_size];
 
-	for (size_t i= 0; i<field_size; i++)
+	for (int i= 0; i<field_size; i++)
 	{
-		for (size_t j= 0; j<field_size; j++)
+		for (int j= 0; j<field_size; j++)
 		{
 			x_field[i*field_size+j]= (field_size-1)/2 - j;
 			y_field[i*field_size+j]= (field_size-1)/2 - i;
