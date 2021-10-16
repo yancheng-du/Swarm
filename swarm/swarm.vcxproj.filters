@@ -34,19 +34,19 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\camera.h">
+    <ClInclude Include="src\camera.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics.h">
+    <ClInclude Include="src\graphics.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\swarm.h">
+    <ClInclude Include="src\swarm.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\constants.h">
+    <ClInclude Include="src\constants.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\model.h">
+    <ClInclude Include="src\model.hpp">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\audio.hpp">
