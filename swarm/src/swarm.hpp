@@ -1,5 +1,5 @@
-#ifndef swarm_h
-#define swarm_h
+#ifndef swarm_hpp
+#define swarm_hpp
 
 #include <opencv2/core.hpp>
 
@@ -44,4 +44,4 @@ public:
 	bee_t* bees;
 };
 
-#endif /* swarm_h */
+#endif /* swarm_hpp */

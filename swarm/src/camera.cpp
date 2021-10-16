@@ -8,8 +8,8 @@
 #include <opencv2/imgproc.hpp>
 #include <SDL_log.h>
 
-#include "camera.h"
-#include "constants.h"
+#include "camera.hpp"
+#include "constants.hpp"
 
 const int k_camera_width= 640;
 const int k_camera_height= 480;

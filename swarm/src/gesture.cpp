@@ -1,10 +1,10 @@
 #include <mutex>
 #include <thread>
 
-#include "camera.h"
-#include "constants.h"
+#include "camera.hpp"
+#include "constants.hpp"
 #include "gesture.hpp"
-#include "model.h"
+#include "model.hpp"
 
 static void gesture_thread_function();
 

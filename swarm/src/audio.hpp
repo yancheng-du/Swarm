@@ -1,7 +1,7 @@
 #ifndef audio_hpp
 #define audio_hpp
 
-#include "swarm.h"
+#include "swarm.hpp"
 
 bool audio_initialize();
 void audio_dispose();

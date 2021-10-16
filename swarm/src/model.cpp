@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "model.h"
+#include "model.hpp"
 
 // Initialize the parameters
 const float k_confidence_threshold= 0.1f;	// Confidence threshold
