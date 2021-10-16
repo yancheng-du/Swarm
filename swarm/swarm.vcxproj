@@ -119,12 +119,12 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio.hpp" />
-    <ClInclude Include="src\camera.h" />
-    <ClInclude Include="src\constants.h" />
+    <ClInclude Include="src\camera.hpp" />
+    <ClInclude Include="src\constants.hpp" />
     <ClInclude Include="src\gesture.hpp" />
-    <ClInclude Include="src\graphics.h" />
-    <ClInclude Include="src\model.h" />
-    <ClInclude Include="src\swarm.h" />
+    <ClInclude Include="src\graphics.hpp" />
+    <ClInclude Include="src\model.hpp" />
+    <ClInclude Include="src\swarm.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
