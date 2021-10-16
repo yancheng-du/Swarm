@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
 
 		#ifdef DEBUG
 		SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_INPUT, SDL_LOG_PRIORITY_INFO);
 		#endif
 
 		graphics_initialize();
@@ -72,10 +71,6 @@ int main(int argc, char *argv[])
 			camera_consume_full_frame(&video_frame, &depth_frame, &edge_frame, idle);
 			idle_check(&video_frame, &last_video_frame,&idle);
 			gesture_consume_commands(commands);
-			if (commands.size()>0)
-			{
-				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Received gesture '%s'", commands[0].name.c_str());
-			}
 			swarm.update(&edge_frame);
 			graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
 			audio_render(&swarm);
