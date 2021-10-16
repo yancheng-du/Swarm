@@ -53,7 +53,7 @@
 
 /* Begin PBXFileReference section */
 		239BD4BF271970A60066A07E /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model.cpp; sourceTree = "<group>"; };
-		239BD4C0271970A60066A07E /* model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model.h; sourceTree = "<group>"; };
+		239BD4C0271970A60066A07E /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = model.hpp; sourceTree = "<group>"; };
 		239BD4C32719716C0066A07E /* libopencv_dnn.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_dnn.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_dnn.dylib"; sourceTree = "<group>"; };
 		239BD4CA2719FDE30066A07E /* gesture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gesture.cpp; sourceTree = "<group>"; };
 		239BD4CE271A148E0066A07E /* audio.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = audio.cpp; sourceTree = "<group>"; };
@@ -69,11 +69,11 @@
 		23F844F527042E23004DA116 /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23F844FF27042E6D004DA116 /* graphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
 		23F8450027042E6D004DA116 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
-		23F8450227042E6D004DA116 /* swarm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = swarm.h; sourceTree = "<group>"; };
+		23F8450227042E6D004DA116 /* swarm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = swarm.hpp; sourceTree = "<group>"; };
 		23F8450327042E6D004DA116 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		23F8450427042E6D004DA116 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
-		23F8450527042E6D004DA116 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
-		23F8450627042E6D004DA116 /* graphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphics.h; sourceTree = "<group>"; };
+		23F8450427042E6D004DA116 /* camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = camera.hpp; sourceTree = "<group>"; };
+		23F8450527042E6D004DA116 /* constants.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
+		23F8450627042E6D004DA116 /* graphics.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = graphics.hpp; sourceTree = "<group>"; };
 		23F8450727042E6D004DA116 /* swarm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = swarm.cpp; sourceTree = "<group>"; };
 		23F8450D27043171004DA116 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		23F8450F27043179004DA116 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -122,17 +122,17 @@
 			children = (
 				239BD4CF271A148E0066A07E /* audio.hpp */,
 				239BD4CE271A148E0066A07E /* audio.cpp */,
-				23F8450427042E6D004DA116 /* camera.h */,
+				23F8450427042E6D004DA116 /* camera.hpp */,
 				23F8450027042E6D004DA116 /* camera.cpp */,
-				23F8450527042E6D004DA116 /* constants.h */,
+				23F8450527042E6D004DA116 /* constants.hpp */,
 				239BD4D1271A24380066A07E /* gesture.hpp */,
 				239BD4CA2719FDE30066A07E /* gesture.cpp */,
-				23F8450627042E6D004DA116 /* graphics.h */,
+				23F8450627042E6D004DA116 /* graphics.hpp */,
 				23F844FF27042E6D004DA116 /* graphics.cpp */,
 				23F8450327042E6D004DA116 /* main.cpp */,
-				239BD4C0271970A60066A07E /* model.h */,
+				239BD4C0271970A60066A07E /* model.hpp */,
 				239BD4BF271970A60066A07E /* model.cpp */,
-				23F8450227042E6D004DA116 /* swarm.h */,
+				23F8450227042E6D004DA116 /* swarm.hpp */,
 				23F8450727042E6D004DA116 /* swarm.cpp */,
 			);
 			path = src;

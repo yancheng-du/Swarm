@@ -1,5 +1,5 @@
-#ifndef camera_h
-#define camera_h
+#ifndef camera_hpp
+#define camera_hpp
 
 #include <opencv2/core.hpp>
 
@@ -15,4 +15,4 @@ void init_field(int field_size);
 int image_dist(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame);
 void idle_check(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame, bool *idle);
 
-#endif /* camera_h */
+#endif /* camera_hpp */

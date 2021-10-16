@@ -1,5 +1,5 @@
-#ifndef model_h
-#define model_h
+#ifndef model_hpp
+#define model_hpp
 
 #include <string>
 #include <vector>
@@ -29,4 +29,4 @@ private:
 };
 
 
-#endif /* model_h */
+#endif /* model_hpp */

@@ -5,8 +5,8 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "graphics.h"
-#include "constants.h"
+#include "graphics.hpp"
+#include "constants.hpp"
 
 const int k_window_width= 540;
 const int k_window_height= 960;
