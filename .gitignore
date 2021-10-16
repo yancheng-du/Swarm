@@ -3,7 +3,6 @@
 *__pycache__*
 webUI/node_modules
 swarm/bin/
-*.weights
 
 # Mac
 .DS_Store
