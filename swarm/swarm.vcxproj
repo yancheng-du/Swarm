@@ -61,13 +61,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(PROJECTDIR)ext\libusb-1.0.23\include;$(PROJECTDIR)ext\libfreenect-0.6.2\include;$(PROJECTDIR)ext\opencv-4.5.3\win\include;$(PROJECTDIR)ext\tensorflow-cpu-2.6.0\include;$(PROJECTDIR)ext\SDL2-2.0.16\win\include;$(PROJECTDIR)ext\SDL2_ttf-2.0.15\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PROJECTDIR)ext\libusb-1.0.23\include;$(PROJECTDIR)ext\libfreenect-0.6.2\include;$(PROJECTDIR)ext\opencv-4.5.3\win\include;$(PROJECTDIR)ext\SDL2-2.0.16\win\include;$(PROJECTDIR)ext\SDL2_ttf-2.0.15\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(PROJECTDIR)ext\libusb-1.0.23\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\libfreenect-0.6.2\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\opencv-4.5.3\win\lib\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\tensorflow-cpu-2.6.0\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\SDL2-2.0.16\win\lib\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\SDL2_ttf-2.0.15\win\lib\$(PLATFORMSHORTNAME);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libusb-1.0.lib;freenect.lib;tensorflow.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;opencv_world453d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libusb-1.0.lib;freenect.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;opencv_world453d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>16777216</StackReserveSize>
       <StackCommitSize>
       </StackCommitSize>
@@ -89,7 +89,7 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453d.dll $(OUTDIR)
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(PROJECTDIR)ext\libusb-1.0.23\include;$(PROJECTDIR)ext\libfreenect-0.6.2\include;$(PROJECTDIR)ext\opencv-4.5.3\win\include;$(PROJECTDIR)ext\tensorflow-cpu-2.6.0\include;$(PROJECTDIR)ext\SDL2-2.0.16\win\include;$(PROJECTDIR)ext\SDL2_ttf-2.0.15\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PROJECTDIR)ext\libusb-1.0.23\include;$(PROJECTDIR)ext\libfreenect-0.6.2\include;$(PROJECTDIR)ext\opencv-4.5.3\win\include;$(PROJECTDIR)ext\SDL2-2.0.16\win\include;$(PROJECTDIR)ext\SDL2_ttf-2.0.15\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -97,7 +97,7 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453d.dll $(OUTDIR)
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(PROJECTDIR)ext\libusb-1.0.23\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\libfreenect-0.6.2\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\opencv-4.5.3\win\lib\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\tensorflow-cpu-2.6.0\lib\win\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\SDL2-2.0.16\win\lib\$(PLATFORMSHORTNAME);$(PROJECTDIR)ext\SDL2_ttf-2.0.15\win\lib\$(PLATFORMSHORTNAME);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libusb-1.0.lib;freenect.lib;tensorflow.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;opencv_world453.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libusb-1.0.lib;freenect.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;opencv_world453.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>16777216</StackReserveSize>
       <StackCommitSize>
       </StackCommitSize>
@@ -111,15 +111,19 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\gesture.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\swarm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\audio.hpp" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\constants.h" />
+    <ClInclude Include="src\gesture.hpp" />
     <ClInclude Include="src\graphics.h" />
     <ClInclude Include="src\model.h" />
     <ClInclude Include="src\swarm.h" />

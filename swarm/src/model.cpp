@@ -5,10 +5,10 @@
 #include "model.h"
 
 // Initialize the parameters
-const double k_confidence_threshold= 0.1; // Confidence threshold
-const double k_nms_threshold= 0.5;  // Non-maximum suppression threshold
-const int k_input_width= 416;        // Width of network's input image, Not actual image size just the network config, this is moderate speed/precision
-const int k_input_height= 416;       // Height of network's input image, Not actual image size just the network config, this is moderate speed/precision
+const float k_confidence_threshold= 0.1f;	// Confidence threshold
+const float k_nms_threshold= 0.5f;			// Non-maximum suppression threshold
+const int k_input_width= 416;				// Width of network's input image, Not actual image size just the network config, this is moderate speed/precision
+const int k_input_height= 416;				// Height of network's input image, Not actual image size just the network config, this is moderate speed/precision
 
 const std::string k_classes_filename= "res/obj.names";
 const std::string k_config_filename= "res/yolov3_custom.cfg";
