@@ -55,5 +55,12 @@
     <ClInclude Include="src\gesture.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Bee Renders\Fly\64_Fly_Sheet.bmp">
+      <Filter>res</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -2,11 +2,12 @@
 #define swarm_hpp
 
 #include <opencv2/core.hpp>
+#include <SDL.h>
 
 const int k_simulation_width = 1080;
 const int k_simulation_height = 1920;
 
-const int k_bee_count = 20000;
+const int k_bee_count = 100; //changed from 20k
 
 class bee_t
 {
@@ -31,6 +32,9 @@ public:
 	float speed;
 	float rotation;
 	float last_facing;
+
+	SDL_Rect b_rect;
+	SDL_Rect b_pos_rect;
 };
 
 class swarm_t
