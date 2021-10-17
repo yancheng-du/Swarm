@@ -118,6 +118,8 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
     <ClCompile Include="src\swarm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="src\audio.hpp" />
     <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\constants.hpp" />
@@ -125,6 +127,9 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
     <ClInclude Include="src\graphics.hpp" />
     <ClInclude Include="src\model.hpp" />
     <ClInclude Include="src\swarm.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Bee Renders\Fly\64_Fly_Sheet.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
