@@ -28,10 +28,11 @@ const float k_walk_speed_maximum= 0.0f;
 const float k_acc_minimum= 0.0f;
 const float k_acc_maximum= 10.0f;
 
-const float k_fly_speed_minimum= 120;
-const float k_fly_speed_maximum= 180;
+const float k_fly_speed_minimum= 200;
+const float k_fly_speed_maximum= 400;
 
 const float k_spin_maximum= 0.5f*k_tau;
+
 
 inline float uniform_random(float minimum, float maximum)
 {
@@ -74,13 +75,21 @@ bee_t::bee_t()
 
 }
 
-void bee_t::update(const cv::Mat1b* edge_frame)
-{
+void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
+{	
+	int field_x = static_cast<int>(y/k_simulation_height*field->rows);
+	if (field_x >= field->rows) { field_x = field->rows-1; }
+	int field_y = static_cast<int>(x/k_simulation_width*field->cols);
+	if (field_y >= field->cols) { field_y = field->cols-1; }
+
 	// update state, speed, and rotation
 	if (x>=0.0f && x<k_simulation_width &&
 		y>=0.0f && y<k_simulation_height &&
-		edge_frame->at<bool>(static_cast<int>(y/k_simulation_height*edge_frame->rows), static_cast<int>(x/k_simulation_width*edge_frame->cols))!=0)
-	{
+		edge_frame->at<bool>(static_cast<int>(y/k_simulation_height*edge_frame->rows), static_cast<int>(x/k_simulation_width*edge_frame->cols))!=0 &&
+		field->at<bool>(field_x, field_y)==0
+		)
+	{	
+		field->at<bool>(field_x, field_y)=1;
 		if (state==_flying || (state==_crawling&&timer<0.0f) || state==_accelerating)
 		{
 			state= _idle;
@@ -102,7 +111,8 @@ void bee_t::update(const cv::Mat1b* edge_frame)
 		}
 	}
 	else
-	{ //not on edge, keep flying
+	{	//not on edge, keep flying
+		field->at<bool>(field_x, field_y)=0;
 		if (state==_flying && timer<0.0f)
 		{
 			state= _flying;
@@ -128,10 +138,13 @@ void bee_t::update(const cv::Mat1b* edge_frame)
 		// $TODO fly towards edges if near
 	}
 
+	
+
 	// update position and facing
 	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
 	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
 	facing= wrap_value(facing+rotation*k_dt, k_tau, 0.0f);
+
 	
 	//update sprite render frame
 	b_fly_rect.x += b_frame_w;
@@ -149,6 +162,7 @@ void bee_t::update(const cv::Mat1b* edge_frame)
 
 swarm_t::swarm_t()
 {
+	field = cv::Mat::zeros(k_simulation_height/6, k_simulation_width/6, CV_8U);
 	bees = new bee_t[k_bee_count];
 }
 
@@ -161,6 +175,6 @@ void swarm_t::update(const cv::Mat1b* edge_frame)
 {
 	for (int i = 0; i<k_bee_count; i++)
 	{
-		bees[i].update(edge_frame);
+		bees[i].update(edge_frame, &field);
 	}
 }
