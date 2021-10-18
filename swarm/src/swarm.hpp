@@ -4,10 +4,10 @@
 #include <opencv2/core.hpp>
 #include <SDL.h>
 
-const int k_simulation_width = 1080;
-const int k_simulation_height = 1920;
+const int k_simulation_width= 1080;
+const int k_simulation_height= 1920;
 
-const int k_bee_count = 2000; //changed from 20k
+const int k_bee_count= 10000;
 
 class bee_t
 {
@@ -30,7 +30,7 @@ public:
 	float x, y;
 	float facing;
 	float speed;
-	float rotation;
+	float spin;
 	float last_facing;
 
 	//rects to keep track of render frame for diff states
