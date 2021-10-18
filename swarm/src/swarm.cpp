@@ -65,10 +65,6 @@ bee_t::bee_t()
 	b_rect.w = b_frame_w;
 	b_rect.h = b_frame_h;
 
-	b_pos_rect.x = 400;
-	b_pos_rect.y = 500;
-	b_pos_rect.w = b_pos_rect.y = 32;
-
 }
 
 void bee_t::update(const cv::Mat1b* edge_frame)
