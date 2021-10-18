@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		234A7CA0271E15AA004BD60D /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 234A7C9E271E159C004BD60D /* SDL2_mixer.framework */; };
+		234A7CA1271E15AA004BD60D /* SDL2_mixer.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 234A7C9E271E159C004BD60D /* SDL2_mixer.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		239BD4C1271970A60066A07E /* model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 239BD4BF271970A60066A07E /* model.cpp */; };
 		239BD4C42719716C0066A07E /* libopencv_dnn.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 239BD4C32719716C0066A07E /* libopencv_dnn.dylib */; };
 		239BD4C5271971820066A07E /* libopencv_dnn.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 239BD4C32719716C0066A07E /* libopencv_dnn.dylib */; };
@@ -40,6 +42,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				23CBAA4F271417B600DC50D3 /* SDL2_ttf.framework in Embed Libraries */,
+				234A7CA1271E15AA004BD60D /* SDL2_mixer.framework in Embed Libraries */,
 				23CBAA51271417B700DC50D3 /* SDL2.framework in Embed Libraries */,
 				239BD4C5271971820066A07E /* libopencv_dnn.dylib in Embed Libraries */,
 				23CBAA4D271417B300DC50D3 /* libopencv_imgproc.dylib in Embed Libraries */,
@@ -52,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		234A7C9E271E159C004BD60D /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = "ext/SDL2_mixer-2.0.4/mac/SDL2_mixer.framework"; sourceTree = "<group>"; };
 		239BD4BF271970A60066A07E /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model.cpp; sourceTree = "<group>"; };
 		239BD4C0271970A60066A07E /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = model.hpp; sourceTree = "<group>"; };
 		239BD4C32719716C0066A07E /* libopencv_dnn.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_dnn.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_dnn.dylib"; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23CBAA4E271417B600DC50D3 /* SDL2_ttf.framework in Frameworks */,
+				234A7CA0271E15AA004BD60D /* SDL2_mixer.framework in Frameworks */,
 				23CBAA50271417B700DC50D3 /* SDL2.framework in Frameworks */,
 				23CBAA452714171000DC50D3 /* libopencv_imgproc.dylib in Frameworks */,
 				23CBAA432714170C00DC50D3 /* libopencv_imgcodecs.dylib in Frameworks */,
@@ -120,20 +125,20 @@
 		23F844F727042E23004DA116 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				239BD4CF271A148E0066A07E /* audio.hpp */,
 				239BD4CE271A148E0066A07E /* audio.cpp */,
-				23F8450427042E6D004DA116 /* camera.hpp */,
+				239BD4CF271A148E0066A07E /* audio.hpp */,
 				23F8450027042E6D004DA116 /* camera.cpp */,
+				23F8450427042E6D004DA116 /* camera.hpp */,
 				23F8450527042E6D004DA116 /* constants.hpp */,
-				239BD4D1271A24380066A07E /* gesture.hpp */,
 				239BD4CA2719FDE30066A07E /* gesture.cpp */,
-				23F8450627042E6D004DA116 /* graphics.hpp */,
+				239BD4D1271A24380066A07E /* gesture.hpp */,
 				23F844FF27042E6D004DA116 /* graphics.cpp */,
+				23F8450627042E6D004DA116 /* graphics.hpp */,
 				23F8450327042E6D004DA116 /* main.cpp */,
-				239BD4C0271970A60066A07E /* model.hpp */,
 				239BD4BF271970A60066A07E /* model.cpp */,
-				23F8450227042E6D004DA116 /* swarm.hpp */,
+				239BD4C0271970A60066A07E /* model.hpp */,
 				23F8450727042E6D004DA116 /* swarm.cpp */,
+				23F8450227042E6D004DA116 /* swarm.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -142,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				23CBAA482714175100DC50D3 /* SDL2_ttf.framework */,
+				234A7C9E271E159C004BD60D /* SDL2_mixer.framework */,
 				23CBAA462714174600DC50D3 /* SDL2.framework */,
 				23CBAA442714171000DC50D3 /* libopencv_imgproc.dylib */,
 				23CBAA422714170C00DC50D3 /* libopencv_imgcodecs.dylib */,
@@ -263,6 +269,7 @@
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac",
+					"$(PROJECT_DIR)/ext/SDL2_mixer-2.0.4/mac",
 					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -281,6 +288,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac/SDL2_ttf.framework/Headers",
+					"$(PROJECT_DIR)/ext/SDL2_mixer-2.0.4/mac/SDL2_mixer.framework/Headers",
 					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac/SDL2.framework/Headers",
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/include",
 					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/include",
@@ -337,6 +345,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac",
+					"$(PROJECT_DIR)/ext/SDL2_mixer-2.0.4/mac",
 					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -349,6 +358,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ext/SDL2_ttf-2.0.15/mac/SDL2_ttf.framework/Headers",
+					"$(PROJECT_DIR)/ext/SDL2_mixer-2.0.4/mac/SDL2_mixer.framework/Headers",
 					"$(PROJECT_DIR)/ext/SDL2-2.0.16/mac/SDL2.framework/Headers",
 					"$(PROJECT_DIR)/ext/opencv-4.5.3/mac/include",
 					"$(PROJECT_DIR)/ext/libfreenect-0.6.2/include",
