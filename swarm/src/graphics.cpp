@@ -228,14 +228,14 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 					SDL_FRect rect;
 					rect.x = x0 + static_cast<int>(bee->x / k_simulation_width * dx);
 					rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
-					rect.w = 16;
-					rect.h = 16;
+					rect.w = 6;
+					rect.h = 6;
 
 					if (bee->state==bee_t::state_t::_flying)
 					{
 						SDL_RenderCopyExF(g_renderer, bee_sprite_fly_texture, &bee->b_fly_rect, &rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
 					}
-					if (bee->state == bee_t::state_t::_crawling)
+					if (bee->state == bee_t::state_t::_crawling || bee->state == bee_t::state_t::_accelerating)
 					{
 						SDL_RenderCopyExF(g_renderer, bee_sprite_crawl_texture, &bee->b_crawl_rect, &rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
 					}
