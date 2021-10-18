@@ -33,6 +33,7 @@ public:
 	float rotation;
 	float last_facing;
 
+	//rects to keep track of render frame for diff states
 	SDL_Rect b_fly_rect;
 	SDL_Rect b_crawl_rect;
 	SDL_Rect b_idle_rect;
