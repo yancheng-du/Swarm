@@ -7,7 +7,7 @@
 const int k_simulation_width = 1080;
 const int k_simulation_height = 1920;
 
-const int k_bee_count = 200; //changed from 20k
+const int k_bee_count = 2000; //changed from 20k
 
 class bee_t
 {
@@ -33,6 +33,7 @@ public:
 	float rotation;
 	float last_facing;
 
+	//rects to keep track of render frame for diff states
 	SDL_Rect b_fly_rect;
 	SDL_Rect b_crawl_rect;
 	SDL_Rect b_idle_rect;
