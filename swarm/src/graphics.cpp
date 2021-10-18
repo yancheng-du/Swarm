@@ -241,11 +241,11 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 					}
 					if (bee->state == bee_t::state_t::_crawling)
 					{
-						SDL_RenderCopyExF(g_renderer, bee_sprite_crawl_texture, &bee->b_crawl_rect, &rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
+						SDL_RenderCopyExF(g_renderer, bee_sprite_crawl_texture, &bee->b_crawl_rect, &dst_rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
 					}
 					if (bee->state == bee_t::state_t::_idle)
 					{
-						SDL_RenderCopyExF(g_renderer, bee_sprite_idle_texture, &bee->b_idle_rect, &rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
+						SDL_RenderCopyExF(g_renderer, bee_sprite_idle_texture, &bee->b_idle_rect, &dst_rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
 					}
 				}
 
