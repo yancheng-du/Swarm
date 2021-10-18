@@ -7,7 +7,7 @@
 const int k_simulation_width = 1080;
 const int k_simulation_height = 1920;
 
-const int k_bee_count = 100; //changed from 20k
+const int k_bee_count = 200; //changed from 20k
 
 class bee_t
 {
