@@ -5,10 +5,14 @@
 #include "swarm.hpp"
 
 const int b_texture_h = 64;
-const int b_texture_w = 1920;
+const int b_fly_texture_w = 1920;
+const int b_crawl_texture_w = 3904;
+const int b_idle_texture_w = 3904;
 const int b_frame_h = 64;
 const int b_frame_w = 64;
-const int b_frame_count = 30;
+const int b_fly_frame_count = 30;
+const int b_crawl_frame_count = 61;
+const int b_idle_frame_count = 61;
 
 const float k_tau= 6.2831853f;
 
@@ -60,10 +64,13 @@ bee_t::bee_t()
 
 	//at init, every bee starts at random render frame
 	
-	b_rect.x = (rand() % b_frame_count) * b_frame_w;
-	b_rect.y = 0;
-	b_rect.w = b_frame_w;
-	b_rect.h = b_frame_h;
+	b_fly_rect.x = (rand() % b_fly_frame_count) * b_frame_w;
+	b_crawl_rect.x = (rand() % b_crawl_frame_count) * b_frame_w;
+	b_idle_rect.x = (rand() % b_idle_frame_count) * b_frame_w;
+
+	b_fly_rect.y = b_crawl_rect.y = b_idle_rect.y = 0;
+	b_fly_rect.w = b_crawl_rect.w = b_idle_rect.w = b_frame_w;
+	b_fly_rect.h = b_crawl_rect.h = b_idle_rect.h = b_frame_h;
 
 }
 
@@ -127,9 +134,17 @@ void bee_t::update(const cv::Mat1b* edge_frame)
 	facing= wrap_value(facing+rotation*k_dt, k_tau, 0.0f);
 	
 	//update sprite render frame
-	b_rect.x += b_frame_w;
-	if (b_rect.x >= b_texture_w)
-		b_rect.x = 0;
+	b_fly_rect.x += b_frame_w;
+	b_crawl_rect.x += b_frame_w;
+	b_idle_rect.x += b_frame_w;
+
+	//check if past texture
+	if (b_fly_rect.x >= b_fly_texture_w)
+		b_fly_rect.x = 0;
+	if (b_crawl_rect.x >= b_crawl_texture_w)
+		b_crawl_rect.x = 0;
+	if (b_idle_rect.x >= b_idle_texture_w)
+		b_idle_rect.x = 0;
 }
 
 swarm_t::swarm_t()

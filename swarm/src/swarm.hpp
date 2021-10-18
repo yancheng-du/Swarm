@@ -33,7 +33,9 @@ public:
 	float rotation;
 	float last_facing;
 
-	SDL_Rect b_rect;
+	SDL_Rect b_fly_rect;
+	SDL_Rect b_crawl_rect;
+	SDL_Rect b_idle_rect;
 };
 
 class swarm_t

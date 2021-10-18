@@ -36,8 +36,10 @@ SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
 TTF_Font *g_font= NULL;
 
-//sprite texture
-SDL_Texture* bee_sprite_texture = NULL;
+//sprite textures
+SDL_Texture* bee_sprite_fly_texture = NULL;
+SDL_Texture* bee_sprite_crawl_texture = NULL;
+SDL_Texture* bee_sprite_idle_texture = NULL;
 
 static int g_frame_count= 0;
 static uint64_t g_last_frame_time= 0;
@@ -56,7 +58,9 @@ bool graphics_initialize()
 			if (g_font)
 			{
 				//load sprite texture
-				bee_sprite_texture = LoadTexture("res/64_Fly_Sheet.bmp");
+				bee_sprite_fly_texture = LoadTexture("res/64_Fly_Sheet.bmp");
+				bee_sprite_crawl_texture = LoadTexture("res/64_Crawl_Sheet.bmp");
+				bee_sprite_idle_texture = LoadTexture("res/64_Idle_Sheet.bmp");
 
 
 
@@ -87,7 +91,9 @@ bool graphics_initialize()
 void graphics_dispose()
 {
 	//free sprite tetxure
-	SDL_DestroyTexture(bee_sprite_texture);
+	SDL_DestroyTexture(bee_sprite_fly_texture);
+	SDL_DestroyTexture(bee_sprite_crawl_texture);
+	SDL_DestroyTexture(bee_sprite_idle_texture);
 
 	if (g_font)
 	{
@@ -219,17 +225,23 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 				for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 				{
 					const bee_t *bee= &swarm->bees[bee_index];
+					SDL_FRect rect;
+					rect.x = x0 + static_cast<int>(bee->x / k_simulation_width * dx);
+					rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
+					rect.w = 16;
+					rect.h = 16;
 
 					if (bee->state==bee_t::state_t::_flying)
 					{
-
-						SDL_FRect rect;
-						rect.x= x0 + static_cast<int>(bee->x / k_simulation_width * dx);
-						rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
-						rect.w = 16;
-						rect.h = 16;
-						SDL_RenderCopyExF(g_renderer, bee_sprite_texture, &bee->b_rect, &rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
-
+						SDL_RenderCopyExF(g_renderer, bee_sprite_fly_texture, &bee->b_fly_rect, &rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
+					}
+					if (bee->state == bee_t::state_t::_crawling)
+					{
+						SDL_RenderCopyExF(g_renderer, bee_sprite_crawl_texture, &bee->b_crawl_rect, &rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
+					}
+					if (bee->state == bee_t::state_t::_idle)
+					{
+						SDL_RenderCopyExF(g_renderer, bee_sprite_idle_texture, &bee->b_idle_rect, &rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
 					}
 				}
 
