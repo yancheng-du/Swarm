@@ -57,7 +57,7 @@ bool graphics_initialize()
 
 			if (g_font)
 			{
-				//load sprite texture
+				//load sprite textures
 				bee_sprite_fly_texture = LoadTexture("res/64_Fly_Sheet.bmp");
 				bee_sprite_crawl_texture = LoadTexture("res/64_Crawl_Sheet.bmp");
 				bee_sprite_idle_texture = LoadTexture("res/64_Idle_Sheet.bmp");
@@ -90,7 +90,7 @@ bool graphics_initialize()
 
 void graphics_dispose()
 {
-	//free sprite tetxure
+	//free sprite tetxures
 	SDL_DestroyTexture(bee_sprite_fly_texture);
 	SDL_DestroyTexture(bee_sprite_crawl_texture);
 	SDL_DestroyTexture(bee_sprite_idle_texture);
@@ -212,8 +212,6 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 		// render bees
 		if (swarm)
 		{
-			// $TODO replace with sprite rendering!
-
 			int x0= debug ? k_swarm_rect.x : 0;
 			int y0= debug ? k_swarm_rect.y : 0;
 			int dx= debug ? k_swarm_rect.w : k_window_width;
@@ -221,19 +219,25 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 
 			for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
 			{
+				//declare dest rect to transfer bee info 
+				SDL_FRect dst_rect;
+
+				//declare bee size
+				dst_rect.w = 6;
+				dst_rect.h = 6;
 
 				for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 				{
 					const bee_t *bee= &swarm->bees[bee_index];
-					SDL_FRect rect;
-					rect.x = x0 + static_cast<int>(bee->x / k_simulation_width * dx);
-					rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
-					rect.w = 16;
-					rect.h = 16;
 
+					//transfer bee coordinates to destination rect
+					dst_rect.x = x0 + static_cast<int>(bee->x / k_simulation_width * dx);
+					dst_rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
+
+					//check state and render correct texture
 					if (bee->state==bee_t::state_t::_flying)
 					{
-						SDL_RenderCopyExF(g_renderer, bee_sprite_fly_texture, &bee->b_fly_rect, &rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
+						SDL_RenderCopyExF(g_renderer, bee_sprite_fly_texture, &bee->b_fly_rect, &dst_rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
 					}
 					if (bee->state == bee_t::state_t::_crawling)
 					{
