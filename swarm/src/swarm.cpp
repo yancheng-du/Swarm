@@ -4,6 +4,8 @@
 #include "constants.hpp"
 #include "swarm.hpp"
 
+
+//constants for texture heights, widths, etc.
 const int b_texture_h = 64;
 const int b_fly_texture_w = 1920;
 const int b_crawl_texture_w = 3904;
@@ -63,11 +65,11 @@ bee_t::bee_t()
 	rotation= 0.0f;
 
 	//at init, every bee starts at random render frame
-	
 	b_fly_rect.x = (rand() % b_fly_frame_count) * b_frame_w;
 	b_crawl_rect.x = (rand() % b_crawl_frame_count) * b_frame_w;
 	b_idle_rect.x = (rand() % b_idle_frame_count) * b_frame_w;
 
+	//set render rects height, width, and y position
 	b_fly_rect.y = b_crawl_rect.y = b_idle_rect.y = 0;
 	b_fly_rect.w = b_crawl_rect.w = b_idle_rect.w = b_frame_w;
 	b_fly_rect.h = b_crawl_rect.h = b_idle_rect.h = b_frame_h;
