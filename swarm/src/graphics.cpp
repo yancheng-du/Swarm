@@ -228,7 +228,7 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 						rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
 						rect.w = 16;
 						rect.h = 16;
-						SDL_RenderCopyEx(g_renderer, bee_sprite_texture, &bee->b_rect, &rect, ((bee->facing * 180)/3.14), 0, SDL_FLIP_NONE);
+						SDL_RenderCopyEx(g_renderer, bee_sprite_texture, &bee->b_rect, &rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
 
 					}
 				}
