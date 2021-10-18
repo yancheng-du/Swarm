@@ -63,7 +63,7 @@ bee_t::bee_t()
 	facing= uniform_random(0.0f, k_tau);
 	last_facing= facing;
 	speed= 0.0f;
-	rotation= 0.0f;
+	spin= 0.0f;
 
 	//at init, every bee starts at random render frame
 	b_fly_rect.x = (rand() % b_fly_frame_count) * b_frame_w;
@@ -97,7 +97,7 @@ void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
 			state= _idle;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
 			speed= 0.0f;
-			rotation= 0.0f;
+			spin= 0.0f;
 		}
 		//craw on edge
 		else if (state==_idle&&timer<0.0f)
@@ -105,7 +105,7 @@ void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
 			state= _crawling;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
 			speed= uniform_random(k_walk_speed_minimum, k_walk_speed_maximum);
-			rotation= uniform_random(-k_spin_maximum, k_spin_maximum);
+			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
 		}
 		else
 		{
@@ -120,7 +120,7 @@ void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
 			state= _flying;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
 			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-			rotation= uniform_random(-k_spin_maximum, k_spin_maximum);
+			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
 		}
 		else
 		{ //not on edge, accelerating
@@ -133,20 +133,17 @@ void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
 				}
 				timer= uniform_random(k_timer_minimum, k_timer_maximum);
 				speed+= uniform_random(k_acc_minimum, k_acc_maximum);
-				rotation= uniform_random(-k_spin_maximum, k_spin_maximum);
+				spin= uniform_random(-k_spin_maximum, k_spin_maximum);
 			}
 		}
 		timer-= k_dt;
 		// $TODO fly towards edges if near
 	}
 
-	
-
 	// update position and facing
 	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
 	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
-	facing= wrap_value(facing+rotation*k_dt, k_tau, 0.0f);
-
+	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
 	
 	//update sprite render frame
 	b_fly_rect.x += b_frame_w;

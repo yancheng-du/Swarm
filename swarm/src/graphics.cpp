@@ -7,7 +7,6 @@
 
 #include "graphics.hpp"
 #include "constants.hpp"
-#include <iostream>
 
 const int k_window_width= 540;
 const int k_window_height= 960;
@@ -28,18 +27,14 @@ static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b
 static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w *depth_frame);
 static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b *edge_frame);
 
-static SDL_Texture* LoadTexture(std::string filePath);
-
-
+static SDL_Texture *graphics_create_texture_from_image_file(const char *filePath);
 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
 TTF_Font *g_font= NULL;
-
-//sprite textures
-SDL_Texture* bee_sprite_fly_texture = NULL;
-SDL_Texture* bee_sprite_crawl_texture = NULL;
-SDL_Texture* bee_sprite_idle_texture = NULL;
+SDL_Texture *g_bee_idle_texture= NULL;
+SDL_Texture *g_bee_crawl_texture= NULL;
+SDL_Texture *g_bee_fly_texture= NULL;
 
 static int g_frame_count= 0;
 static uint64_t g_last_frame_time= 0;
@@ -57,12 +52,9 @@ bool graphics_initialize()
 
 			if (g_font)
 			{
-				//load sprite textures
-				bee_sprite_fly_texture = LoadTexture("res/64_Fly_Sheet.bmp");
-				bee_sprite_crawl_texture = LoadTexture("res/64_Crawl_Sheet.bmp");
-				bee_sprite_idle_texture = LoadTexture("res/64_Idle_Sheet.bmp");
-
-
+				g_bee_idle_texture= graphics_create_texture_from_image_file("res/64_Idle_Sheet.bmp");
+				g_bee_crawl_texture= graphics_create_texture_from_image_file("res/64_Crawl_Sheet.bmp");
+				g_bee_fly_texture= graphics_create_texture_from_image_file("res/64_Fly_Sheet.bmp");
 
 				g_frame_count= 0;
 				g_last_frame_time= SDL_GetPerformanceCounter();
@@ -90,10 +82,23 @@ bool graphics_initialize()
 
 void graphics_dispose()
 {
-	//free sprite tetxures
-	SDL_DestroyTexture(bee_sprite_fly_texture);
-	SDL_DestroyTexture(bee_sprite_crawl_texture);
-	SDL_DestroyTexture(bee_sprite_idle_texture);
+	if (g_bee_fly_texture)
+	{
+		SDL_DestroyTexture(g_bee_fly_texture);
+		g_bee_fly_texture= NULL;
+	}
+
+	if (g_bee_crawl_texture)
+	{
+		SDL_DestroyTexture(g_bee_crawl_texture);
+		g_bee_crawl_texture= NULL;
+	}
+
+	if (g_bee_idle_texture)
+	{
+		SDL_DestroyTexture(g_bee_idle_texture);
+		g_bee_idle_texture= NULL;
+	}
 
 	if (g_font)
 	{
@@ -125,7 +130,14 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 	{
 		// render clear
 		{
-			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
+			if (debug)
+			{
+				SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
+			}
+			else
+			{
+				SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0x00);
+			}
 			SDL_RenderClear(g_renderer);
 		}
 
@@ -212,62 +224,89 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 		// render bees
 		if (swarm)
 		{
-			int x0= debug ? k_swarm_rect.x : 0;
-			int y0= debug ? k_swarm_rect.y : 0;
-			int dx= debug ? k_swarm_rect.w : k_window_width;
-			int dy= debug ? k_swarm_rect.h : k_window_height;
+			float x0= debug ? k_swarm_rect.x : 0;
+			float y0= debug ? k_swarm_rect.y : 0;
+			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/k_simulation_width;
+			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/k_simulation_height;
 
-			for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
+			if (debug)
 			{
-				//declare dest rect to transfer bee info 
-				SDL_FRect dst_rect;
-
-				//declare bee size
-				dst_rect.w = 6;
-				dst_rect.h = 6;
-
-				for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
+				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
 				{
-					const bee_t *bee= &swarm->bees[bee_index];
+					SDL_FPoint points[k_bee_count];
+					int point_count= 0;
 
-					//transfer bee coordinates to destination rect
-					dst_rect.x = x0 + static_cast<int>(bee->x / k_simulation_width * dx);
-					dst_rect.y = y0 + static_cast<int>(bee->y / k_simulation_height * dy);
+					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
+					{
+						const bee_t *bee= &swarm->bees[bee_index];
 
-					//check state and render correct texture
-					if (bee->state==bee_t::state_t::_flying)
-					{
-						SDL_RenderCopyExF(g_renderer, bee_sprite_fly_texture, &bee->b_fly_rect, &dst_rect, (((bee->facing * 180)/3.14) + 90), 0, SDL_FLIP_NONE);
+						if (bee->state==state)
+						{
+							SDL_FPoint *point= &points[point_count++];
+
+							point->x= x0 + bee->x*dx;
+							point->y= y0 + bee->y*dy;
+						}
 					}
-					if (bee->state == bee_t::state_t::_crawling || bee->state == bee_t::state_t::_accelerating)
+
+					switch (state)
 					{
-						SDL_RenderCopyExF(g_renderer, bee_sprite_crawl_texture, &bee->b_crawl_rect, &dst_rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
+						case bee_t::state_t::_idle:     SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
+						case bee_t::state_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
+						default:                        SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
 					}
-					if (bee->state == bee_t::state_t::_idle)
+
+					SDL_RenderDrawPointsF(g_renderer, points, point_count);
+				}
+			}
+			else
+			{
+				SDL_FRect rect;
+
+				rect.w= 6.0f;
+				rect.h= 6.0f;
+
+				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
+				{
+					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						SDL_RenderCopyExF(g_renderer, bee_sprite_idle_texture, &bee->b_idle_rect, &dst_rect, (((bee->facing * 180) / 3.14) + 90), 0, SDL_FLIP_NONE);
+						const bee_t *bee= &swarm->bees[bee_index];
+
+						if (bee->state==state)
+						{
+							rect.x= x0 + bee->x*dx;
+							rect.y= y0 + bee->y*dy;
+
+							switch (state)
+							{
+								case bee_t::state_t::_idle:     SDL_RenderCopyExF(g_renderer, g_bee_idle_texture,  &bee->b_idle_rect,  &rect, 57.2957795131*bee->facing+90.0, 0, SDL_FLIP_NONE); break;
+								case bee_t::state_t::_crawling: SDL_RenderCopyExF(g_renderer, g_bee_crawl_texture, &bee->b_crawl_rect, &rect, 57.2957795131*bee->facing+90.0, 0, SDL_FLIP_NONE); break;
+								default:                        SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, 0, SDL_FLIP_NONE); break;
+							}
+						}
 					}
 				}
-
 			}
 		}
 
 		// render frame rate
 		if (fps && g_font)
-		{	
+		{
 			char frame_rate_string[4];
 			SDL_Color green= {0x0, 0xff, 0x0, 0xff};
 			snprintf(frame_rate_string, sizeof(frame_rate_string), "%3.0f", g_frame_rate);
 			SDL_Surface *text_surface= TTF_RenderText_Blended(g_font, frame_rate_string, green);
 
 			if (text_surface)
-			{	
+			{
+				int text_width= text_surface->w;
+				int text_height= text_surface->h;
 				SDL_Texture *text_texture= SDL_CreateTextureFromSurface(g_renderer, text_surface);
 				SDL_FreeSurface(text_surface);
 
 				if (text_texture)
-				{	
-					SDL_Rect text_rect= {k_window_width-text_surface->w-8, 8, text_surface->w, text_surface->h};
+				{
+					SDL_Rect text_rect= {k_window_width-text_width-8, 8, text_width, text_height};
 					SDL_RenderCopy(g_renderer, text_texture, NULL, &text_rect);
 					SDL_DestroyTexture(text_texture);
 				}
@@ -372,19 +411,29 @@ static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b 
 	return surface;
 }
 
-static SDL_Texture* LoadTexture(std::string filePath)
+static SDL_Texture* graphics_create_texture_from_image_file(const char *filepath)
 {
-	SDL_Texture* texture = nullptr;
-	SDL_Surface* surface = SDL_LoadBMP(filePath.c_str());
-	if (surface == NULL)
-		std::cout << "ERROR LOADING BMP" << std::endl;
+	SDL_Texture *texture= NULL;
+	SDL_Surface *surface= SDL_LoadBMP(filepath);
+
+	if (surface)
+	{
+		texture= SDL_CreateTextureFromSurface(g_renderer, surface);
+		SDL_FreeSurface(surface);
+
+		if (texture)
+		{
+			// success!
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create texture from surface for '%s': %s", filepath, SDL_GetError());
+		}
+	}
 	else
 	{
-		texture = SDL_CreateTextureFromSurface(g_renderer, surface);
-		if (texture == NULL)
-			std::cout << "ERROR CREATING TEXTURE FROM SURFACE" << std::endl;
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't load '%s': %s", filepath, SDL_GetError());
 	}
 
-	SDL_FreeSurface(surface);
-	return texture; 
+	return texture;
 }
