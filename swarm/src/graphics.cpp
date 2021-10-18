@@ -56,7 +56,7 @@ bool graphics_initialize()
 			if (g_font)
 			{
 				//load sprite texture
-				bee_sprite_texture = LoadTexture("C:\\Users\\15713\\Desktop\\Bee Renders\\Fly\\64_Fly_Sheet.bmp");
+				bee_sprite_texture = LoadTexture("res/64_Fly_Sheet.bmp");
 
 
 
