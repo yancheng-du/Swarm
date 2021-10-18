@@ -333,7 +333,7 @@ void idle_check(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame, bool *idle)
 		int dist= image_dist(video_frame, last_video_frame);
 		running_avg= running_avg_alpha*dist + (1-running_avg_alpha)*running_avg;
 
-		if (dist>running_avg*1.05)
+		if (dist>running_avg*2.00)
 		{
 			*idle= false;
 			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
