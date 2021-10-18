@@ -34,7 +34,6 @@ public:
 	float last_facing;
 
 	SDL_Rect b_rect;
-	SDL_Rect b_pos_rect;
 };
 
 class swarm_t
