@@ -4,6 +4,12 @@
 #include "constants.hpp"
 #include "swarm.hpp"
 
+const int b_texture_h = 64;
+const int b_texture_w = 1920;
+const int b_frame_h = 64;
+const int b_frame_w = 64;
+const int b_frame_count = 30;
+
 const float k_tau= 6.2831853f;
 
 const float k_bee_radius= 1.0f;
@@ -51,6 +57,14 @@ bee_t::bee_t()
 	last_facing= facing;
 	speed= 0.0f;
 	rotation= 0.0f;
+
+	//at init, every bee starts at random render frame
+	
+	b_rect.x = (rand() % b_frame_count) * b_frame_w;
+	b_rect.y = 0;
+	b_rect.w = b_frame_w;
+	b_rect.h = b_frame_h;
+
 }
 
 void bee_t::update(const cv::Mat1b* edge_frame)
@@ -111,6 +125,11 @@ void bee_t::update(const cv::Mat1b* edge_frame)
 	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
 	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
 	facing= wrap_value(facing+rotation*k_dt, k_tau, 0.0f);
+	
+	//update sprite render frame
+	b_rect.x += b_frame_w;
+	if (b_rect.x >= b_texture_w)
+		b_rect.x = 0;
 }
 
 swarm_t::swarm_t()

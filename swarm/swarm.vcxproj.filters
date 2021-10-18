@@ -56,4 +56,9 @@
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Bee Renders\Fly\64_Fly_Sheet.bmp">
+      <Filter>res</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

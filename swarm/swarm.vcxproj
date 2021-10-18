@@ -126,6 +126,9 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
     <ClInclude Include="src\model.hpp" />
     <ClInclude Include="src\swarm.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Bee Renders\Fly\64_Fly_Sheet.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
