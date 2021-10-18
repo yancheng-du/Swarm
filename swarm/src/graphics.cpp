@@ -224,8 +224,8 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 		// render bees
 		if (swarm)
 		{
-			float x0= debug ? k_swarm_rect.x : 0;
-			float y0= debug ? k_swarm_rect.y : 0;
+			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
+			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
 			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/k_simulation_width;
 			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/k_simulation_height;
 
