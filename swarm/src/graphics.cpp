@@ -245,13 +245,6 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 					}
 				}
 
-				switch (state)
-				{
-					case bee_t::state_t::_idle: 	SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
-					case bee_t::state_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
-					case bee_t::state_t::_flying: 	SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
-				}
-
 			}
 		}
 
