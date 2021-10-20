@@ -33,23 +33,19 @@ void model_t::analyze_frame(const cv::Mat &frame, commands_t &commands)
 	if (!frame.empty())
 	{
 		std::vector<cv::Mat> outputs= get_gestures(frame);
-		int gesture_id= postprocess(frame, outputs);
+		std::vector<command_t> gestures= postprocess(frame, outputs);
 
 		// $TODO support more than one command at a time?
 
-		if (gesture_id!=-1)
+		for (int i= 0; i< gestures.size(); i++)
 		{
-			command_t command;
-
-			command.name= classes[gesture_id];
-
-			commands.push_back(command);
+			commands.push_back(gestures[i]);
 		}
 	}
 }
 
 // Remove the bounding boxes with low confidence using non-maxima suppression
-int model_t::postprocess(const cv::Mat &frame, const std::vector<cv::Mat> &outs)
+std::vector<command_t> model_t::postprocess(const cv::Mat &frame, const std::vector<cv::Mat> &outs)
 {
 	std::vector<int> classIds;
 	std::vector<float> confidences;
@@ -88,14 +84,22 @@ int model_t::postprocess(const cv::Mat &frame, const std::vector<cv::Mat> &outs)
 	// lower confidences
 	std::vector<int> indices;
 	cv::dnn::NMSBoxes(boxes, confidences, k_confidence_threshold, k_nms_threshold, indices);
-	if (indices.size()>0)
+	//if (indices.size()>0)
+	//{
+	//	return classIds[indices[0]];
+	//}
+	std::vector<command_t> gestures;
+	for (int i= 0; i< indices.size(); i++) 
 	{
-		return classIds[indices[0]];
+		command_t command;
+		int index= indices[i];
+		command.name= classIds[index];
+		command.confidence= confidences[index];
+		cv::Rect box= boxes[index];
+		command.bounding_box= cv::Rect(box.x, box.y, box.width, box.height);
+		gestures.push_back(command);
 	}
-	else
-	{
-		return -1;
-	}
+	return gestures;
 }
 
 std::vector<cv::Mat> model_t::get_gestures(const cv::Mat &frame)

@@ -25,7 +25,7 @@ private:
 	cv::dnn::Net network;
 
 	std::vector<std::string> get_output_names(const cv::dnn::Net &net);
-	int postprocess(const cv::Mat &frame, const std::vector<cv::Mat> &outs);
+	std::vector<command_t> postprocess(const cv::Mat &frame, const std::vector<cv::Mat> &outs);
 };
 
 

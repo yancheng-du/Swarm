@@ -7,7 +7,8 @@
 struct command_t
 {
 	std::string name;
-
+	cv::Rect bounding_box;
+	float confidence;
 	// $TODO add information
 };
 
