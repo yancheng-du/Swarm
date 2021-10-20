@@ -40,6 +40,18 @@ static int image_dist_counter= k_fps/idle_checks_per_sec - 1;
 static int idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
 static float running_avg= 0.0f;
 static float last_running_avg= 0.0f;
+// for audio
+int distance;
+float avg_distance;
+
+int get_distance()
+{
+    return distance;
+}
+float get_avg_distance()
+{
+    return avg_distance;
+}
 
 bool camera_initialize()
 {
@@ -331,8 +343,9 @@ void idle_check(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame, bool *idle)
 	{	
 		image_dist_counter= k_fps/idle_checks_per_sec - 1;
 		int dist= image_dist(video_frame, last_video_frame);
+        distance= dist;
 		running_avg= running_avg_alpha*dist + (1-running_avg_alpha)*running_avg;
-
+        avg_distance= running_avg;
 		if (dist>running_avg*2.00)
 		{
 			*idle= false;
