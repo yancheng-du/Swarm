@@ -18,8 +18,6 @@ const int b_idle_frame_count = 61;
 
 const float k_tau= 6.2831853f;
 
-const float k_bee_radius= 1.0f;
-
 const float k_timer_minimum= 0.2f;
 const float k_timer_maximum= 0.8f;
 
