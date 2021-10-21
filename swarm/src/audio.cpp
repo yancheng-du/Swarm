@@ -46,12 +46,15 @@ void audio_dispose()
 
 void audio_render(const swarm_t &swarm)
 {
-	int volume= (get_distance()/get_avg_distance())*64;
-
-	Mix_VolumeMusic(volume);
-
-	if (Mix_PlayingMusic()==0)
+	if (g_buzz_sound)
 	{
-		Mix_PlayMusic(g_buzz_sound, -1);
+		int volume= (get_distance()/get_avg_distance())*64;
+
+		Mix_VolumeMusic(volume);
+
+		if (Mix_PlayingMusic()==0)
+		{
+			Mix_PlayMusic(g_buzz_sound, -1);
+		}
 	}
 }
