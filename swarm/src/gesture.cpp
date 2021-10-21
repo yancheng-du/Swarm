@@ -60,7 +60,7 @@ static void gesture_thread_function()
 
 	while (g_gesture_thread_run)
 	{
-		camera_peek_video_frame(&video_frame);
+		camera_peek_video_frame(video_frame);
 		model.analyze_frame(video_frame, commands);
 
 		g_commands_mutex.lock();

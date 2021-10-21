@@ -18,8 +18,6 @@ const int b_idle_frame_count = 61;
 
 const float k_tau= 6.2831853f;
 
-const float k_bee_radius= 1.0f;
-
 const float k_timer_minimum= 0.2f;
 const float k_timer_maximum= 0.8f;
 
@@ -77,21 +75,21 @@ bee_t::bee_t()
 
 }
 
-void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
+void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 {	
-	int field_x = static_cast<int>(y/k_simulation_height*field->rows);
-	if (field_x >= field->rows) { field_x = field->rows-1; }
-	int field_y = static_cast<int>(x/k_simulation_width*field->cols);
-	if (field_y >= field->cols) { field_y = field->cols-1; }
+	int field_x= static_cast<int>(y/k_simulation_height*field.rows);
+	if (field_x>=field.rows) field_x= field.rows-1;
+	int field_y= static_cast<int>(x/k_simulation_width*field.cols);
+	if (field_y>=field.cols) field_y= field.cols-1;
 
 	// update state, speed, and rotation
 	if (x>=0.0f && x<k_simulation_width &&
 		y>=0.0f && y<k_simulation_height &&
-		edge_frame->at<bool>(static_cast<int>(y/k_simulation_height*edge_frame->rows), static_cast<int>(x/k_simulation_width*edge_frame->cols))!=0 &&
-		field->at<bool>(field_x, field_y)==0
+		edge_frame.at<bool>(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))!=0 &&
+		field.at<bool>(field_x, field_y)==0
 		)
 	{	
-		field->at<bool>(field_x, field_y)=1;
+		field.at<bool>(field_x, field_y)= 1;
 		if (state==_flying || (state==_crawling&&timer<0.0f) || state==_accelerating)
 		{
 			state= _idle;
@@ -114,7 +112,7 @@ void bee_t::update(const cv::Mat1b* edge_frame, cv::Mat1b *field)
 	}
 	else
 	{	//not on edge, keep flying
-		field->at<bool>(field_x, field_y)=0;
+		field.at<bool>(field_x, field_y)= 0;
 		if (state==_flying && timer<0.0f)
 		{
 			state= _flying;
@@ -167,13 +165,13 @@ swarm_t::swarm_t()
 
 swarm_t::~swarm_t()
 {
-	delete (bees);
+	delete bees;
 }
 
-void swarm_t::update(const cv::Mat1b* edge_frame)
+void swarm_t::update(const cv::Mat1b &edge_frame)
 {
 	for (int i = 0; i<k_bee_count; i++)
 	{
-		bees[i].update(edge_frame, &field);
+		bees[i].update(edge_frame, field);
 	}
 }
