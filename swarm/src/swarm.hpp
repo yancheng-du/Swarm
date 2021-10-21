@@ -8,6 +8,7 @@ const int k_simulation_width= 1080;
 const int k_simulation_height= 1920;
 
 const int k_bee_count= 10000;
+const float k_bee_radius= 4.0f;
 
 class bee_t
 {
@@ -23,7 +24,7 @@ public:
 
 	bee_t();
 
-	void update(const cv::Mat1b* edge_frame,cv::Mat1b *field);
+	void update(const cv::Mat1b &edge_frame, cv::Mat1b &field);
 
 	state_t state;
 	float timer;
@@ -45,9 +46,9 @@ public:
 	swarm_t();
 	~swarm_t();
 
-	void update(const cv::Mat1b* edge_frame);
+	void update(const cv::Mat1b &edge_frame);
 
-	bee_t* bees;
+	bee_t *bees;
 	cv::Mat1b field;
 };
 

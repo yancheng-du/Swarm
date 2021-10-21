@@ -11,23 +11,30 @@
 const int k_window_width= 540;
 const int k_window_height= 960;
 
-// assume 4:3 camera aspect ratio
+// assume 4:3 camera aspect ratio so use the 9:16 center portion of it
 const int k_scaled_camera_width= k_window_height/3;
 const int k_scaled_camera_height= k_window_height/4;
 const int k_scaled_clip_width= k_window_width*k_scaled_camera_height/k_window_height;
 
+// video frame is top half of the top half of the window
 const SDL_Rect k_video_rect= {(k_window_width-k_scaled_camera_width)/2, 0, k_scaled_camera_width, k_scaled_camera_height};
 const SDL_Rect k_video_clip_rect= {k_video_rect.x+(k_scaled_camera_width-k_scaled_clip_width)/2, 0, k_scaled_clip_width, k_scaled_camera_height};
+
+// depth frame is bottom half of the top half of the window
 const SDL_Rect k_depth_rect= {(k_window_width-k_scaled_camera_width)/2, k_scaled_camera_height, k_scaled_camera_width, k_scaled_camera_height};
 const SDL_Rect k_depth_clip_rect= {k_depth_rect.x+(k_scaled_camera_width-k_scaled_clip_width)/2, k_scaled_camera_height, k_scaled_clip_width, k_scaled_camera_height};
+
+// edge frame is the lower left quarter of the window
 const SDL_Rect k_edge_rect= {0, k_window_height/2, k_window_width/2, k_window_height/2};
+
+// swarm is the lower right quarter of the window
 const SDL_Rect k_swarm_rect= {k_window_width/2, k_window_height/2, k_window_width/2, k_window_height/2};
 
-static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b *video_frame);
-static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w *depth_frame);
-static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b *edge_frame);
-
 static SDL_Texture *graphics_create_texture_from_image_file(const char *filePath);
+static SDL_Texture *graphics_create_texture_from_video_frame(const cv::Mat3b &video_frame);
+static SDL_Texture *graphics_create_texture_from_depth_frame(const cv::Mat1w &depth_frame);
+static SDL_Texture *graphics_create_texture_from_edge_frame(const cv::Mat1b &edge_frame);
+static SDL_Texture *graphics_create_texture_from_string(const char *string, const SDL_Color &color, int &height, int &width);
 
 SDL_Window *g_window= NULL;
 SDL_Renderer *g_renderer= NULL;
@@ -56,11 +63,16 @@ bool graphics_initialize()
 				g_bee_crawl_texture= graphics_create_texture_from_image_file("res/64_Crawl_Sheet.bmp");
 				g_bee_fly_texture= graphics_create_texture_from_image_file("res/64_Fly_Sheet.bmp");
 
-				g_frame_count= 0;
-				g_last_frame_time= SDL_GetPerformanceCounter();
-				g_frame_rate= k_fps;
+				if (g_bee_idle_texture &&
+					g_bee_crawl_texture &&
+					g_bee_fly_texture)
+				{
+					g_frame_count= 0;
+					g_last_frame_time= SDL_GetPerformanceCounter();
+					g_frame_rate= k_fps;
 
-				success= true;
+					success= true;
+				}
 			}
 			else
 			{
@@ -124,105 +136,22 @@ void graphics_dispose()
 	}
 }
 
-int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b *video_frame, const cv::Mat1w *depth_frame, const cv::Mat1b *edge_frame)
+int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_frame, const cv::Mat1w &depth_frame, const cv::Mat1b &edge_frame, bool fps)
 {
 	if (g_renderer)
 	{
-		// render clear
-		{
-			if (debug)
-			{
-				SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
-			}
-			else
-			{
-				SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0x00);
-			}
-			SDL_RenderClear(g_renderer);
-		}
-
-		// render video
+		// clear background
 		if (debug)
 		{
-			SDL_Surface *video_surface= graphics_create_SDL_surface_from_video_frame(video_frame);
-
-			if (video_surface)
-			{
-				SDL_Texture *video_texture= SDL_CreateTextureFromSurface(g_renderer, video_surface);
-				SDL_FreeSurface(video_surface);
-
-				if (video_texture)
-				{
-					SDL_RenderCopy(g_renderer, video_texture, NULL, &k_video_rect);
-					SDL_DestroyTexture(video_texture);
-					SDL_RenderDrawRect(g_renderer, &k_video_clip_rect);
-				}
-				else
-				{
-					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create video texture: %s", SDL_GetError());
-				}
-			}
-			else
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create video surface: %s", SDL_GetError());
-			}
+			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
 		}
-
-		// render depth
-		if (debug)
+		else
 		{
-			SDL_Surface *depth_surface= graphics_create_SDL_surface_from_depth_frame(depth_frame);
-
-			if (depth_surface)
-			{
-				SDL_Texture *depth_texture= SDL_CreateTextureFromSurface(g_renderer, depth_surface);
-				SDL_FreeSurface(depth_surface);
-
-				if (depth_texture)
-				{
-					SDL_RenderCopy(g_renderer, depth_texture, NULL, &k_depth_rect);
-					SDL_DestroyTexture(depth_texture);
-					SDL_RenderDrawRect(g_renderer, &k_depth_clip_rect);
-				}
-				else
-				{
-					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create depth texture: %s", SDL_GetError());
-				}
-			}
-			else
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create depth surface: %s", SDL_GetError());
-			}
+			SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0x00);
 		}
-
-		// render edges
-		if (debug)
-		{
-			SDL_Surface *edge_surface= graphics_create_SDL_surface_from_edge_frame(edge_frame);
-
-			if (edge_surface)
-			{
-				SDL_Texture *edge_texture= SDL_CreateTextureFromSurface(g_renderer, edge_surface);
-				SDL_FreeSurface(edge_surface);
-
-				if (edge_texture)
-				{
-					SDL_RenderCopy(g_renderer, edge_texture, NULL, &k_edge_rect);
-					SDL_DestroyTexture(edge_texture);
-				}
-				else
-				{
-					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create edge texture: %s", SDL_GetError());
-				}
-			}
-			else
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create edge surface: %s", SDL_GetError());
-			}
-		}
+		SDL_RenderClear(g_renderer);
 
 		// render bees
-		if (swarm)
 		{
 			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
 			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
@@ -238,7 +167,7 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &swarm->bees[bee_index];
+						const bee_t *bee= &swarm.bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -263,25 +192,25 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 			{
 				SDL_FRect rect;
 
-				rect.w= 6.0f;
-				rect.h= 6.0f;
+				rect.w= 2*k_bee_radius*dx;
+				rect.h= 2*k_bee_radius*dy;
 
 				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
 				{
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &swarm->bees[bee_index];
+						const bee_t *bee= &swarm.bees[bee_index];
 
 						if (bee->state==state)
 						{
-							rect.x= x0 + bee->x*dx;
-							rect.y= y0 + bee->y*dy;
+							rect.x= x0 + (bee->x-k_bee_radius)*dx;
+							rect.y= y0 + (bee->y-k_bee_radius)*dy;
 
 							switch (state)
 							{
-								case bee_t::state_t::_idle:     SDL_RenderCopyExF(g_renderer, g_bee_idle_texture,  &bee->b_idle_rect,  &rect, 57.2957795131*bee->facing+90.0, 0, SDL_FLIP_NONE); break;
-								case bee_t::state_t::_crawling: SDL_RenderCopyExF(g_renderer, g_bee_crawl_texture, &bee->b_crawl_rect, &rect, 57.2957795131*bee->facing+90.0, 0, SDL_FLIP_NONE); break;
-								default:                        SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, 0, SDL_FLIP_NONE); break;
+								case bee_t::state_t::_idle:     SDL_RenderCopyExF(g_renderer, g_bee_idle_texture,  &bee->b_idle_rect,  &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								case bee_t::state_t::_crawling: SDL_RenderCopyExF(g_renderer, g_bee_crawl_texture, &bee->b_crawl_rect, &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								default:                        SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
 							}
 						}
 					}
@@ -289,38 +218,62 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 			}
 		}
 
-		// render frame rate
-		if (fps && g_font)
+		// render video
+		if (debug)
 		{
-			char frame_rate_string[4];
-			SDL_Color green= {0x0, 0xff, 0x0, 0xff};
-			snprintf(frame_rate_string, sizeof(frame_rate_string), "%3.0f", g_frame_rate);
-			SDL_Surface *text_surface= TTF_RenderText_Blended(g_font, frame_rate_string, green);
+			SDL_Texture *video_texture= graphics_create_texture_from_video_frame(video_frame);
 
-			if (text_surface)
+			if (video_texture)
 			{
-				int text_width= text_surface->w;
-				int text_height= text_surface->h;
-				SDL_Texture *text_texture= SDL_CreateTextureFromSurface(g_renderer, text_surface);
-				SDL_FreeSurface(text_surface);
-
-				if (text_texture)
-				{
-					SDL_Rect text_rect= {k_window_width-text_width-8, 8, text_width, text_height};
-					SDL_RenderCopy(g_renderer, text_texture, NULL, &text_rect);
-					SDL_DestroyTexture(text_texture);
-				}
-				else
-				{
-					SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create text texture: %s", SDL_GetError());
-				}
-			}
-			else
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create text surface: %s", SDL_GetError());
+				SDL_RenderCopy(g_renderer, video_texture, NULL, &k_video_rect);
+				SDL_DestroyTexture(video_texture);
+				SDL_RenderDrawRect(g_renderer, &k_video_clip_rect);
 			}
 		}
 
+		// render depth
+		if (debug)
+		{
+			SDL_Texture *depth_texture= graphics_create_texture_from_depth_frame(depth_frame);
+
+			if (depth_texture)
+			{
+				SDL_RenderCopy(g_renderer, depth_texture, NULL, &k_depth_rect);
+				SDL_DestroyTexture(depth_texture);
+				SDL_RenderDrawRect(g_renderer, &k_depth_clip_rect);
+			}
+		}
+
+		// render edges
+		if (debug)
+		{
+			SDL_Texture *edge_texture= graphics_create_texture_from_edge_frame(edge_frame);
+
+			if (edge_texture)
+			{
+				SDL_RenderCopy(g_renderer, edge_texture, NULL, &k_edge_rect);
+				SDL_DestroyTexture(edge_texture);
+			}
+		}
+
+		// render frame rate
+		if (fps)
+		{
+			char frame_rate_string[4];
+			snprintf(frame_rate_string, sizeof(frame_rate_string), "%3.0f", g_frame_rate);
+			SDL_Color color= {0x0, 0xff, 0x0, 0xff};
+			int height, width;
+			SDL_Texture *fps_texture= graphics_create_texture_from_string(frame_rate_string, color, height, width);
+
+			if (fps_texture)
+			{
+				SDL_Rect text_rect= {k_window_width-width-8, 8, width, height};
+				SDL_RenderCopy(g_renderer, fps_texture, NULL, &text_rect);
+				SDL_DestroyTexture(fps_texture);
+			}
+		}
+
+		// present frame
 		SDL_RenderPresent(g_renderer);
 
 		// update fps
@@ -333,82 +286,6 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 	}
 
 	return g_frame_count++;
-}
-
-static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b *video_frame)
-{
-	const Uint32 k_red_mask= 0x000000ff;
-	const Uint32 k_green_mask= 0x0000ff00;
-	const Uint32 k_blue_mask= 0x00ff0000;
-	const Uint32 k_alpha_mask= 0x00000000;
-
-	assert(video_frame->isContinuous());
-
-	return SDL_CreateRGBSurfaceFrom(video_frame->data, video_frame->cols, video_frame->rows, 24, 3*video_frame->cols, k_red_mask, k_green_mask, k_blue_mask, k_alpha_mask);
-}
-
-static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w *depth_frame)
-{
-	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, depth_frame->cols, depth_frame->rows, 24, SDL_PIXELFORMAT_RGB24);
-
-	if (surface)
-	{
-		const uint16_t *depth= depth_frame->ptr<uint16_t>();
-		uint8_t *color_row= (uint8_t *)surface->pixels;
-
-		assert(depth_frame->isContinuous());
-		assert(!SDL_MUSTLOCK(surface));
-
-		for (int y= 0; y<surface->h; ++y)
-		{
-			uint8_t *color= color_row;
-
-			for (int x= 0; x<surface->w; ++x)
-			{
-				uint8_t depth8= UINT8_MAX-((*depth++)*UINT8_MAX)/FREENECT_DEPTH_MM_MAX_VALUE;
-
-				*color++= depth8;
-				*color++= depth8;
-				*color++= depth8;
-			}
-
-			color_row+= surface->pitch;
-		}
-	}
-
-	return surface;
-}
-
-static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b *edge_frame)
-{
-	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, edge_frame->cols, edge_frame->rows, 24, SDL_PIXELFORMAT_RGB24);
-
-	if (surface)
-	{
-		const uint8_t *edge= edge_frame->ptr<uint8_t>();
-		uint8_t *color_row= (uint8_t *)surface->pixels;
-
-		assert(edge_frame->isContinuous());
-		assert(!SDL_MUSTLOCK(surface));
-
-		for (int y= 0; y<surface->h; ++y)
-		{
-			uint8_t *color= color_row;
-
-			for (int x= 0; x<surface->w; ++x)
-			{
-				uint8_t temp= *edge++;
-
-				*color++= temp;
-				*color++= temp;
-				*color++= temp;
-			}
-
-			color_row+= surface->pitch;
-		}
-	}
-
-	return surface;
 }
 
 static SDL_Texture* graphics_create_texture_from_image_file(const char *filepath)
@@ -433,6 +310,181 @@ static SDL_Texture* graphics_create_texture_from_image_file(const char *filepath
 	else
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't load '%s': %s", filepath, SDL_GetError());
+	}
+
+	return texture;
+}
+
+static SDL_Texture *graphics_create_texture_from_video_frame(const cv::Mat3b &video_frame)
+{
+	SDL_Texture *texture= NULL;
+
+	assert(video_frame.isContinuous());
+	{
+		const Uint32 k_red_mask= 0x000000ff;
+		const Uint32 k_green_mask= 0x0000ff00;
+		const Uint32 k_blue_mask= 0x00ff0000;
+		const Uint32 k_alpha_mask= 0x00000000;
+		SDL_Surface *surface= SDL_CreateRGBSurfaceFrom(video_frame.data, video_frame.cols, video_frame.rows, 24, 3*video_frame.cols, k_red_mask, k_green_mask, k_blue_mask, k_alpha_mask);
+
+		if (surface)
+		{
+			texture= SDL_CreateTextureFromSurface(g_renderer, surface);
+			SDL_FreeSurface(surface);
+
+			if (texture)
+			{
+				// success!
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create video texture: %s", SDL_GetError());
+			}
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create video surface: %s", SDL_GetError());
+		}
+	}
+
+	return texture;
+}
+
+static SDL_Texture *graphics_create_texture_from_depth_frame(const cv::Mat1w &depth_frame)
+{
+	SDL_Texture *texture= NULL;
+	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, depth_frame.cols, depth_frame.rows, 24, SDL_PIXELFORMAT_RGB24);
+
+	if (surface)
+	{
+		assert(depth_frame.isContinuous());
+		assert(!SDL_MUSTLOCK(surface));
+		{
+			const uint16_t *depth= depth_frame.ptr<uint16_t>();
+			uint8_t *color_row= (uint8_t *)surface->pixels;
+
+			for (int y= 0; y<surface->h; ++y)
+			{
+				uint8_t *color= color_row;
+
+				for (int x= 0; x<surface->w; ++x)
+				{
+					uint8_t depth8= UINT8_MAX-((*depth++)*UINT8_MAX)/FREENECT_DEPTH_MM_MAX_VALUE;
+
+					*color++= depth8;
+					*color++= depth8;
+					*color++= depth8;
+				}
+
+				color_row+= surface->pitch;
+			}
+		}
+
+		texture= SDL_CreateTextureFromSurface(g_renderer, surface);
+		SDL_FreeSurface(surface);
+
+		if (texture)
+		{
+			// success!
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create depth texture: %s", SDL_GetError());
+		}
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create depth surface: %s", SDL_GetError());
+	}
+
+	return texture;
+}
+
+static SDL_Texture *graphics_create_texture_from_edge_frame(const cv::Mat1b &edge_frame)
+{
+	SDL_Texture *texture= NULL;
+	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, edge_frame.cols, edge_frame.rows, 24, SDL_PIXELFORMAT_RGB24);
+
+	if (surface)
+	{
+		assert(edge_frame.isContinuous());
+		assert(!SDL_MUSTLOCK(surface));
+		{
+			const uint8_t *edge= edge_frame.ptr<uint8_t>();
+			uint8_t *color_row= (uint8_t *)surface->pixels;
+
+			for (int y= 0; y<surface->h; ++y)
+			{
+				uint8_t *color= color_row;
+
+				for (int x= 0; x<surface->w; ++x)
+				{
+					uint8_t temp= *edge++;
+
+					*color++= temp;
+					*color++= temp;
+					*color++= temp;
+				}
+
+				color_row+= surface->pitch;
+			}
+		}
+
+		texture= SDL_CreateTextureFromSurface(g_renderer, surface);
+		SDL_FreeSurface(surface);
+
+		if (texture)
+		{
+			// success!
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create edge texture: %s", SDL_GetError());
+		}
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create edge surface: %s", SDL_GetError());
+	}
+
+	return texture;
+}
+
+static SDL_Texture *graphics_create_texture_from_string(const char *string, const SDL_Color &color, int &height, int &width)
+{
+	SDL_Texture *texture= NULL;
+
+	height= 0;
+	width= 0;
+
+	if (g_font)
+	{
+		SDL_Surface *surface= TTF_RenderText_Blended(g_font, string, color);
+
+		if (surface)
+		{
+			int surface_height= surface->h;
+			int surface_width= surface->w;
+
+			texture= SDL_CreateTextureFromSurface(g_renderer, surface);
+			SDL_FreeSurface(surface);
+
+			if (texture)
+			{
+				height= surface_height;
+				width= surface_width;
+
+				// success!
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create text texture: %s", SDL_GetError());
+			}
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Couldn't create text surface: %s", SDL_GetError());
+		}
 	}
 
 	return texture;

@@ -68,12 +68,12 @@ int main(int argc, char *argv[])
 			timer.reset();
 
 			// process frame
-			camera_consume_full_frame(&video_frame, &depth_frame, &edge_frame, idle);
-			idle_check(&video_frame, &last_video_frame,&idle);
+			camera_consume_full_frame(video_frame, depth_frame, edge_frame, idle);
+			idle_check(video_frame, last_video_frame, idle);
 			gesture_consume_commands(commands);
-			swarm.update(&edge_frame);
-			graphics_render(&swarm, fps, debug, &video_frame, &depth_frame, &edge_frame);
-			audio_render(&swarm);
+			swarm.update(edge_frame);
+			graphics_render(swarm, debug, video_frame, depth_frame, edge_frame, fps);
+			audio_render(swarm);
 
 			// process events while waiting to start next frame
 			do
