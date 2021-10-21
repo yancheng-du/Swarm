@@ -23,9 +23,9 @@ const SDL_Rect k_depth_clip_rect= {k_depth_rect.x+(k_scaled_camera_width-k_scale
 const SDL_Rect k_edge_rect= {0, k_window_height/2, k_window_width/2, k_window_height/2};
 const SDL_Rect k_swarm_rect= {k_window_width/2, k_window_height/2, k_window_width/2, k_window_height/2};
 
-static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b *video_frame);
-static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w *depth_frame);
-static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b *edge_frame);
+static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b &video_frame);
+static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w &depth_frame);
+static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b &edge_frame);
 
 static SDL_Texture *graphics_create_texture_from_image_file(const char *filePath);
 
@@ -124,7 +124,7 @@ void graphics_dispose()
 	}
 }
 
-int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b *video_frame, const cv::Mat1w *depth_frame, const cv::Mat1b *edge_frame)
+int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_frame, const cv::Mat1w &depth_frame, const cv::Mat1b &edge_frame, bool fps)
 {
 	if (g_renderer)
 	{
@@ -222,7 +222,6 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 		}
 
 		// render bees
-		if (swarm)
 		{
 			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
 			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
@@ -238,7 +237,7 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &swarm->bees[bee_index];
+						const bee_t *bee= &swarm.bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -270,7 +269,7 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 				{
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &swarm->bees[bee_index];
+						const bee_t *bee= &swarm.bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -335,28 +334,28 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 	return g_frame_count++;
 }
 
-static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b *video_frame)
+static SDL_Surface *graphics_create_SDL_surface_from_video_frame(const cv::Mat3b &video_frame)
 {
 	const Uint32 k_red_mask= 0x000000ff;
 	const Uint32 k_green_mask= 0x0000ff00;
 	const Uint32 k_blue_mask= 0x00ff0000;
 	const Uint32 k_alpha_mask= 0x00000000;
 
-	assert(video_frame->isContinuous());
+	assert(video_frame.isContinuous());
 
-	return SDL_CreateRGBSurfaceFrom(video_frame->data, video_frame->cols, video_frame->rows, 24, 3*video_frame->cols, k_red_mask, k_green_mask, k_blue_mask, k_alpha_mask);
+	return SDL_CreateRGBSurfaceFrom(video_frame.data, video_frame.cols, video_frame.rows, 24, 3*video_frame.cols, k_red_mask, k_green_mask, k_blue_mask, k_alpha_mask);
 }
 
-static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w *depth_frame)
+static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w &depth_frame)
 {
-	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, depth_frame->cols, depth_frame->rows, 24, SDL_PIXELFORMAT_RGB24);
+	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, depth_frame.cols, depth_frame.rows, 24, SDL_PIXELFORMAT_RGB24);
 
 	if (surface)
 	{
-		const uint16_t *depth= depth_frame->ptr<uint16_t>();
+		const uint16_t *depth= depth_frame.ptr<uint16_t>();
 		uint8_t *color_row= (uint8_t *)surface->pixels;
 
-		assert(depth_frame->isContinuous());
+		assert(depth_frame.isContinuous());
 		assert(!SDL_MUSTLOCK(surface));
 
 		for (int y= 0; y<surface->h; ++y)
@@ -379,16 +378,16 @@ static SDL_Surface *graphics_create_SDL_surface_from_depth_frame(const cv::Mat1w
 	return surface;
 }
 
-static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b *edge_frame)
+static SDL_Surface *graphics_create_SDL_surface_from_edge_frame(const cv::Mat1b &edge_frame)
 {
-	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, edge_frame->cols, edge_frame->rows, 24, SDL_PIXELFORMAT_RGB24);
+	SDL_Surface *surface= SDL_CreateRGBSurfaceWithFormat(0, edge_frame.cols, edge_frame.rows, 24, SDL_PIXELFORMAT_RGB24);
 
 	if (surface)
 	{
-		const uint8_t *edge= edge_frame->ptr<uint8_t>();
+		const uint8_t *edge= edge_frame.ptr<uint8_t>();
 		uint8_t *color_row= (uint8_t *)surface->pixels;
 
-		assert(edge_frame->isContinuous());
+		assert(edge_frame.isContinuous());
 		assert(!SDL_MUSTLOCK(surface));
 
 		for (int y= 0; y<surface->h; ++y)

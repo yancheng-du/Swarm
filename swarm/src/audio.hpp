@@ -6,6 +6,6 @@
 bool audio_initialize();
 void audio_dispose();
 
-void audio_render(const swarm_t *swarm);
+void audio_render(const swarm_t &swarm);
 
 #endif /* audio_hpp */
