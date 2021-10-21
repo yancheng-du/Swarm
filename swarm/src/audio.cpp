@@ -44,7 +44,7 @@ void audio_dispose()
 	}
 }
 
-void audio_render(const swarm_t *swarm)
+void audio_render(const swarm_t &swarm)
 {
 	int volume= (get_distance()/get_avg_distance())*64;
 

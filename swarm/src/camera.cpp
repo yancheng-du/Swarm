@@ -162,57 +162,57 @@ void camera_dispose()
 }
 
 void camera_peek_video_frame(
-	cv::Mat3b *video_frame)
+	cv::Mat3b &video_frame)
 {
-	video_frame->create(k_camera_height, k_camera_width);
+	video_frame.create(k_camera_height, k_camera_width);
 
-	assert(video_frame->isContinuous());
-	assert(video_frame->dataend-video_frame->datastart==sizeof(g_video_frame));
+	assert(video_frame.isContinuous());
+	assert(video_frame.dataend-video_frame.datastart==sizeof(g_video_frame));
 
 	g_frame_mutex.lock();
-	std::memcpy(video_frame->data, g_video_frame, sizeof(g_video_frame));
+	std::memcpy(video_frame.data, g_video_frame, sizeof(g_video_frame));
 	g_frame_mutex.unlock();
 }
 
 int camera_consume_full_frame(
-	cv::Mat3b *video_frame,
-	cv::Mat1w *depth_frame,
-	cv::Mat1b *edge_frame,
+	cv::Mat3b &video_frame,
+	cv::Mat1w &depth_frame,
+	cv::Mat1b &edge_frame,
 	bool idle)
 {
 	int frame_count;
 
-	video_frame->create(k_camera_height, k_camera_width);
+	video_frame.create(k_camera_height, k_camera_width);
 	
-	assert(video_frame->isContinuous());
-	assert(video_frame->dataend-video_frame->datastart==sizeof(g_video_frame));
+	assert(video_frame.isContinuous());
+	assert(video_frame.dataend-video_frame.datastart==sizeof(g_video_frame));
 
-	depth_frame->create(k_camera_height, k_camera_width);
-	assert(depth_frame->isContinuous());
-	assert(depth_frame->dataend-depth_frame->datastart==sizeof(g_depth_frame));
+	depth_frame.create(k_camera_height, k_camera_width);
+	assert(depth_frame.isContinuous());
+	assert(depth_frame.dataend-depth_frame.datastart==sizeof(g_depth_frame));
 
 	g_frame_mutex.lock();
-	std::memcpy(video_frame->data, g_video_frame, sizeof(g_video_frame));
-	std::memcpy(depth_frame->data, g_depth_frame, sizeof(g_depth_frame));
+	std::memcpy(video_frame.data, g_video_frame, sizeof(g_video_frame));
+	std::memcpy(depth_frame.data, g_depth_frame, sizeof(g_depth_frame));
 	
 	frame_count= g_frame_count;
 	g_frame_mutex.unlock();
 
 	if (idle)
 	{
-		*edge_frame= g_idle_image;
+		edge_frame= g_idle_image;
 	}
 	else
 	{
 		cv::Mat grey_frame, blurred_frame;
 
-		cv::cvtColor((*video_frame)(cv::Rect((k_camera_width-k_edge_width)/2, 0, k_edge_width, k_camera_height)), grey_frame, cv::COLOR_BGR2GRAY);
+		cv::cvtColor(video_frame(cv::Rect((k_camera_width-k_edge_width)/2, 0, k_edge_width, k_camera_height)), grey_frame, cv::COLOR_BGR2GRAY);
 		cv::Canny(grey_frame, 	// input image
 			blurred_frame, 		// output image
-			150, 				// low threshold
-			300);				// high threshold
+			50, 				// low threshold
+			100);				// high threshold
 		cv::GaussianBlur(blurred_frame, 	// input image
-			*edge_frame, 					// output image
+			edge_frame, 					// output image
 			cv::Size(3, 3), 				// smoothing window width and height in pixels
 			2);								// sigma
 	}
@@ -236,16 +236,16 @@ void init_field(int field_size)
 }
 
 void get_vector_frame(
-	cv::Mat1b *edge_frame,
-	cv::Mat *x_vector_frame,
-	cv::Mat *y_vector_frame,
+	const cv::Mat1b &edge_frame,
+	cv::Mat &x_vector_frame,
+	cv::Mat &y_vector_frame,
 	int field_size)
 {
-	for (int i= 0; i<edge_frame->rows; i++)
+	for (int i= 0; i<edge_frame.rows; i++)
 	{
-		for (int j= 0; j<edge_frame->cols; j++)
+		for (int j= 0; j<edge_frame.cols; j++)
 		{
-			if (edge_frame->at<bool>(i, j)!=0)
+			if (edge_frame(i, j)!=0)
 			{
 				for (int vec_i= 0; vec_i<field_size; vec_i++)
 				{
@@ -254,11 +254,11 @@ void get_vector_frame(
 						int i_new= i + vec_i - (field_size-1)/2;
 						int j_new= j + vec_j - (field_size-1)/2;
 
-						if (i_new>=0 && i_new<edge_frame->rows &&
-							j_new>=0 && j_new<edge_frame->cols)
+						if (i_new>=0 && i_new<edge_frame.rows &&
+							j_new>=0 && j_new<edge_frame.cols)
 						{
-							x_vector_frame->at<int8_t>(i_new, j_new)= x_field[vec_i*field_size+vec_j];
-							y_vector_frame->at<int8_t>(i_new, j_new)= y_field[vec_i*field_size+vec_j];
+							x_vector_frame.at<int8_t>(i_new, j_new)= x_field[vec_i*field_size+vec_j];
+							y_vector_frame.at<int8_t>(i_new, j_new)= y_field[vec_i*field_size+vec_j];
 						}
 					}
 				}
@@ -329,26 +329,26 @@ static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_
 	SDL_LogInfo(SDL_LOG_CATEGORY_VIDEO, "Received depth frame at timestamp: %u", timestamp);
 }
 
-int image_dist(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame)
+int image_dist(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame)
 {	
-	last_video_frame->create(k_camera_height, k_camera_width);
-	int diff= (int)cv::norm(*video_frame-*last_video_frame);
-	*last_video_frame= video_frame->clone();
+	last_video_frame.create(k_camera_height, k_camera_width);
+	int diff= (int)cv::norm(video_frame-last_video_frame);
+	last_video_frame= video_frame.clone();
 	return diff;
 }
 
-void idle_check(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame, bool *idle)
+void idle_check(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame, bool &idle)
 {
 	if (image_dist_counter==0)
 	{	
 		image_dist_counter= k_fps/idle_checks_per_sec - 1;
 		int dist= image_dist(video_frame, last_video_frame);
-        distance= dist;
+		distance= dist;
 		running_avg= running_avg_alpha*dist + (1-running_avg_alpha)*running_avg;
-        avg_distance= running_avg;
+		avg_distance= running_avg;
 		if (dist>running_avg*2.00)
 		{
-			*idle= false;
+			idle= false;
 			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
 		}
 		if (idle_check_counter<=0)
@@ -356,7 +356,7 @@ void idle_check(cv::Mat3b *video_frame, cv::Mat3b *last_video_frame, bool *idle)
 			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
 			if (running_avg<last_running_avg*1.1 && dist<last_running_avg*1.1)
 			{
-				*idle= true;
+				idle= true;
 			}
 			last_running_avg= running_avg;
 		}
