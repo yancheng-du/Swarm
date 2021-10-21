@@ -263,8 +263,8 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 			{
 				SDL_FRect rect;
 
-				rect.w= 6.0f;
-				rect.h= 6.0f;
+				rect.w= 2*k_bee_radius*dx;
+				rect.h= 2*k_bee_radius*dy;
 
 				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
 				{
@@ -274,8 +274,8 @@ int graphics_render(const swarm_t *swarm, bool fps, bool debug, const cv::Mat3b 
 
 						if (bee->state==state)
 						{
-							rect.x= x0 + bee->x*dx;
-							rect.y= y0 + bee->y*dy;
+							rect.x= x0 + (bee->x-k_bee_radius)*dx;
+							rect.y= y0 + (bee->y-k_bee_radius)*dy;
 
 							switch (state)
 							{
