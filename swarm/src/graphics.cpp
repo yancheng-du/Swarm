@@ -16,18 +16,18 @@ const int k_scaled_camera_width= k_window_height/3;
 const int k_scaled_camera_height= k_window_height/4;
 const int k_scaled_clip_width= k_window_width*k_scaled_camera_height/k_window_height;
 
-// video frame is top half of the top half of the window
+// video frame is top half of the top half of the debug view
 const SDL_Rect k_video_rect= {(k_window_width-k_scaled_camera_width)/2, 0, k_scaled_camera_width, k_scaled_camera_height};
 const SDL_Rect k_video_clip_rect= {k_video_rect.x+(k_scaled_camera_width-k_scaled_clip_width)/2, 0, k_scaled_clip_width, k_scaled_camera_height};
 
-// depth frame is bottom half of the top half of the window
+// depth frame is bottom half of the top half of the debug view
 const SDL_Rect k_depth_rect= {(k_window_width-k_scaled_camera_width)/2, k_scaled_camera_height, k_scaled_camera_width, k_scaled_camera_height};
 const SDL_Rect k_depth_clip_rect= {k_depth_rect.x+(k_scaled_camera_width-k_scaled_clip_width)/2, k_scaled_camera_height, k_scaled_clip_width, k_scaled_camera_height};
 
-// edge frame is the lower left quarter of the window
+// edge frame is the lower left quarter of the debug view
 const SDL_Rect k_edge_rect= {0, k_window_height/2, k_window_width/2, k_window_height/2};
 
-// swarm is the lower right quarter of the window
+// swarm is the lower right quarter of the debug view
 const SDL_Rect k_swarm_rect= {k_window_width/2, k_window_height/2, k_window_width/2, k_window_height/2};
 
 static SDL_Texture *graphics_create_texture_from_image_file(const char *filePath);
