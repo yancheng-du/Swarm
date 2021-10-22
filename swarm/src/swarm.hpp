@@ -3,6 +3,7 @@
 
 #include <opencv2/core.hpp>
 #include <SDL.h>
+
 #include "gesture.hpp"
 
 const int k_simulation_width= 1080;
@@ -46,8 +47,10 @@ public:
 	swarm_t();
 	~swarm_t();
 
-	void update(const cv::Mat1b &edge_frame, commands_t command);
+	const bee_t *get_bees() const;
+	void update(const cv::Mat1b &edge_frame, const commands_t &commands);
 
+private:
 	bee_t *bees;
 	cv::Mat1b field;
 };
