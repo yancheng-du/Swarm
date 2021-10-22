@@ -6,6 +6,9 @@
 const int k_camera_width = 640;
 const int k_camera_height = 480;
 
+const int k_cropped_camera_width = 270;
+const int k_cropped_camera_height = 480;
+
 const int k_edge_width = k_camera_height * 9 / 16;
 
 bool camera_initialize();

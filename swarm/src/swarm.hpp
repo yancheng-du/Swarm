@@ -25,6 +25,7 @@ public:
 	bee_t();
 
 	void update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t command);
+	void palm_update(command_t command);
 
 	state_t state;
 	float timer;
