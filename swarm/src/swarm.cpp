@@ -3,9 +3,6 @@
 
 #include "constants.hpp"
 #include "swarm.hpp"
-#include "gesture.hpp"
-#include "camera.hpp"
-
 
 //constants for texture heights, widths, etc.
 const int b_texture_h = 64;
@@ -183,8 +180,8 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 
 swarm_t::swarm_t()
 {
-	field = cv::Mat::zeros(k_simulation_height/6, k_simulation_width/6, CV_8U);
-	bees = new bee_t[k_bee_count];
+	bees= new bee_t[k_bee_count];
+	field= cv::Mat::zeros(k_simulation_height/6, k_simulation_width/6, CV_8U);
 }
 
 swarm_t::~swarm_t()
@@ -192,10 +189,15 @@ swarm_t::~swarm_t()
 	delete bees;
 }
 
-void swarm_t::update(const cv::Mat1b &edge_frame, commands_t command)
+const bee_t *swarm_t::get_bees() const
+{
+	return bees;
+}
+
+void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 {
 	for (int i = 0; i<k_bee_count; i++)
 	{
-		bees[i].update(edge_frame, field, command);
+		bees[i].update(edge_frame, field, commands);
 	}
 }
