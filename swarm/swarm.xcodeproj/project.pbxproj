@@ -26,6 +26,8 @@
 		23CBAA4F271417B600DC50D3 /* SDL2_ttf.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 23CBAA482714175100DC50D3 /* SDL2_ttf.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		23CBAA50271417B700DC50D3 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23CBAA462714174600DC50D3 /* SDL2.framework */; };
 		23CBAA51271417B700DC50D3 /* SDL2.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 23CBAA462714174600DC50D3 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23E735462722157B009248A4 /* director.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E735442722157B009248A4 /* director.cpp */; };
+		23E7354927221615009248A4 /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E7354727221615009248A4 /* timer.cpp */; };
 		23F8450827042E6D004DA116 /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F844FF27042E6D004DA116 /* graphics.cpp */; };
 		23F8450927042E6D004DA116 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F8450027042E6D004DA116 /* camera.cpp */; };
 		23F8450A27042E6D004DA116 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23F8450327042E6D004DA116 /* main.cpp */; };
@@ -70,6 +72,10 @@
 		23CBAA442714171000DC50D3 /* libopencv_imgproc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.dylib; path = "ext/opencv-4.5.3/mac/lib/libopencv_imgproc.dylib"; sourceTree = "<group>"; };
 		23CBAA462714174600DC50D3 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = "ext/SDL2-2.0.16/mac/SDL2.framework"; sourceTree = "<group>"; };
 		23CBAA482714175100DC50D3 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = "ext/SDL2_ttf-2.0.15/mac/SDL2_ttf.framework"; sourceTree = "<group>"; };
+		23E735442722157B009248A4 /* director.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = director.cpp; sourceTree = "<group>"; };
+		23E735452722157B009248A4 /* director.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = director.hpp; sourceTree = "<group>"; };
+		23E7354727221615009248A4 /* timer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = timer.cpp; sourceTree = "<group>"; };
+		23E7354827221615009248A4 /* timer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = timer.hpp; sourceTree = "<group>"; };
 		23F844F527042E23004DA116 /* swarm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swarm; sourceTree = BUILT_PRODUCTS_DIR; };
 		23F844FF27042E6D004DA116 /* graphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graphics.cpp; sourceTree = "<group>"; };
 		23F8450027042E6D004DA116 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
@@ -130,6 +136,8 @@
 				23F8450027042E6D004DA116 /* camera.cpp */,
 				23F8450427042E6D004DA116 /* camera.hpp */,
 				23F8450527042E6D004DA116 /* constants.hpp */,
+				23E735442722157B009248A4 /* director.cpp */,
+				23E735452722157B009248A4 /* director.hpp */,
 				239BD4CA2719FDE30066A07E /* gesture.cpp */,
 				239BD4D1271A24380066A07E /* gesture.hpp */,
 				23F844FF27042E6D004DA116 /* graphics.cpp */,
@@ -139,6 +147,8 @@
 				239BD4C0271970A60066A07E /* model.hpp */,
 				23F8450727042E6D004DA116 /* swarm.cpp */,
 				23F8450227042E6D004DA116 /* swarm.hpp */,
+				23E7354727221615009248A4 /* timer.cpp */,
+				23E7354827221615009248A4 /* timer.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -219,12 +229,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				239BD4C1271970A60066A07E /* model.cpp in Sources */,
+				23E735462722157B009248A4 /* director.cpp in Sources */,
 				239BD4CC2719FDE30066A07E /* gesture.cpp in Sources */,
 				23F8450927042E6D004DA116 /* camera.cpp in Sources */,
 				23F8450827042E6D004DA116 /* graphics.cpp in Sources */,
 				239BD4D0271A148E0066A07E /* audio.cpp in Sources */,
 				23F8450A27042E6D004DA116 /* main.cpp in Sources */,
 				23F8450B27042E6D004DA116 /* swarm.cpp in Sources */,
+				23E7354927221615009248A4 /* timer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
