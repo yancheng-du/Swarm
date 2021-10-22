@@ -11,10 +11,6 @@
 #include "camera.hpp"
 #include "constants.hpp"
 
-const int k_camera_width= 640;
-const int k_camera_height= 480;
-
-const int k_edge_width= k_camera_height*9/16;
 
 static void kinect_thread_function();
 static void kinect_video_callback(freenect_device *device, void *buffer, uint32_t timestamp);
