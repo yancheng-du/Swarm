@@ -4,16 +4,14 @@
 
 #include "model.hpp"
 
+
 // Initialize the parameters
 const float k_confidence_threshold= 0.1f;	// Confidence threshold
 const float k_nms_threshold= 0.5f;			// Non-maximum suppression threshold
 const int k_input_width= 416;				// Width of network's input image, Not actual image size just the network config, this is moderate speed/precision
 const int k_input_height= 416;				// Height of network's input image, Not actual image size just the network config, this is moderate speed/precision
 
-const int k_camera_width = 640;
-const int k_camera_height = 480;
 
-const int k_edge_width = k_camera_height * 9 / 16;
 
 const std::string k_classes_filename= "res/gesture.names";
 const std::string k_config_filename= "res/gesture.cfg";
@@ -38,7 +36,7 @@ void model_t::analyze_frame(const cv::Mat &frame, commands_t &commands)
 	if (!frame.empty())
 	{
 		//std::vector<cv::Mat> outputs= get_gestures(frame);
-		std::vector<cv::Mat> outputs = get_gestures(frame(cv::Rect((k_camera_width - k_edge_width) / 2, 0, k_edge_width, k_camera_height)));
+		std::vector<cv::Mat> outputs = get_gestures(frame);
 		std::vector<command_t> gestures= postprocess(frame, outputs);
 
 		// $TODO support more than one command at a time?
