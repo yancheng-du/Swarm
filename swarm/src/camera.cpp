@@ -29,9 +29,6 @@ static uint8_t g_video_frame[k_camera_width*k_camera_height*3]= {0};
 static uint16_t g_depth_frame[k_camera_width*k_camera_height]= {0};
 static int g_frame_count= 0;
 
-static int8_t *x_field= NULL;
-static int8_t *y_field= NULL;
-
 static int image_dist_counter= k_fps/idle_checks_per_sec - 1;
 static int idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
 static float running_avg= 0.0f;

@@ -136,7 +136,7 @@ void graphics_dispose()
 	}
 }
 
-int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_frame, const cv::Mat1w &depth_frame, const cv::Mat1b &edge_frame, bool fps)
+int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_frame, const cv::Mat1w &depth_frame, const cv::Mat1b &edge_frame, const commands_t &commands, bool fps)
 {
 	if (g_renderer)
 	{
@@ -160,6 +160,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 			if (debug)
 			{
+				const bee_t *bees= swarm.get_bees();
+
 				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
 				{
 					SDL_FPoint points[k_bee_count];
@@ -167,7 +169,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &swarm.bees[bee_index];
+						const bee_t *bee= &bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -190,6 +192,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			}
 			else
 			{
+				const bee_t *bees= swarm.get_bees();
 				SDL_FRect rect;
 
 				rect.w= 2*k_bee_radius*dx;
@@ -199,7 +202,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				{
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &swarm.bees[bee_index];
+						const bee_t *bee= &bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -227,8 +230,10 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			{
 				SDL_RenderCopy(g_renderer, video_texture, NULL, &k_video_rect);
 				SDL_DestroyTexture(video_texture);
-				SDL_RenderDrawRect(g_renderer, &k_video_clip_rect);
 			}
+
+			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xff, 0xff);
+			SDL_RenderDrawRect(g_renderer, &k_video_clip_rect);
 		}
 
 		// render depth
@@ -240,8 +245,10 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			{
 				SDL_RenderCopy(g_renderer, depth_texture, NULL, &k_depth_rect);
 				SDL_DestroyTexture(depth_texture);
-				SDL_RenderDrawRect(g_renderer, &k_depth_clip_rect);
 			}
+
+			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xff, 0xff);
+			SDL_RenderDrawRect(g_renderer, &k_depth_clip_rect);
 		}
 
 		// render edges
@@ -253,6 +260,24 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			{
 				SDL_RenderCopy(g_renderer, edge_texture, NULL, &k_edge_rect);
 				SDL_DestroyTexture(edge_texture);
+			}
+		}
+
+		// render commands
+		if (debug)
+		{
+			for (int command_index= 0; command_index<commands.size(); command_index++)
+			{
+				const command_t *command= &commands[command_index];
+				SDL_Rect command_rect;
+
+				command_rect.x= k_video_clip_rect.x + command->bounding_box.x/2;
+				command_rect.y= k_video_clip_rect.y + command->bounding_box.y/2;
+				command_rect.w= command->bounding_box.width/2;
+				command_rect.h= command->bounding_box.height/2;
+
+				SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xff, 0xff);
+				SDL_RenderDrawRect(g_renderer, &command_rect);
 			}
 		}
 
