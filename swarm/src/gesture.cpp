@@ -61,7 +61,7 @@ static void gesture_thread_function()
 	while (g_gesture_thread_run)
 	{
 		camera_peek_video_frame(video_frame);
-		model.analyze_frame(video_frame, commands);
+		model.analyze_frame(video_frame(cv::Rect((k_camera_width - k_edge_width) / 2, 0, k_edge_width, k_camera_height)), commands);
 
 		g_commands_mutex.lock();
 		g_commands= commands;

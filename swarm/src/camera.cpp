@@ -11,10 +11,6 @@
 #include "camera.hpp"
 #include "constants.hpp"
 
-const int k_camera_width= 640;
-const int k_camera_height= 480;
-
-const int k_edge_width= k_camera_height*9/16;
 
 static void kinect_thread_function();
 static void kinect_video_callback(freenect_device *device, void *buffer, uint32_t timestamp);
@@ -93,7 +89,7 @@ bool camera_initialize()
 						#endif
 
 						freenect_set_depth_callback(g_kinect_device, kinect_depth_callback);
-
+						//cv::setNumThreads(0);
 						g_kinect_thread_run= true;
 						g_kinect_thread= new std::thread(kinect_thread_function);
 
@@ -206,8 +202,8 @@ int camera_consume_full_frame(
 		cv::cvtColor(video_frame(cv::Rect((k_camera_width-k_edge_width)/2, 0, k_edge_width, k_camera_height)), grey_frame, cv::COLOR_BGR2GRAY);
 		cv::Canny(grey_frame, 	// input image
 			blurred_frame, 		// output image
-			50, 				// low threshold
-			100);				// high threshold
+			100, 				// low threshold
+			200);				// high threshold
 		cv::GaussianBlur(blurred_frame, 	// input image
 			edge_frame, 					// output image
 			cv::Size(3, 3), 				// smoothing window width and height in pixels
@@ -296,7 +292,7 @@ void idle_check(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame, bool 
 		distance= dist;
 		running_avg= running_avg_alpha*dist + (1-running_avg_alpha)*running_avg;
 		avg_distance= running_avg;
-		if (dist>running_avg*2.00)
+		if (dist>running_avg*1.5)
 		{
 			idle= false;
 			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
