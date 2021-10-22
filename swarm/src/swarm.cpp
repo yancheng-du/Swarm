@@ -3,6 +3,7 @@
 
 #include "constants.hpp"
 #include "swarm.hpp"
+#include "camera.hpp"
 
 //constants for texture heights, widths, etc.
 const int b_texture_h = 64;
@@ -208,9 +209,9 @@ const bee_t *swarm_t::get_bees() const
 
 void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 {
-	if (command.size()>0)
+	if (commands.size()>0)
 	{
-		command_t current_sign = command.at(0);
+		command_t current_sign = commands.at(0);
 		//currently only have palm interaction
 		if (current_sign.name == "palm")
 		{
@@ -224,7 +225,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		{
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].update(edge_frame, field, command);
+				bees[i].update(edge_frame, field, commands);
 			}
 		}
 	}
