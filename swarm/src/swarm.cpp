@@ -26,7 +26,7 @@ const float k_walk_speed_minimum= 0.0f;
 const float k_walk_speed_maximum= 0.0f;
 
 const float k_acc_minimum= 0.0f;
-const float k_acc_maximum= 10.0f;
+const float k_acc_maximum= 100.0f;
 
 const float k_fly_speed_minimum= 200;
 const float k_fly_speed_maximum= 400;
@@ -90,7 +90,7 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 		)
 	{	
 		field.at<bool>(field_x, field_y)= 1;
-		if (state==_flying || (state==_crawling&&timer<0.0f) || state==_accelerating)
+		if (state==_flying || (state==_crawling&&timer<0.0f))
 		{
 			state= _idle;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
@@ -113,28 +113,25 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 	else
 	{	//not on edge, keep flying
 		field.at<bool>(field_x, field_y)= 0;
-		if (state==_flying && timer<0.0f)
+		if (timer<0.0f)
 		{
 			state= _flying;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
-			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+			if (speed>=k_fly_speed_minimum)
+			{	//flying
+				//speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+			}
+			else
+			{	//accelerating
+				speed+= uniform_random(k_acc_minimum, k_acc_maximum);
+			}
 			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
 		}
-		else
-		{ //not on edge, accelerating
-			if (state!=_flying)
-			{
-				state= _accelerating;
-				if (speed>=k_fly_speed_minimum)
-				{
-					state= _flying;
-				}
-				timer= uniform_random(k_timer_minimum, k_timer_maximum);
-				speed+= uniform_random(k_acc_minimum, k_acc_maximum);
-				spin= uniform_random(-k_spin_maximum, k_spin_maximum);
-			}
+		else 
+		{
+			timer-= k_dt;
 		}
-		timer-= k_dt;
+		
 		// $TODO fly towards edges if near
 	}
 
