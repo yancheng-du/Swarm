@@ -77,6 +77,44 @@ bee_t::bee_t()
 
 }
 
+
+void bee_t::palm_update(command_t current_sign) 
+{
+	int center_x, center_y;
+	center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width)/k_cropped_camera_width*k_simulation_width;
+	center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/k_cropped_camera_height*k_simulation_height;
+
+	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>current_sign.bounding_box.width*current_sign.bounding_box.width)
+	{
+		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+		double dr= -atan2(y-center_y, center_x-x) + uniform_random(0, 0.4*k_spin_maximum);
+		spin= (dr-facing)/k_dt;
+	}
+	else
+	{
+		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+		spin= uniform_random(0, k_spin_maximum)/k_dt;
+	}
+
+	// update position and facing
+	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
+	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
+	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
+
+	//update sprite render frame
+	b_fly_rect.x += b_frame_w;
+	b_crawl_rect.x += b_frame_w;
+	b_idle_rect.x += b_frame_w;
+
+	//check if past texture
+	if (b_fly_rect.x >= b_fly_texture_w)
+		b_fly_rect.x = 0;
+	if (b_crawl_rect.x >= b_crawl_texture_w)
+		b_crawl_rect.x = 0;
+	if (b_idle_rect.x >= b_idle_texture_w)
+		b_idle_rect.x = 0;
+}
+
 void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t command)
 {	
 	int field_x= static_cast<int>(y/k_simulation_height*field.rows);
@@ -84,84 +122,58 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 	int field_y= static_cast<int>(x/k_simulation_width*field.cols);
 	if (field_y>=field.cols) field_y= field.cols-1;
 
-
-	if(command.size()>0) 
+	// update state, speed, and rotation
+	if (x>=0.0f && x<k_simulation_width &&
+		y>=0.0f && y<k_simulation_height &&
+		edge_frame.at<bool>(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))!=0 &&
+		field.at<bool>(field_x, field_y)==0
+		)
 	{
-		command_t current_sign = command.at(0);
-		if (current_sign.name == "palm")
+		field.at<bool>(field_x, field_y)= 1;
+		if (state==_flying || (state==_crawling&&timer<0.0f))
 		{
-			int center_x, center_y;
-			center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width)/edge_frame.cols*k_simulation_width;
-			center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
-
-			if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>current_sign.bounding_box.width*current_sign.bounding_box.width)
-			{
-				speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-				double dr= -atan2(y-center_y, center_x-x) + uniform_random(-0.5*k_spin_maximum, 0.5*k_spin_maximum);
-				spin= (dr-facing)/k_dt;
-			}
-			else
-			{	
-				speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-				spin= uniform_random(0, k_spin_maximum);
-			}
+			state= _idle;
+			timer= uniform_random(k_timer_minimum, k_timer_maximum);
+			speed= 0.0f;
+			spin= 0.0f;
+		}
+		//craw on edge
+		else if (state==_idle&&timer<0.0f)
+		{
+			state= _crawling;
+			timer= uniform_random(k_timer_minimum, k_timer_maximum);
+			speed= uniform_random(k_walk_speed_minimum, k_walk_speed_maximum);
+			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
+		}
+		else
+		{
+			timer-= k_dt;
 		}
 	}
 	else
-	{
-		// update state, speed, and rotation
-		if (x>=0.0f && x<k_simulation_width &&
-			y>=0.0f && y<k_simulation_height &&
-			edge_frame.at<bool>(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))!=0 &&
-			field.at<bool>(field_x, field_y)==0
-			)
+	{	//not on edge, keep flying
+		field.at<bool>(field_x, field_y)= 0;
+		if (timer<0.0f)
 		{
-			field.at<bool>(field_x, field_y)= 1;
-			if (state==_flying || (state==_crawling&&timer<0.0f))
-			{
-				state= _idle;
-				timer= uniform_random(k_timer_minimum, k_timer_maximum);
-				speed= 0.0f;
-				spin= 0.0f;
-			}
-			//craw on edge
-			else if (state==_idle&&timer<0.0f)
-			{
-				state= _crawling;
-				timer= uniform_random(k_timer_minimum, k_timer_maximum);
-				speed= uniform_random(k_walk_speed_minimum, k_walk_speed_maximum);
-				spin= uniform_random(-k_spin_maximum, k_spin_maximum);
+			state= _flying;
+			timer= uniform_random(k_timer_minimum, k_timer_maximum);
+			if (speed>=k_fly_speed_minimum)
+			{	//flying
+				speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
 			}
 			else
-			{
-				timer-= k_dt;
+			{	//accelerating
+				speed+= uniform_random(k_acc_minimum, k_acc_maximum);
 			}
+			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
 		}
 		else
-		{	//not on edge, keep flying
-			field.at<bool>(field_x, field_y)= 0;
-			if (timer<0.0f)
-			{
-				state= _flying;
-				timer= uniform_random(k_timer_minimum, k_timer_maximum);
-				if (speed>=k_fly_speed_minimum)
-				{	//flying
-					speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-				}
-				else
-				{	//accelerating
-					speed+= uniform_random(k_acc_minimum, k_acc_maximum);
-				}
-				spin= uniform_random(-k_spin_maximum, k_spin_maximum);
-			}
-			else
-			{
-				timer-= k_dt;
-			}
-
-			// $TODO fly towards edges if near
+		{
+			timer-= k_dt;
 		}
-	}
+
+		// $TODO fly towards edges if near
+		}
 	// update position and facing
 	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
 	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
@@ -194,6 +206,27 @@ swarm_t::~swarm_t()
 
 void swarm_t::update(const cv::Mat1b &edge_frame, commands_t command)
 {
+	if (command.size()>0)
+	{
+		command_t current_sign = command.at(0);
+		//currently only have palm interaction
+		if (current_sign.name == "palm")
+		{
+			for (int i = 0; i<k_bee_count; i++)
+			{
+				bees[i].palm_update(current_sign);
+			}
+		}
+		//all other gesture will be treated as normal bee update
+		else 
+		{
+			for (int i = 0; i<k_bee_count; i++)
+			{
+				bees[i].update(edge_frame, field, command);
+			}
+		}
+	}
+	//no gestures
 	for (int i = 0; i<k_bee_count; i++)
 	{
 		bees[i].update(edge_frame, field, command);
