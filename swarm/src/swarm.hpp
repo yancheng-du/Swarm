@@ -18,7 +18,6 @@ public:
 		_idle,
 		_crawling,
 		_flying,
-		_accelerating,
 		k_state_count
 	};
 
