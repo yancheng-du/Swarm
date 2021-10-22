@@ -32,7 +32,7 @@ void director_t::do_frame()
 	camera_consume_full_frame(video_frame, depth_frame, edge_frame, idle);
 	idle_check(video_frame, last_video_frame, idle);
 	gesture_consume_commands(commands);
-	swarm.update(edge_frame);
+	swarm.update(edge_frame,commands);
 	graphics_render(swarm, debug, video_frame, depth_frame, edge_frame, fps);
 	audio_render(swarm);
 }

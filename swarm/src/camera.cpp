@@ -216,53 +216,6 @@ int camera_consume_full_frame(
 	return frame_count;
 }
 
-void init_field(int field_size)
-{
-	x_field= new int8_t[field_size*field_size];
-	y_field= new int8_t[field_size*field_size];
-
-	for (int i= 0; i<field_size; i++)
-	{
-		for (int j= 0; j<field_size; j++)
-		{
-			x_field[i*field_size+j]= (field_size-1)/2 - j;
-			y_field[i*field_size+j]= (field_size-1)/2 - i;
-		}
-	}
-}
-
-void get_vector_frame(
-	const cv::Mat1b &edge_frame,
-	cv::Mat &x_vector_frame,
-	cv::Mat &y_vector_frame,
-	int field_size)
-{
-	for (int i= 0; i<edge_frame.rows; i++)
-	{
-		for (int j= 0; j<edge_frame.cols; j++)
-		{
-			if (edge_frame(i, j)!=0)
-			{
-				for (int vec_i= 0; vec_i<field_size; vec_i++)
-				{
-					for (int vec_j= 0; vec_j<field_size; vec_j++)
-					{
-						int i_new= i + vec_i - (field_size-1)/2;
-						int j_new= j + vec_j - (field_size-1)/2;
-
-						if (i_new>=0 && i_new<edge_frame.rows &&
-							j_new>=0 && j_new<edge_frame.cols)
-						{
-							x_vector_frame.at<int8_t>(i_new, j_new)= x_field[vec_i*field_size+vec_j];
-							y_vector_frame.at<int8_t>(i_new, j_new)= y_field[vec_i*field_size+vec_j];
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 static void kinect_thread_function()
 {
 	while (freenect_set_led(g_kinect_device, LED_GREEN)!=0)
