@@ -229,9 +229,13 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			}
 		}
 	}
-	//no gestures
-	for (int i = 0; i<k_bee_count; i++)
-	{
-		bees[i].update(edge_frame, field, commands);
+	else
+	{	
+		//no gestures
+		for (int i = 0; i<k_bee_count; i++)
+		{
+			bees[i].update(edge_frame, field, commands);
+		}
 	}
+
 }
