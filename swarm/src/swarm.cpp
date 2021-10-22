@@ -4,6 +4,7 @@
 #include "constants.hpp"
 #include "swarm.hpp"
 #include "gesture.hpp"
+#include "camera.hpp"
 
 
 //constants for texture heights, widths, etc.
@@ -92,6 +93,7 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 			int center_x, center_y;
 			center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width)/edge_frame.cols*k_simulation_width;
 			center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
+
 			if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>current_sign.bounding_box.width*current_sign.bounding_box.width)
 			{
 				speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
