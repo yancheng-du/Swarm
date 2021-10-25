@@ -51,6 +51,8 @@ public:
 	const bee_t *get_bees() const;
 	void update(const cv::Mat1b &edge_frame, const commands_t &commands);
 
+	float state_fractions[bee_t::k_state_count]; // fraction of total bees in each state
+
 private:
 	bee_t *bees;
 	cv::Mat1b field;
