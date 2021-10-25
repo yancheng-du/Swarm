@@ -238,4 +238,23 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		}
 	}
 
+	// update state fractions
+	{
+		int state_counts[bee_t::k_state_count];
+
+		for (int state= 0; state<bee_t::k_state_count; state++)
+		{
+			state_counts[state]= 0;
+		}
+
+		for (int bee_index= 0; bee_index<k_bee_count; bee_index++)
+		{
+			state_counts[bees[bee_index].state]+= 1;
+		}
+
+		for (int state= 0; state<bee_t::k_state_count; state++)
+		{
+			state_fractions[state]= static_cast<float>(state_counts[state])/k_bee_count;
+		}
+	}
 }
