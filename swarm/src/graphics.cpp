@@ -184,7 +184,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 					{
 						case bee_t::_idle:     SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
 						case bee_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
-						default:               SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
+						case bee_t::_flying:   SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
+						default:               assert(false); // unhandled state!
 					}
 
 					SDL_RenderDrawPointsF(g_renderer, points, point_count);
@@ -213,7 +214,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 							{
 								case bee_t::_idle:     SDL_RenderCopyExF(g_renderer, g_bee_idle_texture,  &bee->b_idle_rect,  &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
 								case bee_t::_crawling: SDL_RenderCopyExF(g_renderer, g_bee_crawl_texture, &bee->b_crawl_rect, &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
-								default:               SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								case bee_t::_flying:   SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								default:               assert(false); // unhandled state!
 							}
 						}
 					}
