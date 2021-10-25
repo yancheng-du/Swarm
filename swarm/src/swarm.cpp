@@ -76,11 +76,8 @@ bee_t::bee_t()
 }
 
 
-void bee_t::palm_update(command_t current_sign) 
+void bee_t::palm_update(command_t current_sign, int center_x, int center_y) 
 {
-	int center_x, center_y;
-	center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width)/k_cropped_camera_width*k_simulation_width;
-	center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/k_cropped_camera_height*k_simulation_height;
 
 	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>current_sign.bounding_box.width*current_sign.bounding_box.width)
 	{
@@ -215,9 +212,12 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		//currently only have palm interaction
 		if (current_sign.name == "palm")
 		{
+			int center_x, center_y;
+			center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width)/edge_frame.cols*k_simulation_width;
+			center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].palm_update(current_sign);
+				bees[i].palm_update(current_sign, center_x, center_y);
 			}
 		}
 		//all other gesture will be treated as normal bee update
