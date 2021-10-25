@@ -75,7 +75,6 @@ bee_t::bee_t()
 
 }
 
-
 void bee_t::palm_update(command_t current_sign, int center_x, int center_y) 
 {
 
@@ -112,19 +111,16 @@ void bee_t::palm_update(command_t current_sign, int center_x, int center_y)
 
 void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t command)
 {	
-	int field_x= static_cast<int>(y/k_simulation_height*field.rows);
-	if (field_x>=field.rows) field_x= field.rows-1;
-	int field_y= static_cast<int>(x/k_simulation_width*field.cols);
-	if (field_y>=field.cols) field_y= field.cols-1;
+	int field_y= static_cast<int>(y/k_simulation_height*field.rows);
+	int field_x= static_cast<int>(x/k_simulation_width*field.cols);
 
 	// update state, speed, and rotation
 	if (x>=0.0f && x<k_simulation_width &&
 		y>=0.0f && y<k_simulation_height &&
 		edge_frame.at<bool>(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))!=0 &&
-		field.at<bool>(field_x, field_y)==0
-		)
+		field.at<bool>(field_y, field_x)==0)
 	{
-		field.at<bool>(field_x, field_y)= 1;
+		field.at<bool>(field_y, field_x)= 1;
 		if (state==_flying || (state==_crawling&&timer<0.0f))
 		{
 			state= _idle;
@@ -147,7 +143,7 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 	}
 	else
 	{	//not on edge, keep flying
-		field.at<bool>(field_x, field_y)= 0;
+		field.at<bool>(field_y, field_x)= 0;
 		if (timer<0.0f)
 		{
 			state= _flying;
@@ -191,7 +187,7 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 swarm_t::swarm_t()
 {
 	bees= new bee_t[k_bee_count];
-	field= cv::Mat::zeros(k_simulation_height/6, k_simulation_width/6, CV_8U);
+	field= cv::Mat::zeros(k_simulation_height/static_cast<int>(k_bee_radius), k_simulation_width/static_cast<int>(k_bee_radius), CV_8U);
 }
 
 swarm_t::~swarm_t()
