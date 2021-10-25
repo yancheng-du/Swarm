@@ -162,7 +162,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			{
 				const bee_t *bees= swarm.get_bees();
 
-				for (int state= bee_t::_idle; state<bee_t::k_state_count; ++state)
+				for (int state= 0; state<bee_t::k_state_count; ++state)
 				{
 					SDL_FPoint points[k_bee_count];
 					int point_count= 0;
@@ -198,7 +198,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				rect.w= 2*k_bee_radius*dx;
 				rect.h= 2*k_bee_radius*dy;
 
-				for (int state= bee_t::_idle; state<bee_t::k_state_count; ++state)
+				for (int state= 0; state<bee_t::k_state_count; ++state)
 				{
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
