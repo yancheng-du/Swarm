@@ -271,8 +271,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				const command_t *command= &commands[command_index];
 				SDL_Rect command_rect;
 
-				command_rect.x= k_video_clip_rect.x + command->bounding_box.x/2;
-				command_rect.y= k_video_clip_rect.y + command->bounding_box.y/2;
+				command_rect.x= k_video_clip_rect.x + command->bounding_box.x*k_video_clip_rect.w/edge_frame.cols;
+				command_rect.y= k_video_clip_rect.y + command->bounding_box.y*k_video_clip_rect.h/edge_frame.rows;
 				command_rect.w= command->bounding_box.width/2;
 				command_rect.h= command->bounding_box.height/2;
 
