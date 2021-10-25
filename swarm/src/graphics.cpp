@@ -162,7 +162,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			{
 				const bee_t *bees= swarm.get_bees();
 
-				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
+				for (int state= bee_t::_idle; state<bee_t::k_state_count; ++state)
 				{
 					SDL_FPoint points[k_bee_count];
 					int point_count= 0;
@@ -182,9 +182,9 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 					switch (state)
 					{
-						case bee_t::state_t::_idle:     SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
-						case bee_t::state_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
-						default:                        SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
+						case bee_t::_idle:     SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
+						case bee_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
+						default:               SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
 					}
 
 					SDL_RenderDrawPointsF(g_renderer, points, point_count);
@@ -198,7 +198,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				rect.w= 2*k_bee_radius*dx;
 				rect.h= 2*k_bee_radius*dy;
 
-				for (int state= bee_t::state_t::_idle; state<bee_t::state_t::k_state_count; ++state)
+				for (int state= bee_t::_idle; state<bee_t::k_state_count; ++state)
 				{
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
@@ -211,9 +211,9 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 							switch (state)
 							{
-								case bee_t::state_t::_idle:     SDL_RenderCopyExF(g_renderer, g_bee_idle_texture,  &bee->b_idle_rect,  &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
-								case bee_t::state_t::_crawling: SDL_RenderCopyExF(g_renderer, g_bee_crawl_texture, &bee->b_crawl_rect, &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
-								default:                        SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								case bee_t::_idle:     SDL_RenderCopyExF(g_renderer, g_bee_idle_texture,  &bee->b_idle_rect,  &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								case bee_t::_crawling: SDL_RenderCopyExF(g_renderer, g_bee_crawl_texture, &bee->b_crawl_rect, &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
+								default:               SDL_RenderCopyExF(g_renderer, g_bee_fly_texture,   &bee->b_fly_rect,   &rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE); break;
 							}
 						}
 					}
