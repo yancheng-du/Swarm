@@ -32,6 +32,12 @@
     <ClCompile Include="src\gesture.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\director.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.hpp">
@@ -53,6 +59,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\gesture.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\director.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timer.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
