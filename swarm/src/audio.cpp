@@ -46,7 +46,7 @@ bool audio_initialize()
 
 void audio_dispose()
 {
-    for(int i=0; i<sizeof(buzz_wav); i++)
+    for(int i=0; i<sizeof(buzz_wav)/sizeof(buzz_wav[0]); i++)
     {
         if (buzz_wav[i])
         {
