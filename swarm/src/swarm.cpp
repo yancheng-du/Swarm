@@ -143,7 +143,12 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 	}
 	else
 	{	//not on edge, keep flying
-		field.at<bool>(field_y, field_x)= 0;
+		if (field_x>=0 && field_x<field.cols &&
+			field_y>=0 && field_y<field.rows)
+		{
+			field.at<bool>(field_y, field_x) = 0;
+		}
+
 		if (timer<0.0f)
 		{
 			state= _flying;
