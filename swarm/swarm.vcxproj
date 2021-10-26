@@ -113,20 +113,24 @@ xcopy /d /y $(PROJECTDIR)ext\opencv-4.5.3\win\bin\opencv_world453.dll $(OUTDIR)<
   <ItemGroup>
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\director.cpp" />
     <ClCompile Include="src\gesture.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\swarm.cpp" />
+    <ClCompile Include="src\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio.hpp" />
     <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\constants.hpp" />
+    <ClInclude Include="src\director.hpp" />
     <ClInclude Include="src\gesture.hpp" />
     <ClInclude Include="src\graphics.hpp" />
     <ClInclude Include="src\model.hpp" />
     <ClInclude Include="src\swarm.hpp" />
+    <ClInclude Include="src\timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\Bee Renders\Fly\64_Fly_Sheet.bmp" />
