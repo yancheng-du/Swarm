@@ -26,7 +26,7 @@ model_t::model_t()
 	network= cv::dnn::readNetFromDarknet(k_config_filename, k_weights_filename);
 	network.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV); 
 	// Right now setting to CPU, will have to research if we can leverage GPU if necessary
-	network.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+	network.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);
 }
 
 void model_t::analyze_frame(const cv::Mat &frame, commands_t &commands)
