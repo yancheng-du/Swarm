@@ -4,13 +4,15 @@
 #include "camera.hpp"
 #include "swarm.hpp"
 
-Mix_Chunk *buzz_wav[3];
+Mix_Chunk *buzz_wav[bee_t::k_state_count];
 const char* wavfile_names[] =
 {
     "res/wavfiles/swarm_low.wav",
     "res/wavfiles/swarm_base.wav",
     "res/wavfiles/swarm_high.wav"
 };
+const int b_max_change = 64; // [0~128]
+
 
 bool audio_initialize()
 {
@@ -20,20 +22,17 @@ bool audio_initialize()
         SDL_LogError(SDL_LOG_CATEGORY_AUDIO, "Couldn't initialize audio mixer: %s", Mix_GetError());
     }
     
-    success = Mix_AllocateChannels(3);
+    success = Mix_AllocateChannels(bee_t::k_state_count);
     if(success < 0)
     {
         SDL_LogError(SDL_LOG_CATEGORY_AUDIO, "Couldn't allocate channels: %s", Mix_GetError());
     }
-    /*
-    for(int i=0; i<sizeof(buzz_wav); i++)
+    
+    for(int i=0; i<bee_t::k_state_count; i++)
     {
         buzz_wav[i]= Mix_LoadWAV(wavfile_names[i]);
     }
-     */
-    buzz_wav[0]= Mix_LoadWAV(wavfile_names[0]);
-    buzz_wav[1]= Mix_LoadWAV(wavfile_names[1]);
-    buzz_wav[2]= Mix_LoadWAV(wavfile_names[2]);
+    
     if(success < 0)
     {
         return false;
@@ -46,7 +45,7 @@ bool audio_initialize()
 
 void audio_dispose()
 {
-    for(int i=0; i<sizeof(buzz_wav)/sizeof(buzz_wav[0]); i++)
+    for(int i=0; i<bee_t::k_state_count; i++)
     {
         if (buzz_wav[i])
         {
@@ -64,28 +63,37 @@ void audio_dispose()
 
 void audio_render(const swarm_t &swarm)
 {
-    float idle_vol= swarm.state_fractions[0];
-    float crawl_vol= swarm.state_fractions[1];
-    float flying_vol= swarm.state_fractions[2];
     int mix_volume= (get_distance()/get_avg_distance())*64;
     
-    // low buzz (idle)
-    Mix_Volume(0, mix_volume*idle_vol);
-    if (Mix_Playing(0)==0)
-    {
-        Mix_PlayChannel(0, buzz_wav[0], -1);
-    }
-    // base buzz (crawl)
-    Mix_Volume(1, mix_volume);
-    if (Mix_Playing(1)==0)
-    {
-        Mix_PlayChannel(1, buzz_wav[1], -1);
-    }
+    static float prev_volume[bee_t::k_state_count];
+    static float new_volume[bee_t::k_state_count];
     
-    // high buzz (flying)
-    Mix_Volume(2, mix_volume*flying_vol);
-    if (Mix_Playing(2)==0)
+    for(int i=0;i<bee_t::k_state_count;i++)
     {
-        Mix_PlayChannel(2, buzz_wav[2], -1);
+        new_volume[i]= mix_volume*swarm.state_fractions[i];
+        float change= new_volume[i]-prev_volume[i];
+        if(std::abs(change)>b_max_change)
+        {
+            if(change < 0)
+            {
+                new_volume[i]= prev_volume[i]-b_max_change;
+
+            }
+            else
+            {
+                new_volume[i]= prev_volume[i]+b_max_change;
+
+            }
+        }
+        Mix_Volume(i, new_volume[i]);
+        // play audio
+        if(Mix_Playing(i)== 0)
+        {
+            Mix_PlayChannel(i, buzz_wav[i], -1);
+        }
+        for(int i=0;i<bee_t::k_state_count;i++)
+        {
+            prev_volume[i]= new_volume[i];
+        }
     }
 }
