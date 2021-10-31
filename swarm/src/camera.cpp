@@ -11,7 +11,6 @@
 #include "camera.hpp"
 #include "constants.hpp"
 
-
 static void kinect_thread_function();
 static void kinect_video_callback(freenect_device *device, void *buffer, uint32_t timestamp);
 static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_t timestamp);
@@ -199,7 +198,7 @@ int camera_consume_full_frame(
 	{
 		cv::Mat grey_frame, blurred_frame;
 
-		cv::cvtColor(video_frame(cv::Rect((k_camera_width-k_edge_width)/2, 0, k_edge_width, k_camera_height)), grey_frame, cv::COLOR_BGR2GRAY);
+		cv::cvtColor(video_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height)), grey_frame, cv::COLOR_BGR2GRAY);
 		cv::Canny(grey_frame, 	// input image
 			blurred_frame, 		// output image
 			100, 				// low threshold
