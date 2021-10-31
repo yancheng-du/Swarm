@@ -8,27 +8,37 @@
 #include "graphics.hpp"
 #include "constants.hpp"
 
-const int k_window_width= 540;
-const int k_window_height= 960;
+const int k_window_width= 1280;
+const int k_window_height= 720;
 
-// assume 4:3 camera aspect ratio so use the 9:16 center portion of it
-const int k_scaled_camera_width= k_window_height/3;
-const int k_scaled_camera_height= k_window_height/4;
-const int k_scaled_clip_width= k_window_width*k_scaled_camera_height/k_window_height;
+const int k_view_width= k_window_width/2;
+const int k_view_height= k_window_height/2;
 
-// video frame is top half of the top half of the debug view
-const SDL_Rect k_video_rect= {(k_window_width-k_scaled_camera_width)/2, 0, k_scaled_camera_width, k_scaled_camera_height};
-const SDL_Rect k_video_clip_rect= {k_video_rect.x+(k_scaled_camera_width-k_scaled_clip_width)/2, 0, k_scaled_clip_width, k_scaled_camera_height};
+// assume 4:3 camera aspect ratio...
+const int k_scaled_camera_width= k_view_height*4/3;
+const int k_scaled_camera_height= k_view_height;
+const int k_scaled_camera_x= (k_view_width-k_scaled_camera_width)/2;
+const int k_scaled_camera_y= 0;
 
-// depth frame is bottom half of the top half of the debug view
-const SDL_Rect k_depth_rect= {(k_window_width-k_scaled_camera_width)/2, k_scaled_camera_height, k_scaled_camera_width, k_scaled_camera_height};
-const SDL_Rect k_depth_clip_rect= {k_depth_rect.x+(k_scaled_camera_width-k_scaled_clip_width)/2, k_scaled_camera_height, k_scaled_clip_width, k_scaled_camera_height};
+// ...and use the center 16:9 portion of it
+const int k_scaled_clip_width= k_scaled_camera_width;
+const int k_scaled_clip_height= k_scaled_camera_width*9/16;
+const int k_scaled_clip_x= (k_scaled_camera_width-k_scaled_clip_width)/2;
+const int k_scaled_clip_y= (k_scaled_camera_height-k_scaled_clip_height)/2;
+
+// video frame is top left quarter of the debug view
+const SDL_Rect k_video_rect= {k_scaled_camera_x, k_scaled_camera_y, k_scaled_camera_width, k_scaled_camera_height};
+const SDL_Rect k_video_clip_rect= {k_video_rect.x+k_scaled_clip_x, k_video_rect.y+k_scaled_clip_y, k_scaled_clip_width, k_scaled_clip_height};
+
+// depth frame is top right quarter of the debug view
+const SDL_Rect k_depth_rect= {k_view_width+k_scaled_camera_x, k_scaled_camera_y, k_scaled_camera_width, k_scaled_camera_height};
+const SDL_Rect k_depth_clip_rect= {k_depth_rect.x+k_scaled_clip_x, k_depth_rect.y+k_scaled_clip_y, k_scaled_clip_width, k_scaled_clip_height};
 
 // edge frame is the lower left quarter of the debug view
-const SDL_Rect k_edge_rect= {0, k_window_height/2, k_window_width/2, k_window_height/2};
+const SDL_Rect k_edge_rect= {0, k_view_height, k_view_width, k_view_height};
 
 // swarm is the lower right quarter of the debug view
-const SDL_Rect k_swarm_rect= {k_window_width/2, k_window_height/2, k_window_width/2, k_window_height/2};
+const SDL_Rect k_swarm_rect= {k_view_width, k_view_height, k_view_width, k_view_height};
 
 static SDL_Texture *graphics_create_texture_from_image_file(const char *filePath);
 static SDL_Texture *graphics_create_texture_from_video_frame(const cv::Mat3b &video_frame);
