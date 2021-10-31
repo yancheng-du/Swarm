@@ -146,6 +146,25 @@ void graphics_dispose()
 	}
 }
 
+bool graphics_change_mode(bool fullscreen)
+{
+	bool success= false;
+
+	if (g_window)
+	{
+		if (SDL_SetWindowFullscreen(g_window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0)==0)
+		{
+			success= true;
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Failed to change mode to %s: %s", fullscreen ? "fullscreen" : "windowed", SDL_GetError());
+		}
+	}
+
+	return success;
+}
+
 int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_frame, const cv::Mat1w &depth_frame, const cv::Mat1b &edge_frame, const commands_t &commands, bool fps)
 {
 	if (g_renderer)

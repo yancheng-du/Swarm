@@ -76,6 +76,14 @@ void director_t::process_events()
 						break;
 					}
 
+					case SDLK_f:
+					{
+						if (graphics_change_mode(!fullscreen))
+						{
+							fullscreen= !fullscreen;
+						}
+						break;
+					}
 					case SDLK_i:
 					{
 						idle= !idle;
