@@ -32,17 +32,18 @@ static int image_dist_counter= k_fps/idle_checks_per_sec - 1;
 static int idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
 static float running_avg= 0.0f;
 static float last_running_avg= 0.0f;
+
 // for audio
 int distance;
 float avg_distance;
 
 int get_distance()
 {
-    return distance;
+	return distance;
 }
 float get_avg_distance()
 {
-    return avg_distance;
+	return avg_distance;
 }
 
 bool camera_initialize()
@@ -91,12 +92,6 @@ bool camera_initialize()
 						//cv::setNumThreads(0);
 						g_kinect_thread_run= true;
 						g_kinect_thread= new std::thread(kinect_thread_function);
-
-						//using canny on the idle image once
-						cv::Canny(g_idle_image, 	// input image
-							g_idle_image, 			// output image
-							150, 					// low threshold
-							300);					// high threshold
 
 						success= true;
 					}
