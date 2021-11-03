@@ -11,7 +11,7 @@ const char* wavfile_names[] =
     "res/wavfiles/swarm_base.wav",
     "res/wavfiles/swarm_high.wav"
 };
-const int b_max_change = 64; // [0~128]
+const int b_max_change = 32; // [0~128]
 
 
 bool audio_initialize()
