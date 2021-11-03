@@ -187,7 +187,7 @@ int camera_consume_full_frame(
 
 	if (idle)
 	{
-		edge_frame= g_idle_image;
+		g_idle_image.copyTo(edge_frame);
 	}
 	else
 	{
