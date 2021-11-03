@@ -18,7 +18,7 @@ static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_
 static freenect_context *g_kinect_context= NULL;
 static freenect_device *g_kinect_device= NULL;
 
-static cv::Mat g_idle_image= cv::imread("res/Texas.bmp", cv::IMREAD_GRAYSCALE); // Load idle image
+static cv::Mat g_idle_image= cv::imread("res/ece.bmp", cv::IMREAD_GRAYSCALE); // Load idle image
 
 static bool g_kinect_thread_run= false;
 static std::thread *g_kinect_thread= NULL;
