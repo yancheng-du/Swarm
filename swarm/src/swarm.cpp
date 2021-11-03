@@ -25,9 +25,6 @@ const float k_timer_maximum= 0.8f;
 const float k_walk_speed_minimum= 0.0f;
 const float k_walk_speed_maximum= 0.0f;
 
-const float k_acc_minimum= 50.0f;
-const float k_acc_maximum= 100.0f;
-
 const float k_fly_speed_minimum= 200;
 const float k_fly_speed_maximum= 400;
 
@@ -77,7 +74,6 @@ bee_t::bee_t()
 
 void bee_t::palm_update(command_t current_sign, int center_x, int center_y) 
 {
-
 	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>current_sign.bounding_box.width*current_sign.bounding_box.width)
 	{
 		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
@@ -117,10 +113,10 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 	// update state, speed, and rotation
 	if (x>=0.0f && x<k_simulation_width &&
 		y>=0.0f && y<k_simulation_height &&
-		edge_frame.at<bool>(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))!=0 &&
-		field.at<bool>(field_y, field_x)==0)
+		edge_frame(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))>0 &&
+		!field.at<bool>(field_y, field_x))
 	{
-		field.at<bool>(field_y, field_x)= 1;
+		field.at<bool>(field_y, field_x)= true;
 		if (state==_flying || (state==_crawling&&timer<0.0f))
 		{
 			state= _idle;
@@ -142,25 +138,12 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t com
 		}
 	}
 	else
-	{	//not on edge, keep flying
-		if (field_x>=0 && field_x<field.cols &&
-			field_y>=0 && field_y<field.rows)
-		{
-			field.at<bool>(field_y, field_x) = 0;
-		}
-
+	{
 		if (timer<0.0f)
 		{
 			state= _flying;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
-			if (speed>=k_fly_speed_minimum)
-			{	//flying
-				speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-			}
-			else
-			{	//accelerating
-				speed+= uniform_random(k_acc_minimum, k_acc_maximum);
-			}
+			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
 			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
 		}
 		else
@@ -200,13 +183,10 @@ swarm_t::~swarm_t()
 	delete bees;
 }
 
-const bee_t *swarm_t::get_bees() const
-{
-	return bees;
-}
-
 void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 {
+	field.setTo(0);
+
 	if (commands.size()>0)
 	{
 		command_t current_sign = commands.at(0);
