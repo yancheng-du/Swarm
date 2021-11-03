@@ -6,7 +6,6 @@
 #include <SDL_ttf.h>
 
 #include "graphics.hpp"
-#include "constants.hpp"
 
 const int k_window_width= 1280;
 const int k_window_height= 720;
@@ -55,7 +54,7 @@ SDL_Texture *g_bee_fly_texture= NULL;
 
 static int g_frame_count= 0;
 static uint64_t g_last_frame_time= 0;
-static double g_frame_rate= k_fps;
+static double g_frame_rate= 0.0;
 
 bool graphics_initialize()
 {
@@ -69,6 +68,7 @@ bool graphics_initialize()
 
 			if (g_font)
 			{
+
 				g_bee_idle_texture= graphics_create_texture_from_image_file("res/64_Idle_Sheet.bmp");
 				g_bee_crawl_texture= graphics_create_texture_from_image_file("res/64_Crawl_Sheet.bmp");
 				g_bee_fly_texture= graphics_create_texture_from_image_file("res/64_Fly_Sheet.bmp");
@@ -79,7 +79,9 @@ bool graphics_initialize()
 				{
 					g_frame_count= 0;
 					g_last_frame_time= SDL_GetPerformanceCounter();
-					g_frame_rate= k_fps;
+					g_frame_rate= 0.0;
+
+					SDL_SetRenderDrawBlendMode(g_renderer, SDL_BLENDMODE_BLEND);
 
 					success= true;
 				}
@@ -172,11 +174,11 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 		// clear background
 		if (debug)
 		{
-			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0x00);
+			SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0xff);
 		}
 		else
 		{
-			SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0x00);
+			SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
 		}
 		SDL_RenderClear(g_renderer);
 
@@ -189,8 +191,6 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 			if (debug)
 			{
-				const bee_t *bees= swarm.get_bees();
-
 				for (int state= 0; state<bee_t::k_state_count; ++state)
 				{
 					SDL_FPoint points[k_bee_count];
@@ -198,7 +198,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &bees[bee_index];
+						const bee_t *bee= &swarm.bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -211,9 +211,9 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 					switch (state)
 					{
-						case bee_t::_idle:     SDL_SetRenderDrawColor(g_renderer, 255, 127, 0, 255); break;
-						case bee_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 255, 191, 0, 255); break;
-						case bee_t::_flying:   SDL_SetRenderDrawColor(g_renderer, 255, 255, 0, 255); break;
+						case bee_t::_idle:     SDL_SetRenderDrawColor(g_renderer, 0xff, 0x7f, 0x00, 0xff); break;
+						case bee_t::_crawling: SDL_SetRenderDrawColor(g_renderer, 0xff, 0xbf, 0x00, 0xff); break;
+						case bee_t::_flying:   SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0x00, 0xff); break;
 						default:               assert(false); // unhandled state!
 					}
 
@@ -222,7 +222,6 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			}
 			else
 			{
-				const bee_t *bees= swarm.get_bees();
 				SDL_FRect rect;
 
 				rect.w= 2*k_bee_radius*dx;
@@ -232,7 +231,7 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				{
 					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
 					{
-						const bee_t *bee= &bees[bee_index];
+						const bee_t *bee= &swarm.bees[bee_index];
 
 						if (bee->state==state)
 						{
@@ -247,6 +246,33 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 								default:               assert(false); // unhandled state!
 							}
 						}
+					}
+				}
+			}
+		}
+
+		// render field
+		if (debug)
+		{
+			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
+			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
+			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/swarm.field.cols;
+			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/swarm.field.rows;
+
+			SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0x3f);
+
+			for (int y= 0; y<swarm.field.rows; ++y)
+			{
+				for (int x= 0; x<swarm.field.cols; ++x)
+				{
+					if (swarm.field.at<bool>(y, x))
+					{
+						SDL_FRect rect;
+						rect.x= x0 + x*dx;
+						rect.y= y0 + y*dy;
+						rect.w= dx;
+						rect.h= dy;
+						SDL_RenderFillRectF(g_renderer, &rect);
 					}
 				}
 			}
@@ -304,8 +330,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 				command_rect.x= k_video_clip_rect.x + command->bounding_box.x*k_video_clip_rect.w/edge_frame.cols;
 				command_rect.y= k_video_clip_rect.y + command->bounding_box.y*k_video_clip_rect.h/edge_frame.rows;
-				command_rect.w= command->bounding_box.width/2;
-				command_rect.h= command->bounding_box.height/2;
+				command_rect.w= command->bounding_box.width*k_video_clip_rect.w/edge_frame.cols;
+				command_rect.h= command->bounding_box.height*k_video_clip_rect.h/edge_frame.rows;
 
 				SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xff, 0xff);
 				SDL_RenderDrawRect(g_renderer, &command_rect);
