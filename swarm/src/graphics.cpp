@@ -191,12 +191,12 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 			if (debug)
 			{
-				for (int state= 0; state<bee_t::k_state_count; ++state)
+				for (int state= 0; state<bee_t::k_state_count; state++)
 				{
 					SDL_FPoint points[k_bee_count];
 					int point_count= 0;
 
-					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
+					for (int bee_index= 0; bee_index<k_bee_count; bee_index++)
 					{
 						const bee_t *bee= &swarm.bees[bee_index];
 
@@ -227,9 +227,9 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				rect.w= 2*k_bee_radius*dx;
 				rect.h= 2*k_bee_radius*dy;
 
-				for (int state= 0; state<bee_t::k_state_count; ++state)
+				for (int state= 0; state<bee_t::k_state_count; state++)
 				{
-					for (int bee_index= 0; bee_index<k_bee_count; ++bee_index)
+					for (int bee_index= 0; bee_index<k_bee_count; bee_index++)
 					{
 						const bee_t *bee= &swarm.bees[bee_index];
 
@@ -261,9 +261,9 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 			SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0x3f);
 
-			for (int y= 0; y<swarm.field.rows; ++y)
+			for (int y= 0; y<swarm.field.rows; y++)
 			{
-				for (int x= 0; x<swarm.field.cols; ++x)
+				for (int x= 0; x<swarm.field.cols; x++)
 				{
 					if (swarm.field.at<bool>(y, x))
 					{
@@ -445,11 +445,11 @@ static SDL_Texture *graphics_create_texture_from_depth_frame(const cv::Mat1w &de
 			const uint16_t *depth= depth_frame.ptr<uint16_t>();
 			uint8_t *color_row= (uint8_t *)surface->pixels;
 
-			for (int y= 0; y<surface->h; ++y)
+			for (int y= 0; y<surface->h; y++)
 			{
 				uint8_t *color= color_row;
 
-				for (int x= 0; x<surface->w; ++x)
+				for (int x= 0; x<surface->w; x++)
 				{
 					uint8_t depth8= UINT8_MAX-((*depth++)*UINT8_MAX)/FREENECT_DEPTH_MM_MAX_VALUE;
 
@@ -495,11 +495,11 @@ static SDL_Texture *graphics_create_texture_from_edge_frame(const cv::Mat1b &edg
 			const uint8_t *edge= edge_frame.ptr<uint8_t>();
 			uint8_t *color_row= (uint8_t *)surface->pixels;
 
-			for (int y= 0; y<surface->h; ++y)
+			for (int y= 0; y<surface->h; y++)
 			{
 				uint8_t *color= color_row;
 
-				for (int x= 0; x<surface->w; ++x)
+				for (int x= 0; x<surface->w; x++)
 				{
 					uint8_t temp= *edge++;
 
