@@ -7,8 +7,8 @@
 
 #include "graphics.hpp"
 
-const int k_window_width= 1280;
-const int k_window_height= 720;
+const int k_window_width= 1920;
+const int k_window_height= 1080;
 
 const int k_view_width= k_window_width/2;
 const int k_view_height= k_window_height/2;
