@@ -1,7 +1,7 @@
+#include <SDL_log.h>
 #include <SDL_mixer.h>
 
 #include "audio.hpp"
-#include "camera.hpp"
 #include "swarm.hpp"
 
 Mix_Chunk *buzz_wav[bee_t::k_state_count];
