@@ -18,7 +18,7 @@ static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_
 static freenect_context *g_kinect_context= NULL;
 static freenect_device *g_kinect_device= NULL;
 
-static cv::Mat g_idle_image= cv::imread("res/UTEngineering.jpg", cv::IMREAD_GRAYSCALE); // Load idle image
+static cv::Mat g_idle_image= cv::imread("res/ece.bmp", cv::IMREAD_GRAYSCALE); // Load idle image
 
 static bool g_kinect_thread_run= false;
 static std::thread *g_kinect_thread= NULL;
@@ -32,17 +32,18 @@ static int image_dist_counter= k_fps/idle_checks_per_sec - 1;
 static int idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
 static float running_avg= 0.0f;
 static float last_running_avg= 0.0f;
+
 // for audio
 int distance;
 float avg_distance;
 
 int get_distance()
 {
-    return distance;
+	return distance;
 }
 float get_avg_distance()
 {
-    return avg_distance;
+	return avg_distance;
 }
 
 bool camera_initialize()
@@ -91,12 +92,6 @@ bool camera_initialize()
 						//cv::setNumThreads(0);
 						g_kinect_thread_run= true;
 						g_kinect_thread= new std::thread(kinect_thread_function);
-
-						//using canny on the idle image once
-						cv::Canny(g_idle_image, 	// input image
-							g_idle_image, 			// output image
-							150, 					// low threshold
-							300);					// high threshold
 
 						success= true;
 					}
@@ -192,7 +187,7 @@ int camera_consume_full_frame(
 
 	if (idle)
 	{
-		edge_frame= g_idle_image;
+		g_idle_image.copyTo(edge_frame);
 	}
 	else
 	{

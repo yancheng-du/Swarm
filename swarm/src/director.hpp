@@ -18,6 +18,7 @@ public:
 
 private:
 	bool running= true;
+	bool fullscreen= false;
 	bool idle= false;
 	bool debug= false;
 	bool fps= false;
