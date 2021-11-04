@@ -7,10 +7,17 @@
 Mix_Chunk *buzz_wav[bee_t::k_state_count];
 const char* wavfile_names[] =
 {
-	"res/wavfiles/swarm_low.wav",
 	"res/wavfiles/swarm_base.wav",
+	"res/wavfiles/swarm_low.wav",
 	"res/wavfiles/swarm_high.wav"
 };
+const float channel_control[] =
+{
+	0.6,
+	0.3,
+	0.4
+};
+
 const int b_max_change = 32; // [0~128]
 
 bool audio_initialize()
@@ -61,14 +68,18 @@ void audio_dispose()
 
 void audio_render(const swarm_t &swarm)
 {
-	int mix_volume= (get_distance()/get_avg_distance())*64;
-
+	//int mix_volume= (get_distance()/get_avg_distance())*64;
+	int mix_volume= 64;
 	static float prev_volume[bee_t::k_state_count];
 	static float new_volume[bee_t::k_state_count];
 
 	for (int i=0; i<bee_t::k_state_count; i++)
 	{
-		new_volume[i]= mix_volume*swarm.state_fractions[i];
+		if(i==0) // _idle
+		{
+			mix_volume= 128*(.9 - swarm.state_fractions[i])*(.9 - swarm.state_fractions[i]);
+		}
+		new_volume[i]= channel_control[i]*mix_volume*(1 - swarm.state_fractions[i]);
 		float change= new_volume[i] - prev_volume[i];
 		if (std::abs(change)>b_max_change)
 		{
