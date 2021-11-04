@@ -9,7 +9,7 @@
 const int k_simulation_width= 1920;
 const int k_simulation_height= 1080;
 
-const int k_bee_count= 10000;
+const int k_bee_count= 5000;
 const float k_bee_radius= 8.0f;
 
 class bee_t
@@ -25,8 +25,9 @@ public:
 
 	bee_t();
 
-	void update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t command);
-	void palm_update(command_t command,int center_x, int center_y);
+	void update(const cv::Mat1b &edge_frame, cv::Mat1b &field);
+	void palm_update(int bound_width,int center_x, int center_y);
+	void draw_update(const cv::Mat1b& canvas);
 
 	state_t state;
 	float timer;
@@ -52,8 +53,12 @@ public:
 
 	float state_fractions[bee_t::k_state_count]; // fraction of total bees in each state
 
+
+
+	void draw_line(int x, int y);
 	bee_t *bees;
 	cv::Mat1b field;
+	cv::Mat1b canvas;
 };
 
 #endif /* swarm_hpp */
