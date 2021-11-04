@@ -1,3 +1,6 @@
+#include <SDL_events.h>
+#include <SDL_log.h>
+
 #include "audio.hpp"
 #include "camera.hpp"
 #include "constants.hpp"

@@ -3,18 +3,6 @@
 
 #include "constants.hpp"
 #include "swarm.hpp"
-#include "camera.hpp"
-
-//constants for texture heights, widths, etc.
-const int b_texture_h= 64;
-const int b_fly_texture_w= 1920;
-const int b_crawl_texture_w= 3904;
-const int b_idle_texture_w= 3904;
-const int b_frame_h= 64;
-const int b_frame_w= 64;
-const int b_fly_frame_count= 30;
-const int b_crawl_frame_count= 61;
-const int b_idle_frame_count= 61;
 
 const float k_tau= 6.2831853f;
 
@@ -22,18 +10,16 @@ const float k_timer_minimum= 0.2f;
 const float k_timer_maximum= 0.8f;
 
 // $TODO implement walking in direction of edges
-const float k_walk_speed_minimum= 0.0f;
-const float k_walk_speed_maximum= 0.0f;
+const float k_walk_speed_minimum= 8.0f;
+const float k_walk_speed_maximum= 12.0f;
 
-const float k_fly_speed_minimum= 200;
-const float k_fly_speed_maximum= 400;
+const float k_fly_speed_minimum= 200.0f;
+const float k_fly_speed_maximum= 300.0f;
 
 const float k_spin_maximum= 0.5f*k_tau;
 
-static int last_draw_x = -1;
-static int last_draw_y = -1;
-
-
+static int last_draw_x= -1;
+static int last_draw_y= -1;
 
 inline float uniform_random(float minimum, float maximum)
 {
@@ -63,52 +49,7 @@ bee_t::bee_t()
 	last_facing= facing;
 	speed= 0.0f;
 	spin= 0.0f;
-
-	//at init, every bee starts at random render frame
-	b_fly_rect.x= (rand()%b_fly_frame_count)*b_frame_w;
-	b_crawl_rect.x= (rand()%b_crawl_frame_count)*b_frame_w;
-	b_idle_rect.x= (rand()%b_idle_frame_count)*b_frame_w;
-
-	//set render rects height, width, and y position
-	b_fly_rect.y= b_crawl_rect.y= b_idle_rect.y= 0;
-	b_fly_rect.w= b_crawl_rect.w= b_idle_rect.w= b_frame_w;
-	b_fly_rect.h= b_crawl_rect.h= b_idle_rect.h= b_frame_h;
 }
-
-void bee_t::palm_update(int bound_width, int center_x, int center_y) 
-{
-	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>bound_width*bound_width)
-	{
-		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-		double dr= atan2(center_y-y, center_x-x) + uniform_random(0, 0.4*k_spin_maximum);
-		spin= (dr-facing)/k_dt;
-	}
-	else
-	{
-		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-		double dr=  uniform_random(-0.4*k_spin_maximum, 0.4*k_spin_maximum);
-		spin= dr;
-	}
-
-	// update position and facing
-	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
-	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
-	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
-
-	//update sprite render frame
-	b_fly_rect.x += b_frame_w;
-	b_crawl_rect.x += b_frame_w;
-	b_idle_rect.x += b_frame_w;
-
-	//check if past texture
-	if (b_fly_rect.x >= b_fly_texture_w)
-		b_fly_rect.x = 0;
-	if (b_crawl_rect.x >= b_crawl_texture_w)
-		b_crawl_rect.x = 0;
-	if (b_idle_rect.x >= b_idle_texture_w)
-		b_idle_rect.x = 0;
-}
-
 
 void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 {	
@@ -157,24 +98,33 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 		}
 
 		// $TODO fly towards edges if near
-		}
+	}
+
 	// update position and facing
 	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
 	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
 	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
-	
-	//update sprite render frame
-	b_fly_rect.x += b_frame_w;
-	b_crawl_rect.x += b_frame_w;
-	b_idle_rect.x += b_frame_w;
+}
 
-	//check if past texture
-	if (b_fly_rect.x >= b_fly_texture_w)
-		b_fly_rect.x = 0;
-	if (b_crawl_rect.x >= b_crawl_texture_w)
-		b_crawl_rect.x = 0;
-	if (b_idle_rect.x >= b_idle_texture_w)
-		b_idle_rect.x = 0;
+void bee_t::palm_update(int bound_width, int center_x, int center_y)
+{
+	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>bound_width*bound_width)
+	{
+		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+		double dr= atan2(center_y-y, center_x-x) + uniform_random(0, 0.4*k_spin_maximum);
+		spin= (dr-facing)/k_dt;
+	}
+	else
+	{
+		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
+		double dr=  uniform_random(-0.4*k_spin_maximum, 0.4*k_spin_maximum);
+		spin= dr;
+	}
+
+	// update position and facing
+	x= wrap_value(x+speed*cos(facing)*k_dt, k_simulation_width, k_bee_radius);
+	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
+	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
 }
 
 swarm_t::swarm_t()
@@ -189,51 +139,9 @@ swarm_t::~swarm_t()
 	delete bees;
 }
 
-
-void swarm_t::draw_line(int x, int y) {
-	//if it is the first point
-	if (last_draw_x ==-1 && last_draw_y==-1)
-	{
-		canvas.at<bool>(y, x) = 1;
-		last_draw_x = x;
-		last_draw_y = y;
-	}
-	//not the first point
-	else
-	{	//calculate slopt and intercept
-		float m;
-		if (x==last_draw_x)
-		{
-			m=0;
-		}
-		else
-		{
-			m = (float)(y - last_draw_y)/(x-last_draw_x);
-		}
-		float b = y-m*x;
-		//fill points on the canvas
-		if (x > last_draw_x)
-		{
-			for (int i = last_draw_x; i<=x; i++)
-			{
-				canvas.at<bool>((int)(m*i+b), i) = 1;
-			}
-		}
-		else
-		{
-			for (int i = x; i<=last_draw_x; i++)
-			{
-				canvas.at<bool>((int)(m*i+b), i) = 1;
-			}
-		}
-		last_draw_x = x;
-		last_draw_y = y;
-	}
-
-}
-
 void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 {
+	t+= k_dt;
 	field.setTo(0);
 
 	if (commands.size()>0)
@@ -298,4 +206,47 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			state_fractions[state]= static_cast<float>(state_counts[state])/k_bee_count;
 		}
 	}
+}
+
+void swarm_t::draw_line(int x, int y)
+{
+	//if it is the first point
+	if (last_draw_x ==-1 && last_draw_y==-1)
+	{
+		canvas.at<bool>(y, x) = 1;
+		last_draw_x = x;
+		last_draw_y = y;
+	}
+	//not the first point
+	else
+	{	//calculate slopt and intercept
+		float m;
+		if (x==last_draw_x)
+		{
+			m=0;
+		}
+		else
+		{
+			m = (float)(y - last_draw_y)/(x-last_draw_x);
+		}
+		float b = y-m*x;
+		//fill points on the canvas
+		if (x > last_draw_x)
+		{
+			for (int i = last_draw_x; i<=x; i++)
+			{
+				canvas.at<bool>((int)(m*i+b), i) = 1;
+			}
+		}
+		else
+		{
+			for (int i = x; i<=last_draw_x; i++)
+			{
+				canvas.at<bool>((int)(m*i+b), i) = 1;
+			}
+		}
+		last_draw_x = x;
+		last_draw_y = y;
+	}
+
 }
