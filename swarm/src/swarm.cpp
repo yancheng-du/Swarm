@@ -30,6 +30,11 @@ const float k_fly_speed_maximum= 400;
 
 const float k_spin_maximum= 0.5f*k_tau;
 
+static int last_draw_x = -1;
+static int last_draw_y = -1;
+
+
+
 inline float uniform_random(float minimum, float maximum)
 {
 	double fraction= static_cast<double>(rand())/RAND_MAX;
@@ -70,18 +75,19 @@ bee_t::bee_t()
 	b_fly_rect.h= b_crawl_rect.h= b_idle_rect.h= b_frame_h;
 }
 
-void bee_t::palm_update(command_t current_sign, int center_x, int center_y) 
+void bee_t::palm_update(int bound_width, int center_x, int center_y) 
 {
-	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>current_sign.bounding_box.width*current_sign.bounding_box.width)
+	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>bound_width*bound_width)
 	{
 		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-		double dr= -atan2(y-center_y, center_x-x) + uniform_random(0, 0.4*k_spin_maximum);
+		double dr= atan2(center_y-y, center_x-x) + uniform_random(0, 0.4*k_spin_maximum);
 		spin= (dr-facing)/k_dt;
 	}
 	else
 	{
 		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-		spin= uniform_random(0, k_spin_maximum)/k_dt;
+		double dr=  uniform_random(-0.4*k_spin_maximum, 0.4*k_spin_maximum);
+		spin= dr;
 	}
 
 	// update position and facing
@@ -103,7 +109,8 @@ void bee_t::palm_update(command_t current_sign, int center_x, int center_y)
 		b_idle_rect.x = 0;
 }
 
-void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field, commands_t command)
+
+void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 {	
 	int field_y= static_cast<int>(y/k_simulation_height*field.rows);
 	int field_x= static_cast<int>(x/k_simulation_width*field.cols);
@@ -174,11 +181,55 @@ swarm_t::swarm_t()
 {
 	bees= new bee_t[k_bee_count];
 	field= cv::Mat::zeros(k_simulation_height/static_cast<int>(k_bee_radius), k_simulation_width/static_cast<int>(k_bee_radius), CV_8U);
+	canvas = cv::Mat::zeros(k_edge_height, k_edge_width,CV_8U);
 }
 
 swarm_t::~swarm_t()
 {
 	delete bees;
+}
+
+
+void swarm_t::draw_line(int x, int y) {
+	//if it is the first point
+	if (last_draw_x ==-1 && last_draw_y==-1)
+	{
+		canvas.at<bool>(y, x) = 1;
+		last_draw_x = x;
+		last_draw_y = y;
+	}
+	//not the first point
+	else
+	{	//calculate slopt and intercept
+		float m;
+		if (x==last_draw_x)
+		{
+			m=0;
+		}
+		else
+		{
+			m = (float)(y - last_draw_y)/(x-last_draw_x);
+		}
+		float b = y-m*x;
+		//fill points on the canvas
+		if (x > last_draw_x)
+		{
+			for (int i = last_draw_x; i<=x; i++)
+			{
+				canvas.at<bool>((int)(m*i+b), i) = 1;
+			}
+		}
+		else
+		{
+			for (int i = x; i<=last_draw_x; i++)
+			{
+				canvas.at<bool>((int)(m*i+b), i) = 1;
+			}
+		}
+		last_draw_x = x;
+		last_draw_y = y;
+	}
+
 }
 
 void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
@@ -196,7 +247,18 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].palm_update(current_sign, center_x, center_y);
+				bees[i].palm_update(current_sign.bounding_box.width, center_x, center_y);
+			}
+		}
+		else if (current_sign.name == "peace")
+		{
+			int center_x, center_y;
+			center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width);
+			center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height);
+			draw_line(center_x, center_y);
+			for (int i = 0; i<k_bee_count; i++)
+			{
+				bees[i].update(canvas, field);
 			}
 		}
 		//all other gesture will be treated as normal bee update
@@ -204,7 +266,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		{
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].update(edge_frame, field, commands);
+				bees[i].update(edge_frame, field);
 			}
 		}
 	}
@@ -213,7 +275,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		//no gestures
 		for (int i = 0; i<k_bee_count; i++)
 		{
-			bees[i].update(edge_frame, field, commands);
+			bees[i].update(edge_frame, field);
 		}
 	}
 
