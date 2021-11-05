@@ -1,3 +1,4 @@
+#include <opencv2/core.hpp>
 #include <SDL_events.h>
 #include <SDL_log.h>
 
@@ -7,16 +8,33 @@
 #include "director.hpp"
 #include "gesture.hpp"
 #include "graphics.hpp"
+#include "swarm.hpp"
 
-director_t::director_t()
+static bool g_running= true;
+static bool g_fullscreen= false;
+static bool g_idle= false;
+static bool g_debug= false;
+static bool g_fps= false;
+
+static cv::Mat3b g_video_frame;
+static cv::Mat3b g_last_video_frame;
+static cv::Mat1w g_depth_frame;
+static cv::Mat1b g_edge_frame;
+static commands_t g_commands;
+
+static swarm_t g_swarm;
+
+bool director_initialize()
 {
 	graphics_initialize();
 	audio_initialize();
 	camera_initialize();
 	gesture_initialize();
+
+	return true;
 }
 
-director_t::~director_t()
+void director_dispose()
 {
 	gesture_dispose();
 	camera_dispose();
@@ -24,22 +42,22 @@ director_t::~director_t()
 	graphics_dispose();
 }
 
-bool director_t::is_running()
+bool director_is_running()
 {
-	return running;
+	return g_running;
 }
 
-void director_t::do_frame()
+void director_do_frame()
 {
-	camera_consume_full_frame(video_frame, depth_frame, edge_frame, idle);
-	idle_check(video_frame, last_video_frame, idle);
-	gesture_consume_commands(commands);
-	swarm.update(edge_frame, commands);
-	graphics_render(swarm, debug, video_frame, depth_frame, edge_frame, commands, fps);
-	audio_render(swarm);
+	camera_consume_full_frame(g_video_frame, g_depth_frame, g_edge_frame, g_idle);
+	idle_check(g_video_frame, g_last_video_frame, g_idle);
+	gesture_consume_commands(g_commands);
+	g_swarm.update(g_edge_frame, g_commands);
+	graphics_render(g_swarm, g_debug, g_video_frame, g_depth_frame, g_edge_frame, g_commands, g_fps);
+	audio_render(g_swarm);
 }
 
-void director_t::process_events()
+void director_process_events()
 {
 	SDL_Event event;
 
@@ -51,7 +69,7 @@ void director_t::process_events()
 		{
 			case SDL_QUIT:
 			{
-				running= false;
+				g_running= false;
 				break;
 			}
 
@@ -63,33 +81,33 @@ void director_t::process_events()
 				{
 					case SDLK_ESCAPE:
 					{
-						running= false;
+						g_running= false;
 						break;
 					}
 
 					case SDLK_LCTRL:
 					{
-						fps= !fps;
+						g_fps= !g_fps;
 						break;
 					}
 
 					case SDLK_LALT:
 					{
-						debug= !debug;
+						g_debug= !g_debug;
 						break;
 					}
 
 					case SDLK_f:
 					{
-						if (graphics_change_mode(!fullscreen))
+						if (graphics_change_mode(!g_fullscreen))
 						{
-							fullscreen= !fullscreen;
+							g_fullscreen= !g_fullscreen;
 						}
 						break;
 					}
 					case SDLK_i:
 					{
-						idle= !idle;
+						g_idle= !g_idle;
 						break;
 					}
 

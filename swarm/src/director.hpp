@@ -1,35 +1,11 @@
 #ifndef director_hpp
 #define director_hpp
 
-#include <opencv2/core.hpp>
+bool director_initialize();
+void director_dispose();
 
-#include "gesture.hpp"
-#include "swarm.hpp"
-
-class director_t
-{
-public:
-	director_t();
-	~director_t();
-
-	bool is_running();
-	void do_frame();
-	void process_events();
-
-private:
-	bool running= true;
-	bool fullscreen= false;
-	bool idle= false;
-	bool debug= false;
-	bool fps= false;
-
-	cv::Mat3b video_frame;
-	cv::Mat3b last_video_frame;
-	cv::Mat1w depth_frame;
-	cv::Mat1b edge_frame;
-	commands_t commands;
-
-	swarm_t swarm;
-};
+bool director_is_running();
+void director_do_frame();
+void director_process_events();
 
 #endif /* director_hpp */
