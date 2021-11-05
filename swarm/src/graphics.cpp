@@ -280,13 +280,15 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			{
 				for (int x= 0; x<swarm.field.cols; x++)
 				{
-					if (swarm.field.at<bool>(y, x))
+					int field= swarm.field(y, x);
+					if (field>0)
 					{
 						SDL_FRect rect;
 						rect.x= x0 + x*dx;
 						rect.y= y0 + y*dy;
 						rect.w= dx;
 						rect.h= dy;
+						SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0xff*field/swarm.field_max);
 						SDL_RenderFillRectF(g_renderer, &rect);
 					}
 				}
