@@ -16,17 +16,22 @@ int main(int argc, char *argv[])
 
 	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS)==0)
 	{
-		// main loop
+		if (director_initialize())
 		{
-			director_t director;
 			timer_t timer;
 
-			while (director.is_running())
+			while (director_is_running())
 			{
 				timer.reset();
-				director.do_frame();
-				do director.process_events(); while (!timer.passed(k_dt));
+				director_do_frame();
+				do director_process_events(); while (!timer.passed(k_dt));
 			}
+
+			director_dispose();
+		}
+		else
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize director");
 		}
 
 		SDL_Quit();
