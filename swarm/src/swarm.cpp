@@ -51,7 +51,7 @@ bee_t::bee_t()
 	spin= 0.0f;
 }
 
-void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
+void bee_t::update(const cv::Mat1b &edge_frame, int field_max, cv::Mat1b &field)
 {	
 	int field_y= static_cast<int>(y/k_simulation_height*field.rows);
 	int field_x= static_cast<int>(x/k_simulation_width*field.cols);
@@ -60,9 +60,10 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 	if (x>=0.0f && x<k_simulation_width &&
 		y>=0.0f && y<k_simulation_height &&
 		edge_frame(static_cast<int>(y/k_simulation_height*edge_frame.rows), static_cast<int>(x/k_simulation_width*edge_frame.cols))>0 &&
-		!field.at<bool>(field_y, field_x))
+		field(field_y, field_x)<field_max)
 	{
-		field.at<bool>(field_y, field_x)= true;
+		field(field_y, field_x)+= 1;
+
 		if (state==_flying || (state==_crawling&&timer<0.0f))
 		{
 			state= _idle;
@@ -70,7 +71,6 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 			speed= 0.0f;
 			spin= 0.0f;
 		}
-		//craw on edge
 		else if (state==_idle&&timer<0.0f)
 		{
 			state= _crawling;
@@ -85,7 +85,7 @@ void bee_t::update(const cv::Mat1b &edge_frame, cv::Mat1b &field)
 	}
 	else
 	{
-		if (timer<0.0f)
+		if (state!=_flying || timer<0.0f)
 		{
 			state= _flying;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
@@ -144,6 +144,26 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 	t+= k_dt;
 	field.setTo(0);
 
+	// compute field_max
+	{
+		int edge_count= 0;
+
+		for (int edge_y= 0; edge_y<edge_frame.rows; edge_y++)
+		{
+			for (int edge_x= 0; edge_x<edge_frame.cols; edge_x++)
+			{
+				if (edge_frame(edge_y, edge_x)>0)
+				{
+					edge_count+= 1;
+				}
+			}
+		}
+
+		int field_count= edge_count*field.rows*field.cols/(edge_frame.rows*edge_frame.cols);
+		field_max= field_count>0 ? k_bee_count/field_count : 0;
+		if (field_max>UINT8_MAX) field_max= UINT8_MAX;
+	}
+
 	if (commands.size()>0)
 	{
 		command_t current_sign = commands.at(0);
@@ -166,7 +186,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			draw_line(center_x, center_y);
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].update(canvas, field);
+				bees[i].update(canvas, field_max, field);
 			}
 		}
 		//all other gesture will be treated as normal bee update
@@ -174,7 +194,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		{
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].update(edge_frame, field);
+				bees[i].update(edge_frame, field_max, field);
 			}
 		}
 	}
@@ -183,7 +203,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		//no gestures
 		for (int i = 0; i<k_bee_count; i++)
 		{
-			bees[i].update(edge_frame, field);
+			bees[i].update(edge_frame, field_max, field);
 		}
 	}
 

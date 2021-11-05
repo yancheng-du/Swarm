@@ -18,7 +18,7 @@ public:
 
 	bee_t();
 
-	void update(const cv::Mat1b &edge_frame, cv::Mat1b &field);
+	void update(const cv::Mat1b &edge_frame, int field_max, cv::Mat1b &field);
 	void palm_update(int bound_width,int center_x, int center_y);
 	void draw_update(const cv::Mat1b& canvas);
 
@@ -44,6 +44,7 @@ public:
 	bee_t *bees;
 	float state_fractions[bee_t::k_state_count]; // fraction of total bees in each state
 
+	int field_max;
 	cv::Mat1b field;
 	cv::Mat1b canvas;
 };
