@@ -239,20 +239,29 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 				dst_rect.w= 2*k_bee_radius*dx;
 				dst_rect.h= 2*k_bee_radius*dy;
 
-				for (int bee_index= 0; bee_index<k_bee_count; bee_index++)
+				for (int state= 0; state<bee_t::k_state_count; state++)
 				{
-					const bee_t *bee= &swarm.bees[bee_index];
-					int state= bee->state;
+					SDL_Texture *texture= g_bee_textures[state];
+					int sprite_count= g_bee_sprite_counts[state];
 					int sprite_size= g_bee_sprite_sizes[state];
 
-					src_rect.x= ((sprite_base_index+bee_index)%g_bee_sprite_counts[state])*sprite_size;
 					src_rect.w= sprite_size;
 					src_rect.h= sprite_size;
 
-					dst_rect.x= x0 + (bee->x-k_bee_radius)*dx;
-					dst_rect.y= y0 + (bee->y-k_bee_radius)*dy;
+					for (int bee_index= 0; bee_index<k_bee_count; bee_index++)
+					{
+						const bee_t *bee= &swarm.bees[bee_index];
 
-					SDL_RenderCopyExF(g_renderer, g_bee_textures[state],  &src_rect,  &dst_rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE);
+						if (bee->state==state)
+						{
+							src_rect.x= ((sprite_base_index+bee_index)%sprite_count)*sprite_size;
+
+							dst_rect.x= x0 + (bee->x-k_bee_radius)*dx;
+							dst_rect.y= y0 + (bee->y-k_bee_radius)*dy;
+
+							SDL_RenderCopyExF(g_renderer, texture,  &src_rect,  &dst_rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE);
+						}
+					}
 				}
 			}
 		}
