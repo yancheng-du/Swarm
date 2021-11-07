@@ -12,7 +12,7 @@ const int k_edge_width= k_camera_width;
 const int k_edge_height= k_camera_width*9/16;
 const int k_edge_x= 0;
 const int k_edge_y= (k_camera_height-k_edge_height)/2;
-
+const int k_depth_threshold= 1500;
 const int k_simulation_width= 1920;
 const int k_simulation_height= 1080;
 

@@ -191,6 +191,8 @@ int camera_consume_full_frame(
 	}
 	else
 	{
+
+		
 		cv::Mat grey_frame, blurred_frame;
 
 		cv::cvtColor(video_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height)), grey_frame, cv::COLOR_BGR2GRAY);
@@ -202,6 +204,19 @@ int camera_consume_full_frame(
 			edge_frame, 					// output image
 			cv::Size(3, 3), 				// smoothing window width and height in pixels
 			2);								// sigma
+
+		//Remove edges that are past the depth threshold
+		cv::Mat1w clipped_depth_frame = depth_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height));
+		for (int i= 0; i< clipped_depth_frame.rows; ++i)
+		{
+			for (int j= 0; j< clipped_depth_frame.cols; ++j)
+			{
+				if (int(clipped_depth_frame(i, j))>= k_depth_threshold)
+				{
+					edge_frame(i, j)= 0;
+				}
+			}
+		}
 	}
 
 	return frame_count;
