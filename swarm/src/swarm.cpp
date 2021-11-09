@@ -160,7 +160,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 		}
 
 		int field_count= edge_count*field.rows*field.cols/(edge_frame.rows*edge_frame.cols);
-		field_max= field_count>0 ? k_bee_count/field_count : 0;
+		field_max= 1 + (field_count>0 ? k_bee_count/field_count : 0);
 		if (field_max>UINT8_MAX) field_max= UINT8_MAX;
 	}
 
