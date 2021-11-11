@@ -1,4 +1,5 @@
 #include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include <SDL_events.h>
 #include <SDL_log.h>
 
@@ -9,6 +10,9 @@
 #include "gesture.hpp"
 #include "graphics.hpp"
 #include "swarm.hpp"
+
+static void director_idle_check(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame, bool &idle);
+static int image_dist(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame);
 
 static bool g_running= true;
 static bool g_fullscreen= false;
@@ -23,6 +27,13 @@ static cv::Mat1b g_edge_frame;
 static commands_t g_commands;
 
 static swarm_t g_swarm;
+
+static cv::Mat g_idle_image= cv::imread("res/ece.bmp", cv::IMREAD_GRAYSCALE); // Load idle image
+
+static int image_dist_counter= k_fps/idle_checks_per_sec - 1;
+static int idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
+static float running_avg= 0.0f;
+static float last_running_avg= 0.0f;
 
 bool director_initialize()
 {
@@ -49,8 +60,12 @@ bool director_is_running()
 
 void director_do_frame()
 {
-	camera_consume_full_frame(g_video_frame, g_depth_frame, g_edge_frame, g_idle);
-	idle_check(g_video_frame, g_last_video_frame, g_idle);
+	camera_consume_full_frame(g_video_frame, g_depth_frame, g_edge_frame);
+	director_idle_check(g_video_frame, g_last_video_frame, g_idle);
+	if (g_idle)
+	{
+		g_idle_image.copyTo(g_edge_frame);
+	}
 	gesture_consume_commands(g_commands);
 	g_swarm.update(g_edge_frame, g_commands);
 	graphics_render(g_swarm, g_debug, g_video_frame, g_depth_frame, g_edge_frame, g_commands, g_fps);
@@ -117,4 +132,41 @@ void director_process_events()
 			}
 		}
 	}
+}
+
+static void director_idle_check(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame, bool &idle)
+{
+	if (image_dist_counter==0)
+	{
+		image_dist_counter= k_fps/idle_checks_per_sec - 1;
+		int dist= image_dist(video_frame, last_video_frame);
+		running_avg= running_avg_alpha*dist + (1-running_avg_alpha)*running_avg;
+		if (dist>running_avg*1.5)
+		{
+			idle= false;
+			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
+		}
+		if (idle_check_counter<=0)
+		{
+			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
+			if (running_avg<last_running_avg*1.1 && dist<last_running_avg*1.1)
+			{
+				idle= true;
+			}
+			last_running_avg= running_avg;
+		}
+		idle_check_counter-= 1;
+	}
+	else
+	{
+		image_dist_counter-= 1;
+	}
+}
+
+static int image_dist(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame)
+{
+	last_video_frame.create(k_camera_height, k_camera_width);
+	int diff= (int)cv::norm(video_frame-last_video_frame);
+	last_video_frame= video_frame.clone();
+	return diff;
 }
