@@ -70,7 +70,7 @@ bool camera_initialize()
 						#endif
 
 						freenect_set_depth_callback(g_kinect_device, kinect_depth_callback);
-						//cv::setNumThreads(0);
+
 						g_kinect_thread_run= true;
 						g_kinect_thread= new std::thread(kinect_thread_function);
 
@@ -104,68 +104,6 @@ bool camera_initialize()
 	}
 
 	return success;
-}
-
-void camera_dispose()
-{
-	if (g_kinect_thread)
-	{
-		g_kinect_thread_run= false;
-		g_kinect_thread->join();
-		delete g_kinect_thread;
-		g_kinect_thread= NULL;
-	}
-
-	if (g_kinect_device)
-	{
-		freenect_close_device(g_kinect_device);
-		g_kinect_device= NULL;
-	}
-
-	if (g_kinect_context)
-	{
-		freenect_shutdown(g_kinect_context);
-		g_kinect_context= NULL;
-	}
-}
-
-void camera_peek_video_frame(
-	cv::Mat3b &video_frame)
-{
-	video_frame.create(k_camera_height, k_camera_width);
-
-	assert(video_frame.isContinuous());
-	assert(video_frame.dataend-video_frame.datastart==sizeof(g_video_frame));
-
-	g_frame_mutex.lock();
-	std::memcpy(video_frame.data, g_video_frame, sizeof(g_video_frame));
-	g_frame_mutex.unlock();
-}
-
-int camera_consume_full_frame(
-	cv::Mat3b &video_frame,
-	cv::Mat1w &depth_frame,
-	cv::Mat1b &edge_frame)
-{
-	int frame_count;
-
-	video_frame.create(k_camera_height, k_camera_width);
-	assert(video_frame.isContinuous());
-	assert(video_frame.dataend-video_frame.datastart==sizeof(g_video_frame));
-
-	depth_frame.create(k_camera_height, k_camera_width);
-	assert(depth_frame.isContinuous());
-	assert(depth_frame.dataend-depth_frame.datastart==sizeof(g_depth_frame));
-
-	g_frame_mutex.lock();
-	std::memcpy(video_frame.data, g_video_frame, sizeof(g_video_frame));
-	std::memcpy(depth_frame.data, g_depth_frame, sizeof(g_depth_frame));
-	frame_count= g_frame_count;
-	g_frame_mutex.unlock();
-
-	camera_process_frame(video_frame, depth_frame, edge_frame);
-
-	return frame_count;
 }
 
 static void kinect_thread_function()
@@ -219,6 +157,7 @@ static void kinect_video_callback(freenect_device *device, void *buffer, uint32_
 	memcpy(&g_video_frame, buffer, sizeof(g_video_frame));
 	g_frame_count++;
 	g_frame_mutex.unlock();
+
 	SDL_LogInfo(SDL_LOG_CATEGORY_VIDEO, "Received video frame at timestamp: %u", timestamp);
 }
 
@@ -227,7 +166,69 @@ static void kinect_depth_callback(freenect_device *device, void *buffer, uint32_
 	g_frame_mutex.lock();
 	memcpy(&g_depth_frame, buffer, sizeof(g_depth_frame));
 	g_frame_mutex.unlock();
+
 	SDL_LogInfo(SDL_LOG_CATEGORY_VIDEO, "Received depth frame at timestamp: %u", timestamp);
+}
+
+void camera_dispose()
+{
+	if (g_kinect_thread)
+	{
+		g_kinect_thread_run= false;
+		g_kinect_thread->join();
+		delete g_kinect_thread;
+		g_kinect_thread= NULL;
+	}
+
+	if (g_kinect_device)
+	{
+		freenect_close_device(g_kinect_device);
+		g_kinect_device= NULL;
+	}
+
+	if (g_kinect_context)
+	{
+		freenect_shutdown(g_kinect_context);
+		g_kinect_context= NULL;
+	}
+}
+
+void camera_peek_video_frame(
+	cv::Mat3b &video_frame)
+{
+	video_frame.create(k_camera_height, k_camera_width);
+	assert(video_frame.isContinuous());
+	assert(video_frame.dataend-video_frame.datastart==sizeof(g_video_frame));
+
+	g_frame_mutex.lock();
+	std::memcpy(video_frame.data, g_video_frame, sizeof(g_video_frame));
+	g_frame_mutex.unlock();
+}
+
+int camera_consume_full_frame(
+	cv::Mat3b &video_frame,
+	cv::Mat1w &depth_frame,
+	cv::Mat1b &edge_frame)
+{
+	int frame_count;
+
+	video_frame.create(k_camera_height, k_camera_width);
+	assert(video_frame.isContinuous());
+	assert(video_frame.dataend-video_frame.datastart==sizeof(g_video_frame));
+
+	depth_frame.create(k_camera_height, k_camera_width);
+	assert(depth_frame.isContinuous());
+	assert(depth_frame.dataend-depth_frame.datastart==sizeof(g_depth_frame));
+
+	g_frame_mutex.lock();
+	std::memcpy(video_frame.data, g_video_frame, sizeof(g_video_frame));
+	std::memcpy(depth_frame.data, g_depth_frame, sizeof(g_depth_frame));
+	frame_count= g_frame_count;
+	g_frame_mutex.unlock();
+
+	camera_process_frame(video_frame, depth_frame, edge_frame);
+
+	return frame_count;
 }
 
 static void camera_process_frame(
