@@ -11,6 +11,18 @@
 #include "graphics.hpp"
 #include "swarm.hpp"
 
+static const char *k_idle_image_filepaths[]=
+{
+	"res/bevo.bmp",
+	"res/ece.bmp",
+	"res/Texas.bmp",
+	"res/tower.bmp"
+};
+static const int k_idle_image_count= sizeof(k_idle_image_filepaths)/sizeof(k_idle_image_filepaths[0]);
+
+static const int k_idle_checks_per_sec= 5;
+static const float k_idle_running_avg_alpha= 2.0f/(k_seconds_before_idle*k_idle_checks_per_sec+1.0f);
+
 static void director_idle_check(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame, bool &idle);
 static int image_dist(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame);
 
@@ -28,12 +40,12 @@ static commands_t g_commands;
 
 static swarm_t g_swarm;
 
-static cv::Mat g_idle_image= cv::imread("res/ece.bmp", cv::IMREAD_GRAYSCALE); // Load idle image
-
-static int image_dist_counter= k_fps/idle_checks_per_sec - 1;
-static int idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
-static float running_avg= 0.0f;
-static float last_running_avg= 0.0f;
+static int g_idle_image_index= -1;
+static cv::Mat g_idle_images[k_idle_image_count];
+static int g_image_dist_counter= k_fps/k_idle_checks_per_sec - 1;
+static int g_idle_check_counter= k_seconds_before_idle*k_idle_checks_per_sec - 1;
+static float g_idle_running_avg= 0.0f;
+static float g_last_running_avg= 0.0f;
 
 bool director_initialize()
 {
@@ -41,6 +53,11 @@ bool director_initialize()
 	audio_initialize();
 	camera_initialize();
 	gesture_initialize();
+
+	for (int idle_image_index= 0; idle_image_index<k_idle_image_count; idle_image_index++)
+	{
+		g_idle_images[idle_image_index]= cv::imread(k_idle_image_filepaths[idle_image_index], cv::IMREAD_GRAYSCALE);
+	}
 
 	return true;
 }
@@ -64,7 +81,7 @@ void director_do_frame()
 	director_idle_check(g_video_frame, g_last_video_frame, g_idle);
 	if (g_idle)
 	{
-		g_idle_image.copyTo(g_edge_frame);
+		g_idle_images[g_idle_image_index].copyTo(g_edge_frame);
 	}
 	gesture_consume_commands(g_commands);
 	g_swarm.update(g_edge_frame, g_commands);
@@ -123,6 +140,12 @@ void director_process_events()
 					case SDLK_i:
 					{
 						g_idle= !g_idle;
+						g_image_dist_counter= k_fps/k_idle_checks_per_sec - 1;
+						g_idle_check_counter= k_seconds_before_idle*k_idle_checks_per_sec - 1;
+						if (g_idle)
+						{
+							g_idle_image_index= (g_idle_image_index+1)%k_idle_image_count;
+						}
 						break;
 					}
 
@@ -136,30 +159,35 @@ void director_process_events()
 
 static void director_idle_check(const cv::Mat3b &video_frame, cv::Mat3b &last_video_frame, bool &idle)
 {
-	if (image_dist_counter==0)
+	if (g_image_dist_counter<=0)
 	{
-		image_dist_counter= k_fps/idle_checks_per_sec - 1;
+		g_image_dist_counter= k_fps/k_idle_checks_per_sec - 1;
 		int dist= image_dist(video_frame, last_video_frame);
-		running_avg= running_avg_alpha*dist + (1-running_avg_alpha)*running_avg;
-		if (dist>running_avg*1.5)
+		g_idle_running_avg= k_idle_running_avg_alpha*dist + (1-k_idle_running_avg_alpha)*g_idle_running_avg;
+		if (dist>g_idle_running_avg*1.5)
 		{
 			idle= false;
-			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
+			g_idle_check_counter= k_seconds_before_idle*k_idle_checks_per_sec - 1;
 		}
-		if (idle_check_counter<=0)
+		if (g_idle_check_counter<=0)
 		{
-			idle_check_counter= (int)(seconds_before_idle*k_fps/(image_dist_counter)-1);
-			if (running_avg<last_running_avg*1.1 && dist<last_running_avg*1.1)
+			g_idle_check_counter= k_seconds_before_idle*k_idle_checks_per_sec - 1;
+			if (g_idle_running_avg<g_last_running_avg*1.1 && dist<g_last_running_avg*1.1)
 			{
+				int last_idle_image_index= g_idle_image_index;
+				while (g_idle_image_index==last_idle_image_index)
+				{
+					g_idle_image_index= rand()%k_idle_image_count;
+				}
 				idle= true;
 			}
-			last_running_avg= running_avg;
+			g_last_running_avg= g_idle_running_avg;
 		}
-		idle_check_counter-= 1;
+		g_idle_check_counter-= 1;
 	}
 	else
 	{
-		image_dist_counter-= 1;
+		g_image_dist_counter-= 1;
 	}
 }
 
