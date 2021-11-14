@@ -16,7 +16,7 @@ const int k_depth_threshold= 1500;
 const int k_simulation_width= 1920;
 const int k_simulation_height= 1080;
 
-const int k_bee_count= 8000;
+const int k_bee_count= 10000;
 const float k_bee_radius= 8.0f;
 
 const int idle_checks_per_sec= 5;
