@@ -24,8 +24,9 @@ const float k_spin_maximum= 0.5f*k_tau;
 static int last_draw_x= -1;
 static int last_draw_y= -1;
 
-int bee_force_radius = 3;
-int edge_force_radius = 15;
+static int last_count = 0;
+
+int edge_force_radius = 25;
 
 inline float uniform_random(float minimum, float maximum)
 {
@@ -52,7 +53,6 @@ bee_t::bee_t()
 	assert(x>=-k_bee_radius && x<k_simulation_width+k_bee_radius);
 	assert(y>=-k_bee_radius && y<k_simulation_height+k_bee_radius);
 	facing= uniform_random(0.0f, k_tau);
-	last_facing= facing;
 	speed= 0.0f;
 	spin= 0.0f;
 }
@@ -172,14 +172,8 @@ void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &f
 				int8_t dx = force(i, j)[1];
 				int8_t dy = force(i, j)[0];
 				if (dx !=0 || dy !=0) {
-					speed*=0.8;
-					if (speed < k_walk_speed_minimum) {
-						spin = 0;
-					}
-					else {
-						spin = atan2(dy, dx);
-						edge_move = true;
-					}
+					spin = atan2(dy, dx);
+					edge_move = true;
 				}
 			}
 			timer-= k_dt;
@@ -227,7 +221,7 @@ swarm_t::swarm_t()
 	//canvas is the board for drawing
 	canvas= cv::Mat::zeros(k_edge_height, k_edge_width,CV_8U);
 	force= cv::Mat::zeros(k_edge_height, k_edge_width, CV_8SC2);
-	init_force(edge_force_radius, bee_force_radius);
+	init_force(edge_force_radius);
 }
 
 swarm_t::~swarm_t()
@@ -240,9 +234,8 @@ swarm_t::~swarm_t()
 
 }
 
-void swarm_t::init_force(int edge_force_radius, int bee_force_radius)
+void swarm_t::init_force(int edge_force_radius)
 {	
-	int bee_dimeter= 2*bee_force_radius+1;
 	int edge_diameter= 2*edge_force_radius+1;
 	//two filters that are used to calculate attraction/repulsion
 	edge_attract = cv::Mat::zeros(edge_diameter, edge_diameter, CV_8SC2);
@@ -260,9 +253,7 @@ void swarm_t::init_force(int edge_force_radius, int bee_force_radius)
 				edge_attract(y, x)[0]=(edge_force_radius-y)/norm;
 				edge_attract(y, x)[1]=(edge_force_radius-x)/norm;
 			}
-			//printf("%.3f %.3f\t", edge_attract(y, x)[0], edge_attract(y, x)[1]);
 		}
-		//printf("\n");
 	}
 }
 
@@ -304,13 +295,19 @@ void swarm_t::get_dir_mat_float(const cv::Mat1f &edge_frame, const cv::Mat2f &ed
 void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 {
 	t+= k_dt;
-	canvas*=0.995f;
+	canvas*=0.99f;
+	int line_count= count_lines(canvas);
+	if (line_count<last_count) {
+		last_draw_x=-1;
+		last_draw_y=-1;
+	}
+	last_count = line_count;
 
 	// compute field_max
 	{
 		int edge_count= cv::countNonZero(edge_frame);
 		int field_count= edge_count*field.rows*field.cols/(edge_frame.rows*edge_frame.cols);
-		field_max= edge_count>0 ? k_bee_count/edge_count : 0;
+		field_max= 1 + (field_count>0 ? k_bee_count/field_count : 0);
 		if (field_max>UINT8_MAX) field_max= UINT8_MAX;
 	}
 
@@ -339,7 +336,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			field.setTo(0);
 			for (int i = 0; i<k_bee_count; i++)
 			{
-				bees[i].draw_update(canvas, 50, field, force);
+				bees[i].draw_update(canvas, 500, field, force);
 			}
 		}
 		//all other gesture will be treated as normal bee update
@@ -422,5 +419,18 @@ void swarm_t::draw_line(int x, int y)
 		last_draw_x = x;
 		last_draw_y = y;
 	}
+}
 
+int swarm_t::count_lines(const cv::Mat1f &canvas){
+	int count=0;
+	for (int j =0; j<canvas.rows; j++) 
+	{
+		for (int i = 0; i<canvas.cols; i++) {
+			if (canvas(j, i)>0.01f) 
+			{
+				count++;
+			}
+		}
+	}
+	return count;
 }

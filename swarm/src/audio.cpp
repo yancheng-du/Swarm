@@ -68,7 +68,6 @@ void audio_dispose()
 
 void audio_render(const swarm_t &swarm)
 {
-	//int mix_volume= (get_distance()/get_avg_distance())*64;
 	int mix_volume= 64;
 	static float prev_volume[bee_t::k_state_count];
 	static float new_volume[bee_t::k_state_count];
