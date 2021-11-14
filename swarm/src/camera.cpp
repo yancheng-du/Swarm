@@ -198,8 +198,8 @@ int camera_consume_full_frame(
 		cv::cvtColor(video_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height)), grey_frame, cv::COLOR_BGR2GRAY);
 		cv::Canny(grey_frame, 	// input image
 			blurred_frame, 		// output image
-			100, 				// low threshold
-			200);				// high threshold
+			150, 				// low threshold
+			250);				// high threshold
 		cv::GaussianBlur(blurred_frame, 	// input image
 			edge_frame, 					// output image
 			cv::Size(3, 3), 				// smoothing window width and height in pixels
