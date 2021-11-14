@@ -38,10 +38,11 @@ public:
 
 	void update(const cv::Mat1b &edge_frame, const commands_t &commands);
 	void draw_line(int x, int y);
+	int count_lines(const cv::Mat1f &canvas);
 
 	void get_dir_mat_float(const cv::Mat1f &edge_frame, const cv::Mat2f &edge_attract, const cv::Mat1b &field);
 	void apply_filter(const cv::Mat2f &force_field,int x, int y, int radius);
-	void init_force(int edge_force_size, int bee_force_size);
+	void init_force(int edge_force_size);
 
 	double t;
 	bee_t *bees;
