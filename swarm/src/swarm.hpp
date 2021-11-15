@@ -19,7 +19,7 @@ public:
 	bee_t();
 
 	void update(const cv::Mat1b &edge_frame, int field_max, cv::Mat1b &field);
-	void palm_update(int bound_width,int center_x, int center_y);
+	void palm_update(float center_x, float center_y, float radius);
 	void draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &field, const cv::Mat2f &force);
 
 	state_t state;
