@@ -13,9 +13,9 @@ const char* wavfile_names[] =
 };
 const float channel_control[] =
 {
-	0.6,
-	0.3,
-	0.4
+	0.6f,
+	0.3f,
+	0.4f
 };
 
 const int b_max_change = 32; // [0~128]
@@ -68,7 +68,7 @@ void audio_dispose()
 
 void audio_render(const swarm_t &swarm)
 {
-	int mix_volume= 64;
+	float mix_volume= 64.0f;
 	static float prev_volume[bee_t::k_state_count];
 	static float new_volume[bee_t::k_state_count];
 
@@ -76,7 +76,7 @@ void audio_render(const swarm_t &swarm)
 	{
 		if(i==0) // _idle
 		{
-			mix_volume= 128*(.9 - swarm.state_fractions[i])*(.9 - swarm.state_fractions[i]);
+			mix_volume= 128.0f*(.9f - swarm.state_fractions[i])*(.9f - swarm.state_fractions[i]);
 		}
 		new_volume[i]= channel_control[i]*mix_volume*(1 - swarm.state_fractions[i]);
 		float change= new_volume[i] - prev_volume[i];
@@ -91,7 +91,7 @@ void audio_render(const swarm_t &swarm)
 				new_volume[i]= prev_volume[i]+b_max_change;
 			}
 		}
-		Mix_Volume(i, new_volume[i]);
+		Mix_Volume(i, static_cast<int>(new_volume[i]));
 		// play audio
 		if (Mix_Playing(i)==0)
 		{

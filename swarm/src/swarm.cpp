@@ -172,8 +172,8 @@ void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &f
 
 			if (i>0 && i<force.rows && j>0 && j<force.cols)
 			{
-				int8_t dx= force(i, j)[1];
-				int8_t dy= force(i, j)[0];
+				float dx= force(i, j)[1];
+				float dy= force(i, j)[0];
 				if (dx!=0 || dy!=0)
 				{
 					spin= atan2(dy, dx);
@@ -189,7 +189,7 @@ void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &f
 	y= wrap_value(y+speed*sin(facing)*k_dt, k_simulation_height, k_bee_radius);
 	if (edge_move)
 	{
-		facing= wrap_value(0.2*facing+spin, k_tau, 0.0f);
+		facing= wrap_value(0.2f*facing+spin, k_tau, 0.0f);
 	}
 	else
 	{
@@ -197,21 +197,21 @@ void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &f
 	}
 }
 
-void bee_t::palm_update(int bound_width, int center_x, int center_y)
+void bee_t::palm_update(float center_x, float center_y, float radius)
 {
 	state= _flying;
 	timer= 0.0f;
 
-	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>bound_width*bound_width)
+	if ((center_x-x)*(center_x-x) + (center_y-y)*(center_y-y)>radius*radius)
 	{
 		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-		double dr= atan2(center_y-y, center_x-x);
+		float dr= atan2(center_y-y, center_x-x);
 		spin= (dr-facing)/k_dt + uniform_random(0, k_spin_maximum);
 	}
 	else
 	{
 		speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-		double dr=  uniform_random(-0.4*k_spin_maximum, 0.4*k_spin_maximum);
+		float dr=  uniform_random(-0.4*k_spin_maximum, 0.4*k_spin_maximum);
 		spin= dr;
 	}
 
@@ -246,7 +246,7 @@ void swarm_t::init_force(int edge_force_radius)
 	{
 		for (int x=0; x<edge_diameter; x++)
 		{
-			float norm= sqrt((edge_force_radius-y)*(edge_force_radius-y) + (edge_force_radius-x)*(edge_force_radius-x));
+			float norm= sqrt(static_cast<float>((edge_force_radius-y)*(edge_force_radius-y) + (edge_force_radius-x)*(edge_force_radius-x)));
 			if (norm==0.0f)
 			{
 				edge_attract(y, x)[0]= 0.0f; edge_attract(y, x)[1]= 0.0f;
@@ -320,22 +320,22 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 
 		if (current_sign.name=="palm")
 		{
-			int center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width)/edge_frame.cols*k_simulation_width;
-			int center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
+			float center_x= (current_sign.bounding_box.x + 0.5f*current_sign.bounding_box.width)/edge_frame.cols*k_simulation_width;
+			float center_y= (current_sign.bounding_box.y + 0.5f*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
 
 			field.setTo(0);
 
 			for (int i= 0; i<k_bee_count; i++)
 			{
-				bees[i].palm_update(current_sign.bounding_box.width, center_x, center_y);
+				bees[i].palm_update(center_x, center_y, static_cast<float>(current_sign.bounding_box.width));
 			}
 
 			gesture_driven= true;
 		}
 		else if (current_sign.name=="peace")
 		{	
-			int center_x= (current_sign.bounding_box.x + 0.5*current_sign.bounding_box.width);
-			int center_y= (current_sign.bounding_box.y + 0.5*current_sign.bounding_box.height);
+			int center_x= (current_sign.bounding_box.x + current_sign.bounding_box.width/2);
+			int center_y= (current_sign.bounding_box.y + current_sign.bounding_box.height/2);
 
 			draw_line(center_x, center_y);
 			force.setTo(0);
