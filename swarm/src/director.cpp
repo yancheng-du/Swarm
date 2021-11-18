@@ -16,6 +16,7 @@ static const char *k_idle_image_filepaths[]=
 	"res/bevo.bmp",
 	"res/ece.bmp",
 	"res/Texas.bmp",
+	"res/title.bmp",
 	"res/tower.bmp"
 };
 static const int k_idle_image_count= sizeof(k_idle_image_filepaths)/sizeof(k_idle_image_filepaths[0]);
