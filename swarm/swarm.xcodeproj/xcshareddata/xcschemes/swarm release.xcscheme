@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1300"
+   LastUpgradeVersion = "1310"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "23BCC30226815417002681EC"
+               BlueprintIdentifier = "23F844F427042E23004DA116"
                BuildableName = "swarm"
                BlueprintName = "swarm"
                ReferencedContainer = "container:swarm.xcodeproj">
@@ -45,7 +45,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "23BCC30226815417002681EC"
+            BlueprintIdentifier = "23F844F427042E23004DA116"
             BuildableName = "swarm"
             BlueprintName = "swarm"
             ReferencedContainer = "container:swarm.xcodeproj">
@@ -62,7 +62,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "23BCC30226815417002681EC"
+            BlueprintIdentifier = "23F844F427042E23004DA116"
             BuildableName = "swarm"
             BlueprintName = "swarm"
             ReferencedContainer = "container:swarm.xcodeproj">
