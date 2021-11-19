@@ -333,7 +333,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			gesture_driven= true;
 		}
 		else if (current_sign.name=="peace")
-		{	
+		{
 			int center_x= (current_sign.bounding_box.x + current_sign.bounding_box.width/2);
 			int center_y= (current_sign.bounding_box.y + current_sign.bounding_box.height/2);
 
@@ -392,25 +392,40 @@ void swarm_t::draw_line(int x, int y)
 		last_draw_y= y;
 	}
 	//not the first point
-	else
-	{	//calculate slopt and intercept
-		float m= x==last_draw_x ? 0.0f : static_cast<float>(y-last_draw_y)/(x-last_draw_x);
-		float b= y-m*x;
-		//fill points on the canvas
-		if (x>last_draw_x)
+	else if (x!=last_draw_x || y!=last_draw_y)
+	{
+		float dx= static_cast<float>(x-last_draw_x);
+		float dy= static_cast<float>(y-last_draw_y);
+
+		if (std::abs(dx)>std::abs(dy))
 		{
-			for (int i= last_draw_x; i<=x; i++)
+			//calculate slope and y-intercept
+			float m= dy/dx;
+			float b= y - m*x;
+			float x_min= dx>0 ? last_draw_x : x;
+			float x_max= dx>0 ? x : last_draw_x;
+
+			//iterate x, fill points on the canvas
+			for (int i= x_min; i<=x_max; i++)
 			{
 				canvas(static_cast<int>(m*i+b), i)= 1.0f;
 			}
 		}
 		else
 		{
-			for (int i= x; i<=last_draw_x; i++)
+			//calculate inverse slope and x-intercept
+			float m= dx/dy;
+			float b= x - m*y;
+			float y_min= dy>0 ? last_draw_y : y;
+			float y_max= dy>0 ? y : last_draw_y;
+
+			//iterate y, fill points on the canvas
+			for (int j= y_min; j<=y_max; j++)
 			{
-				canvas(static_cast<int>(m*i+b), i)= 1.0f;
+				canvas(j, static_cast<int>(m*j+b))= 1.0f;
 			}
 		}
+
 		last_draw_x= x;
 		last_draw_y= y;
 	}
