@@ -236,27 +236,37 @@ static void camera_process_frame(
 	cv::Mat1w &depth_frame,
 	cv::Mat1b &edge_frame)
 {
-	cv::Mat gray_frame, blurred_frame;
+	cv::Mat gray_frame, canny_frame, blurred_frame;
 
 	// convert to grayscale 
 	cv::cvtColor(video_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height)), gray_frame, cv::COLOR_BGR2GRAY);
 
 	// detect edges using Canny algorithm
-	cv::Canny(gray_frame, blurred_frame, 100, 200); // last two parameters are low threshold and high threshold
+	cv::Canny(gray_frame, canny_frame, 100, 200); // last two parameters are low threshold and high threshold
 
 	// thicken the resulting edges
-	cv::GaussianBlur(blurred_frame, edge_frame, cv::Size(3, 3), 2); // last two parameters are window and sigma
+	cv::GaussianBlur(canny_frame, blurred_frame, cv::Size(3, 3), 2); // last two parameters are window and sigma
 
-	// remove edges that are past the depth threshold
-	cv::Mat1w clipped_depth_frame = depth_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height));
+	// remove edges that are past the depth threshold or outside the vertical margins of the available depth data
+	edge_frame.create(k_edge_height, k_edge_width);
+	cv::Mat1w clipped_depth_frame= depth_frame(cv::Rect(k_edge_x, k_edge_y, k_edge_width, k_edge_height));
 	for (int i= 0; i<clipped_depth_frame.rows; i++)
 	{
-		for (int j= 0; j<clipped_depth_frame.cols; j++)
+		int j;
+
+		for (j= 0; j<32; j++)
 		{
-			if (clipped_depth_frame(i, j)>=k_depth_threshold)
-			{
-				edge_frame(i, j)= 0;
-			}
+			edge_frame(i, j)= 0;
+		}
+
+		for (; j<clipped_depth_frame.cols-32; j++)
+		{
+			edge_frame(i, j)= clipped_depth_frame(i, j)<k_depth_threshold ? blurred_frame.at<uint8_t>(i, j) : 0;
+		}
+
+		for (; j<clipped_depth_frame.cols; j++)
+		{
+			edge_frame(i, j)= 0;
 		}
 	}
 }
