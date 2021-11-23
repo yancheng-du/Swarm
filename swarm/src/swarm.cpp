@@ -409,8 +409,8 @@ void swarm_t::draw_line(int x, int y)
 			//calculate slope and y-intercept
 			float m= dy/dx;
 			float b= y - m*x;
-			float x_min= dx>0 ? last_draw_x : x;
-			float x_max= dx>0 ? x : last_draw_x;
+			int x_min= dx>0 ? last_draw_x : x;
+			int x_max= dx>0 ? x : last_draw_x;
 
 			//iterate x, fill points on the canvas
 			for (int i= x_min; i<=x_max; i++)
@@ -423,8 +423,8 @@ void swarm_t::draw_line(int x, int y)
 			//calculate inverse slope and x-intercept
 			float m= dx/dy;
 			float b= x - m*y;
-			float y_min= dy>0 ? last_draw_y : y;
-			float y_max= dy>0 ? y : last_draw_y;
+			int y_min= dy>0 ? last_draw_y : y;
+			int y_max= dy>0 ? y : last_draw_y;
 
 			//iterate y, fill points on the canvas
 			for (int j= y_min; j<=y_max; j++)
