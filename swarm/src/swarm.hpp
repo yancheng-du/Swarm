@@ -18,9 +18,9 @@ public:
 
 	bee_t();
 
-	void update(const cv::Mat1b &edge_frame, int field_max, cv::Mat1b &field);
+	void update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &landed);
 	void palm_update(float center_x, float center_y, float radius);
-	void draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &field, const cv::Mat2f &force);
+	void draw_update(const cv::Mat1f &edge_frame, int landed_max, cv::Mat1b &landed, const cv::Mat2f &force);
 
 	state_t state;
 	float timer;
@@ -40,16 +40,16 @@ public:
 	void draw_line(int x, int y);
 	int count_lines(const cv::Mat1f &canvas);
 
-	void get_dir_mat_float(const cv::Mat1f &edge_frame, const cv::Mat2f &edge_attract, const cv::Mat1b &field);
-	void apply_filter(const cv::Mat2f &force_field,int x, int y, int radius);
+	void get_dir_mat_float(const cv::Mat1f &edge_frame, const cv::Mat2f &edge_attract, const cv::Mat1b &landed);
+	void apply_filter(const cv::Mat2f &force_field, int x, int y, int radius);
 	void init_force(int edge_force_size);
 
 	double t;
 	bee_t *bees;
 	float state_fractions[bee_t::k_state_count]; // fraction of total bees in each state
 
-	int field_max;
-	cv::Mat1b field;
+	int landed_max;
+	cv::Mat1b landed;
 	cv::Mat1f canvas;
 
 	cv::Mat2f force;
