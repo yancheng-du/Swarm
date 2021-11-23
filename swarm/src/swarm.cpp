@@ -17,6 +17,9 @@ const float k_fly_speed_maximum= 300.0f;
 
 const float k_spin_maximum= 0.5f*k_tau;
 
+const int k_landed_width= k_simulation_width/12;
+const int k_landed_height= k_simulation_height/12;
+
 static int last_draw_x= -1;
 static int last_draw_y= -1;
 
@@ -53,22 +56,22 @@ bee_t::bee_t()
 	spin= 0.0f;
 }
 
-void bee_t::update(const cv::Mat1b &edge_frame, int field_max, cv::Mat1b &field)
+void bee_t::update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &landed)
 {
 	float fraction_y= y/k_simulation_height;
 	float fraction_x= x/k_simulation_width;
 	int edge_y= static_cast<int>(fraction_y*edge_frame.rows);
 	int edge_x= static_cast<int>(fraction_x*edge_frame.cols);
-	int field_y= static_cast<int>(fraction_y*field.rows);
-	int field_x= static_cast<int>(fraction_x*field.cols);
+	int landed_y= static_cast<int>(fraction_y*landed.rows);
+	int landed_x= static_cast<int>(fraction_x*landed.cols);
 
 	// update state, speed, and spin
 	if (x>=0 && x<k_simulation_width &&
 		y>=0 && y<k_simulation_height &&
 		edge_frame(edge_y, edge_x)>0 &&
-		field(field_y, field_x)<field_max)
+		landed(landed_y, landed_x)<landed_max)
 	{
-		field(field_y, field_x)+= 1;
+		landed(landed_y, landed_x)+= 1;
 
 		if (state==_flying || (state==_crawling && timer<0.0f))
 		{
@@ -110,14 +113,14 @@ void bee_t::update(const cv::Mat1b &edge_frame, int field_max, cv::Mat1b &field)
 	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
 }
 
-void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &field, const cv::Mat2f &force)
+void bee_t::draw_update(const cv::Mat1f &edge_frame, int landed_max, cv::Mat1b &landed, const cv::Mat2f &force)
 {
 	float fraction_y= y/k_simulation_height;
 	float fraction_x= x/k_simulation_width;
 	int edge_y= static_cast<int>(fraction_y*edge_frame.rows);
 	int edge_x= static_cast<int>(fraction_x*edge_frame.cols);
-	int field_y= static_cast<int>(fraction_y*field.rows);
-	int field_x= static_cast<int>(fraction_x*field.cols);
+	int landed_y= static_cast<int>(fraction_y*landed.rows);
+	int landed_x= static_cast<int>(fraction_x*landed.cols);
 	bool edge_move= false;
 	// update state, speed, and rotation
 	// if on edge
@@ -125,7 +128,7 @@ void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &f
 		y>=0.0f && y<k_simulation_height &&
 		edge_frame(edge_y, edge_x)>0.01f)
 	{	//on edge and also no crowd on the same edge
-		if (field(field_y, field_x)<field_max)
+		if (landed(landed_y, landed_x)<landed_max)
 		{
 			if (state==_flying || (state==_crawling&&timer<0.0f))
 			{
@@ -153,7 +156,7 @@ void bee_t::draw_update(const cv::Mat1f &edge_frame, int field_max, cv::Mat1b &f
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
 			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
 		}
-		field(field_y, field_x)+= 1;
+		landed(landed_y, landed_x)+= 1;
 	}
 	//not on edge
 	else
@@ -224,8 +227,8 @@ void bee_t::palm_update(float center_x, float center_y, float radius)
 swarm_t::swarm_t()
 {
 	bees= new bee_t[k_bee_count];
-	//field is for bee avoid landing on an edge that already occupied by another bee
-	field= cv::Mat::zeros(k_edge_height, k_edge_width, CV_8U);
+	//landed is for bee avoid landing on an edge that already occupied by another bee
+	landed= cv::Mat::zeros(k_landed_height, k_landed_width, CV_8U);
 	//canvas is the board for drawing
 	canvas= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32F);
 	force= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32FC2);
@@ -279,13 +282,17 @@ void swarm_t::apply_filter(const cv::Mat2f &filter, int y, int x, int radius)
 	}
 }
 
-void swarm_t::get_dir_mat_float(const cv::Mat1f &edge_frame, const cv::Mat2f &edge_attract, const cv::Mat1b &field)
+void swarm_t::get_dir_mat_float(const cv::Mat1f &edge_frame, const cv::Mat2f &edge_attract, const cv::Mat1b &landed)
 {
 	for (int j=0; j<edge_frame.rows; j+=2)
 	{
+		int landed_j= j*landed.rows/edge_frame.rows;
+
 		for (int i=0; i<edge_frame.cols; i+=2)
 		{
-			if (edge_frame(j, i)>0.01f && field(j, i)==0)
+			int landed_i= i*landed.cols/edge_frame.cols;
+
+			if (edge_frame(j, i)>0.01f && landed(landed_j, landed_i)==0)
 			{
 				apply_filter(edge_attract, j, i, edge_force_radius);
 			}
@@ -306,12 +313,12 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 	}
 	last_count= line_count;
 
-	// compute field_max
+	// compute landed_max
 	{
 		int edge_count= cv::countNonZero(edge_frame);
-		int field_count= edge_count*field.rows*field.cols/(edge_frame.rows*edge_frame.cols);
-		field_max= 1 + (field_count>0 ? k_bee_count/field_count : 0);
-		if (field_max>UINT8_MAX) field_max= UINT8_MAX;
+		int landed_count= edge_count*landed.rows*landed.cols/(edge_frame.rows*edge_frame.cols);
+		landed_max= 1 + (landed_count>0 ? k_bee_count/landed_count : 0);
+		if (landed_max>UINT8_MAX) landed_max= UINT8_MAX;
 	}
 
 	if (commands.size()>0)
@@ -323,7 +330,7 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 			float center_x= (current_sign.bounding_box.x + 0.5f*current_sign.bounding_box.width)/edge_frame.cols*k_simulation_width;
 			float center_y= (current_sign.bounding_box.y + 0.5f*current_sign.bounding_box.height)/edge_frame.rows*k_simulation_height;
 
-			field.setTo(0);
+			landed.setTo(0);
 
 			for (int i= 0; i<k_bee_count; i++)
 			{
@@ -339,12 +346,12 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 
 			draw_line(center_x, center_y);
 			force.setTo(0);
-			get_dir_mat_float(canvas, edge_attract, field);
-			field.setTo(0);
+			get_dir_mat_float(canvas, edge_attract, landed);
+			landed.setTo(0);
 
 			for (int i= 0; i<k_bee_count; i++)
 			{
-				bees[i].draw_update(canvas, 500, field, force);
+				bees[i].draw_update(canvas, 500, landed, force);
 			}
 
 			gesture_driven= true;
@@ -353,11 +360,11 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 
 	if (!gesture_driven)
 	{
-		field.setTo(0);
+		landed.setTo(0);
 
 		for (int i= 0; i<k_bee_count; i++)
 		{	
-			bees[i].update(edge_frame, field_max, field);
+			bees[i].update(edge_frame, landed_max, landed);
 		}
 	}
 

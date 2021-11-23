@@ -266,29 +266,30 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 			}
 		}
 
-		// render field
+		// render landed
 		if (debug)
 		{
 			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
 			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
-			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/swarm.field.cols;
-			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/swarm.field.rows;
+			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/swarm.landed.cols;
+			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/swarm.landed.rows;
 
 			SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0x3f);
 
-			for (int y= 0; y<swarm.field.rows; y++)
+			for (int y= 0; y<swarm.landed.rows; y++)
 			{
-				for (int x= 0; x<swarm.field.cols; x++)
+				for (int x= 0; x<swarm.landed.cols; x++)
 				{
-					int field= swarm.field(y, x);
-					if (field>0)
+					int landed= swarm.landed(y, x);
+
+					if (landed>0)
 					{
 						SDL_FRect rect;
 						rect.x= x0 + x*dx;
 						rect.y= y0 + y*dy;
 						rect.w= dx;
 						rect.h= dy;
-						SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0xff*field/swarm.field_max);
+						SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0xff*landed/swarm.landed_max);
 						SDL_RenderFillRectF(g_renderer, &rect);
 					}
 				}
