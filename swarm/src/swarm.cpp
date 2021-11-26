@@ -224,20 +224,26 @@ void bee_t::palm_update(float center_x, float center_y, float radius)
 	facing= wrap_value(facing+spin*k_dt, k_tau, 0.0f);
 }
 
-swarm_t::swarm_t()
+swarm_t::swarm_t(): bees(NULL)
 {
-	bees= new bee_t[k_bee_count];
-	//landed is for bee avoid landing on an edge that already occupied by another bee
-	landed= cv::Mat::zeros(k_landed_height, k_landed_width, CV_8U);
-	//canvas is the board for drawing
-	canvas= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32F);
-	force= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32FC2);
-	init_force(edge_force_radius);
+	reset();
 }
 
 swarm_t::~swarm_t()
 {
 	delete bees;
+}
+
+void swarm_t::reset()
+{
+	if (bees) delete bees;
+
+	bees= new bee_t[k_bee_count];
+
+	landed= cv::Mat::zeros(k_landed_height, k_landed_width, CV_8U);
+	canvas= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32F);
+	force= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32FC2);
+	init_force(edge_force_radius);
 }
 
 void swarm_t::init_force(int edge_force_radius)

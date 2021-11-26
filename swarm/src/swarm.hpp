@@ -36,6 +36,8 @@ public:
 	swarm_t();
 	~swarm_t();
 
+	void reset();
+
 	void update(const cv::Mat1b &edge_frame, const commands_t &commands);
 	void draw_line(int x, int y);
 	int count_lines(const cv::Mat1f &canvas);
