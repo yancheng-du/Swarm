@@ -8,8 +8,13 @@ class timer_t
 public:
 	timer_t();
 
+	// stopwatch
 	void reset();
 	bool passed(double time);
+
+	// countdown
+	void start(double time);
+	bool running();
 
 private:
 	double frequency;
