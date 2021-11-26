@@ -18,7 +18,7 @@ bool timer_t::passed(double time)
 
 void timer_t::start(double time)
 {
-	counter= SDL_GetPerformanceCounter() + time*frequency;
+	counter= SDL_GetPerformanceCounter() + static_cast<uint64_t>(time*frequency);
 }
 
 bool timer_t::running()
