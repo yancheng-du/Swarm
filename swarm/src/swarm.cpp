@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstdlib>
+#include <queue>
 
 #include "constants.hpp"
 #include "swarm.hpp"
@@ -17,8 +18,8 @@ const float k_fly_speed_maximum= 300.0f;
 
 const float k_spin_maximum= 0.5f*k_tau;
 
-const int k_landed_width= k_simulation_width/12;
-const int k_landed_height= k_simulation_height/12;
+const int k_field_width= k_simulation_width/24;
+const int k_field_height= k_simulation_height/24;
 
 static int last_draw_x= -1;
 static int last_draw_y= -1;
@@ -56,7 +57,7 @@ bee_t::bee_t()
 	spin= 0.0f;
 }
 
-void bee_t::update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &landed)
+void bee_t::update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &landed, const cv::Mat1f *flow)
 {
 	float fraction_y= y/k_simulation_height;
 	float fraction_x= x/k_simulation_width;
@@ -99,7 +100,24 @@ void bee_t::update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &lande
 			state= _flying;
 			timer= uniform_random(k_timer_minimum, k_timer_maximum);
 			speed= uniform_random(k_fly_speed_minimum, k_fly_speed_maximum);
-			spin= uniform_random(-k_spin_maximum, k_spin_maximum);
+			if (flow && 
+				x>=0 && x<k_simulation_width &&
+				y>=0 && y<k_simulation_height)
+			{
+				int flow_y= static_cast<int>(fraction_y*flow->rows);
+				int flow_x= static_cast<int>(fraction_x*flow->cols);
+				float desired_facing= (*flow)(flow_y, flow_x);
+				float delta= desired_facing - facing;
+
+				if (delta>0.5*k_tau) delta-= k_tau;
+				else if (delta<-0.5*k_tau) delta+= k_tau;
+
+				spin= delta>0 ? uniform_random(0.0f, k_spin_maximum) : uniform_random(-k_spin_maximum, 0.0f);
+			}
+			else
+			{
+				spin= uniform_random(-k_spin_maximum, k_spin_maximum);
+			}
 		}
 		else
 		{
@@ -240,7 +258,10 @@ void swarm_t::reset()
 
 	bees= new bee_t[k_bee_count];
 
-	landed= cv::Mat::zeros(k_landed_height, k_landed_width, CV_8U);
+	landed_max= 0;
+	landed= cv::Mat::zeros(k_field_height, k_field_width, CV_8U);
+	flow_active= false;
+	flow= cv::Mat::zeros(k_field_height, k_field_width, CV_32F);
 	canvas= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32F);
 	force= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32FC2);
 	init_force(edge_force_radius);
@@ -323,8 +344,9 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 	{
 		int edge_count= cv::countNonZero(edge_frame);
 		int landed_count= edge_count*landed.rows*landed.cols/(edge_frame.rows*edge_frame.cols);
-		landed_max= 1 + (landed_count>0 ? k_bee_count/landed_count : 0);
-		if (landed_max>UINT8_MAX) landed_max= UINT8_MAX;
+		landed_max= (landed_count>0 ? k_bee_count/landed_count : 0);
+		if (landed_max<=0) landed_max= 1;
+		else if (landed_max>UINT8_MAX) landed_max= UINT8_MAX;
 	}
 
 	if (commands.size()>0)
@@ -370,7 +392,125 @@ void swarm_t::update(const cv::Mat1b &edge_frame, const commands_t &commands)
 
 		for (int i= 0; i<k_bee_count; i++)
 		{	
-			bees[i].update(edge_frame, landed_max, landed);
+			bees[i].update(edge_frame, landed_max, landed, flow_active? &flow : NULL);
+		}
+	}
+
+	// compute flow for next update
+	if (flow_active)
+	{
+		struct point_t
+		{
+			int8_t x, y;
+
+			point_t(): x(0), y(0) {}
+			point_t(int i, int j): x(i), y(j) {}
+		};
+
+		struct element_t
+		{
+			uint16_t distance; // squared
+			point_t point;
+
+			element_t(): distance(0) {};
+			element_t(int x, int y, const point_t &np): point(x, y), distance((x-np.x)*(x-np.x)+(y-np.y)*(y-np.y)) {}
+			bool operator()(const element_t &a, const element_t &b) { return a.distance>b.distance; }
+		};
+
+		point_t nearest_uncovered_edge[k_field_height][k_field_width];
+		std::priority_queue<element_t, std::vector<element_t>, element_t> queue;
+
+		memset(nearest_uncovered_edge, -1, sizeof(nearest_uncovered_edge));
+
+		// make an uncovered edge map
+		assert(landed.rows==k_field_height);
+		assert(landed.cols==k_field_width);
+		{
+			int edge_dx= edge_frame.cols/landed.cols;
+			int edge_dy= edge_frame.rows/landed.rows;
+
+			for (int y= 0; y<landed.rows; y++)
+			{
+				for (int x= 0; x<landed.cols; x++)
+				{
+					int landed_count= landed(y, x);
+					int edge_count= cv::countNonZero(edge_frame(cv::Rect(x*edge_dx, y*edge_dy, edge_dx, edge_dy)));
+
+					if (landed_count*edge_dx*edge_dy<edge_count*landed_max/2)
+					{
+						nearest_uncovered_edge[y][x]= point_t(x, y);
+						queue.push(element_t(x, y, nearest_uncovered_edge[y][x]));
+					}
+				}
+			}
+		}
+
+		// flood fill from uncovered edges to find closest uncovered edge
+		if (!queue.empty())
+		{
+			while (!queue.empty())
+			{
+				const int count= 4;
+				const int dx[count]={1, 0, -1, 0};
+				const int dy[count]={0, 1, 0, -1};
+
+				element_t element= queue.top();
+
+				queue.pop();
+
+				for (int index= 0; index<count; index++)
+				{
+					int x= element.point.x + dx[index];
+					int y= element.point.y + dy[index];
+
+					if (x>=0 && x<k_field_width &&
+						y>=0 && y<k_field_height &&
+						nearest_uncovered_edge[y][x].x==-1 &&
+						nearest_uncovered_edge[y][x].y==-1)
+					{
+						nearest_uncovered_edge[y][x]= nearest_uncovered_edge[element.point.y][element.point.x];
+						queue.push(element_t(x, y, nearest_uncovered_edge[element.point.y][element.point.x]));
+					}
+				}
+			}
+
+			// compute flow from closest uncovered edge
+			assert(flow.rows==k_field_height);
+			assert(flow.cols==k_field_width);
+			{
+				for (int y= 0; y<flow.rows; y++)
+				{
+					for (int x= 0; x<flow.cols; x++)
+					{
+						float dx= static_cast<float>(nearest_uncovered_edge[y][x].x - x);
+						float dy= static_cast<float>(nearest_uncovered_edge[y][x].y - y);
+
+						if (dx!=0.0f || dy!=0.0f)
+						{
+							flow(y, x)= atan2(dy, dx);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			int x_mid= flow.cols/2;
+			int y_mid= flow.rows/2;
+
+			for (int y= 0; y<flow.rows; y++)
+			{
+				for (int x= 0; x<flow.cols; x++)
+				{
+					float dx= static_cast<float>(x - x_mid);
+					float dy= static_cast<float>(y - y_mid);
+
+					if (dx!=0.0f || dy!=0.0f)
+					{
+						flow(y, x)= atan2(dy, dx);
+					}
+				}
+			}
 		}
 	}
 

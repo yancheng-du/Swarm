@@ -192,8 +192,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 
 		// render bees
 		{
-			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
-			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
+			float ox= static_cast<float>(debug ? k_swarm_rect.x : 0);
+			float oy= static_cast<float>(debug ? k_swarm_rect.y : 0);
 			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/k_simulation_width;
 			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/k_simulation_height;
 
@@ -219,8 +219,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 						{
 							SDL_FPoint *point= &points[point_count++];
 
-							point->x= x0 + bee->x*dx;
-							point->y= y0 + bee->y*dy;
+							point->x= ox + bee->x*dx;
+							point->y= oy + bee->y*dy;
 						}
 					}
 
@@ -256,8 +256,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 						{
 							src_rect.x= ((sprite_base_index+bee_index)%sprite_count)*sprite_size;
 
-							dst_rect.x= x0 + (bee->x-k_bee_radius)*dx;
-							dst_rect.y= y0 + (bee->y-k_bee_radius)*dy;
+							dst_rect.x= ox + (bee->x-k_bee_radius)*dx;
+							dst_rect.y= oy + (bee->y-k_bee_radius)*dy;
 
 							SDL_RenderCopyExF(g_renderer, texture,  &src_rect,  &dst_rect, 57.2957795131*bee->facing+90.0, NULL, SDL_FLIP_NONE);
 						}
@@ -269,8 +269,8 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 		// render landed
 		if (debug)
 		{
-			float x0= static_cast<float>(debug ? k_swarm_rect.x : 0);
-			float y0= static_cast<float>(debug ? k_swarm_rect.y : 0);
+			float ox= static_cast<float>(debug ? k_swarm_rect.x : 0);
+			float oy= static_cast<float>(debug ? k_swarm_rect.y : 0);
 			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/swarm.landed.cols;
 			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/swarm.landed.rows;
 
@@ -285,13 +285,38 @@ int graphics_render(const swarm_t &swarm, bool debug, const cv::Mat3b &video_fra
 					if (landed>0)
 					{
 						SDL_FRect rect;
-						rect.x= x0 + x*dx;
-						rect.y= y0 + y*dy;
+						rect.x= ox + x*dx;
+						rect.y= oy + y*dy;
 						rect.w= dx;
 						rect.h= dy;
 						SDL_SetRenderDrawColor(g_renderer, 0xbf, 0x55, 0x00, 0xff*landed/swarm.landed_max);
 						SDL_RenderFillRectF(g_renderer, &rect);
 					}
+				}
+			}
+		}
+
+		// render flow
+		if (debug && swarm.flow_active)
+		{
+			float ox= static_cast<float>(debug ? k_swarm_rect.x : 0);
+			float oy= static_cast<float>(debug ? k_swarm_rect.y : 0);
+			float dx= static_cast<float>(debug ? k_swarm_rect.w : k_window_width)/swarm.flow.cols;
+			float dy= static_cast<float>(debug ? k_swarm_rect.h : k_window_height)/swarm.flow.rows;
+
+			SDL_SetRenderDrawColor(g_renderer, 0x00, 0xff, 0x00, 0xff);
+
+			for (int y= 0; y<swarm.flow.rows; y++)
+			{
+				for (int x= 0; x<swarm.flow.cols; x++)
+				{
+					float flow= swarm.flow(y, x);
+					float x0= ox + (x+0.5f)*dx;
+					float y0= oy + (y+0.5f)*dy;
+					float x1= x0 + 0.5f*dx*cos(flow);
+					float y1= y0 + 0.5f*dy*sin(flow);
+
+					SDL_RenderDrawLineF(g_renderer, x0, y0, x1, y1);
 				}
 			}
 		}
