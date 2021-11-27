@@ -18,7 +18,7 @@ public:
 
 	bee_t();
 
-	void update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &landed);
+	void update(const cv::Mat1b &edge_frame, int landed_max, cv::Mat1b &landed, const cv::Mat1f *flow);
 	void palm_update(float center_x, float center_y, float radius);
 	void draw_update(const cv::Mat1f &edge_frame, int landed_max, cv::Mat1b &landed, const cv::Mat2f &force);
 
@@ -52,6 +52,10 @@ public:
 
 	int landed_max;
 	cv::Mat1b landed;
+
+	bool flow_active;
+	cv::Mat1f flow;
+
 	cv::Mat1f canvas;
 
 	cv::Mat2f force;

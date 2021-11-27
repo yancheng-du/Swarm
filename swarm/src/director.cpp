@@ -27,7 +27,7 @@ static const int k_idle_image_count= sizeof(k_idle_image_filepaths)/sizeof(k_idl
 static const double k_title_time= 5.0;
 static const int k_title_image_index= 3;
 
-static void direct_idle_update();
+static void director_idle_update();
 
 static bool g_running;
 static bool g_fullscreen;
@@ -89,7 +89,12 @@ bool director_is_running()
 void director_do_frame()
 {
 	camera_consume_full_frame(g_video_frame, g_depth_frame, g_edge_frame);
-	direct_idle_update();
+	director_idle_update();
+	if (g_idle)
+	{
+		g_idle_images[g_idle_image_index].copyTo(g_edge_frame);
+
+	}
 	gesture_consume_commands(g_commands);
 	g_swarm.update(g_edge_frame, g_commands);
 	graphics_render(g_swarm, g_debug, g_video_frame, g_depth_frame, g_edge_frame, g_commands, g_fps);
@@ -136,6 +141,11 @@ void director_process_events()
 						break;
 					}
 
+					case SDLK_a:
+					{
+						g_swarm.flow_active= !g_swarm.flow_active;
+						break;
+					}
 					case SDLK_f:
 					{
 						if (graphics_change_mode(!g_fullscreen))
@@ -177,7 +187,7 @@ void director_process_events()
 	}
 }
 
-static void direct_idle_update()
+static void director_idle_update()
 {
 	double distance= cv::norm(g_last_edge_frame, g_edge_frame, cv::NORM_L1);
 
@@ -202,9 +212,4 @@ static void direct_idle_update()
 	}
 
 	g_edge_frame.copyTo(g_last_edge_frame);
-
-	if (g_idle)
-	{
-		g_idle_images[g_idle_image_index].copyTo(g_edge_frame);
-	}
 }
