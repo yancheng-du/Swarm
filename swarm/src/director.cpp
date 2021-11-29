@@ -27,7 +27,7 @@ static const int k_idle_image_count= sizeof(k_idle_image_filepaths)/sizeof(k_idl
 static const double k_title_time= 5.0;
 static const int k_title_image_index= 3;
 
-static void director_idle_update();
+static void director_idle_update(int num_gesture);
 
 static bool g_running;
 static bool g_fullscreen;
@@ -89,7 +89,7 @@ bool director_is_running()
 void director_do_frame()
 {
 	camera_consume_full_frame(g_video_frame, g_depth_frame, g_edge_frame);
-	director_idle_update();
+	director_idle_update(g_commands.size());
 	if (g_idle)
 	{
 		g_idle_images[g_idle_image_index].copyTo(g_edge_frame);
@@ -187,29 +187,34 @@ void director_process_events()
 	}
 }
 
-static void director_idle_update()
+static void director_idle_update(int num_gestures)
 {
-	double distance= cv::norm(g_last_edge_frame, g_edge_frame, cv::NORM_L1);
-
-	if (!g_idle_timer.running())
-	{
-		if (distance>k_idle_maximum_image_distance)
-		{
-			g_idle= false;
-			g_idle_timer.reset();
-		}
-		else if (g_idle_timer.passed(k_seconds_before_idle))
-		{
-			g_idle= true;
-
-			int last_idle_image_index= g_idle_image_index;
-			while (g_idle_image_index==last_idle_image_index)
-			{
-				g_idle_image_index= rand()%k_idle_image_count;
-			}
-			g_idle_timer.reset();
-		}
+	if (num_gestures>0) {
+		g_idle= false;
+		g_idle_timer.reset();
 	}
+	else
+	{
+		double distance= cv::norm(g_last_edge_frame, g_edge_frame, cv::NORM_L1);
+		if (!g_idle_timer.running())
+		{
+			if (distance>k_idle_maximum_image_distance)
+			{
+				g_idle= false;
+				g_idle_timer.reset();
+			}
+			else if (g_idle_timer.passed(k_seconds_before_idle))
+			{
+				g_idle= true;
 
-	g_edge_frame.copyTo(g_last_edge_frame);
+				int last_idle_image_index= g_idle_image_index;
+				while (g_idle_image_index==last_idle_image_index)
+				{
+					g_idle_image_index= rand()%k_idle_image_count;
+				}
+				g_idle_timer.reset();
+			}
+		}
+		g_edge_frame.copyTo(g_last_edge_frame);
+	}
 }
