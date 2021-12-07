@@ -109,7 +109,6 @@
 				23F844F727042E23004DA116 /* src */,
 				23F844F627042E23004DA116 /* bin */,
 				23F8450C27043171004DA116 /* ext */,
-				23F1DE72275ED4E100FB7171 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
