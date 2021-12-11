@@ -260,7 +260,7 @@ void swarm_t::reset()
 
 	landed_max= 0;
 	landed= cv::Mat::zeros(k_field_height, k_field_width, CV_8U);
-	flow_active= false;
+	flow_active= true;
 	flow= cv::Mat::zeros(k_field_height, k_field_width, CV_32F);
 	canvas= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32F);
 	force= cv::Mat::zeros(k_edge_height, k_edge_width, CV_32FC2);
