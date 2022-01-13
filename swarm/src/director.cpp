@@ -146,11 +146,26 @@ void director_process_events()
 						g_swarm.flow_active= !g_swarm.flow_active;
 						break;
 					}
+
 					case SDLK_f:
 					{
 						if (graphics_change_mode(!g_fullscreen))
 						{
 							g_fullscreen= !g_fullscreen;
+						}
+						break;
+					}
+
+					case SDLK_g:
+					{
+						g_gesture_detection= !g_gesture_detection;
+						if (g_gesture_detection)
+						{
+							gesture_initialize();
+						}
+						else
+						{
+							gesture_dispose();
 						}
 						break;
 					}
